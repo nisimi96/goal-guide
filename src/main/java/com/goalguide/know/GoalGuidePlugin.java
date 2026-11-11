@@ -25,7 +25,7 @@ import net.runelite.client.plugins.PluginManager;
 
 /**
  * Goal Guide a plugin anyone can use, no automation): the goals panel, the route, the on-screen
- * Now / Next box and the Quest Helper button, on top of Know, which keeps one saved state per account with levels, quests, diaries, quest points, every
+ * Now / Next box and the wiki quick guide button, on top of Know, which keeps one saved state per account with levels, quests, diaries, quest points, every
  * storage as last seen (bank, bag, worn, seed vault, potion storage, rune pouch, looting bag, kits, quiver, POH
  * costume room) and the herb and bird house timers. Item Roots and other readers read it through {@link Know}.
  *
@@ -235,7 +235,7 @@ public class GoalGuidePlugin extends Plugin
         change(state.putLevel(e.getSkill().name(), client.getRealSkillLevel(e.getSkill()), e.getXp()));
     }
 
-    // ---- the bank button like Quest Helper's): shows only what the step or a run uses
+    // ---- the bank button: shows only what the step or a run uses
 
     private Widget bankButton, bankText;
     /** The choices the button was made with: made again when they change while the bank is open. */
@@ -271,7 +271,7 @@ public class GoalGuidePlugin extends Plugin
     }
 
     /**
-     * a toggle on the title bar, right of Quest Helper's button (x 408, 25 wide). On shows the step's
+     * a toggle on the bank title bar, right of the x 408 slot (25 wide) another plugin may use. On shows the step's
      * items and every run switched on in the panel; off shows the whole bank. Right-click shows one of them alone.
      */
     private void addBankButton()
@@ -317,11 +317,11 @@ public class GoalGuidePlugin extends Plugin
         bankText = t;
     }
 
-    /** Quest Helper's bank button: x 408, y 5, 25 square (its QuestBankTabInterface). */
+    /** The bank title bar slot at x 408, y 5 (25 square), which another Plugin Hub plugin may also use. */
     static final int QH_X = 408, BUTTON = 25, BUTTON_Y = 5;
 
     /**
-     * Right of Quest Helper's button when that is clear of the bank's own top-right buttons, else left of it.
+     * Right of that slot when it is clear of the bank's own top-right buttons, else left of it.
      * {x, y, w, h} in the bank; null when the bank is not laid out yet.
      */
     private int[] bankButtonSpot(Widget parent)

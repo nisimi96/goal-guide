@@ -17,7 +17,7 @@ import com.goalguide.items.ItemTree;
  *
  * <p>A goal can be a diary tier too (QuestData keys ending _DIARY). Several goals plan as one route: a quest two goals
  * share comes once, and each skill is trained once to the highest level any of them asks. A boostable level that an
- * everyday boost covers (Boosts) is a boost, not training. Merged goals and boosts are ideas from Codex Navigator.
+ * everyday boost covers (Boosts) is a boost, not training.
  */
 public final class QuestPlan
 {
@@ -41,7 +41,7 @@ public final class QuestPlan
         public final Map<String, int[]> missingItems = new LinkedHashMap<>();
         /**
          * items of a quest already started that are not held: likely used up in the quest, so no
-         * Get step brings them back (Quest Helper shows what is left). A later quest that needs them gets its own.
+         * Get step brings them back (the wiki quick guide lists what is left). A later quest that needs them gets its own.
          */
         public final List<String> usedItems = new ArrayList<>();
         /** Items already in the bank / bag. */
@@ -56,10 +56,10 @@ public final class QuestPlan
         public boolean ready() { return waitingOn.isEmpty() && train.isEmpty() && missingItems.isEmpty() && other.isEmpty(); }
     }
 
-    /** An item row with no one item id (Quest Helper's "Combat equipment", "Runes for Fire Bolt"). */
+    /** An item row with no one item id (a requirement like "Combat equipment", "Runes for Fire Bolt"). */
     public static final String NO_ITEM = "-1";
 
-    /** Tools and kinds of item Quest Helper names as a group: the simplest one counts. */
+    /** Tools and kinds of item a requirement names as a group: the simplest one counts. */
     static final Map<String, String> COLLECTIONS = new LinkedHashMap<>();
     static
     {

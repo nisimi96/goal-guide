@@ -12,7 +12,7 @@ import com.goalguide.items.ItemData;
 import com.goalguide.know.AccountState;
 
 /**
- * The item list of a step, like Quest Helper's each item the step uses, green when carried
+ * The item list of a step, each item the step uses, green when carried
  * (inventory or worn), yellow when it is in the bank or another storage, red when missing, with where to get it.
  * A tool named by kind ("pickaxe", "axe") counts any item of that kind. Pure.
  */

@@ -18,14 +18,14 @@ import net.runelite.api.widgets.WidgetType;
 /**
  * "put a line between and give small text to tell which one is the section for": while the guide's
  * bank filter is on, the bank's items are grouped under a line and a small title per section (the step, then each
- * run), like Quest Helper's bank tab. Only moves the item pictures; nothing is withdrawn or moved in the bank.
+ * run). Only moves the item pictures; nothing is withdrawn or moved in the bank.
  * Client thread.
  */
 public final class BankSections
 {
     private BankSections() { }
 
-    // The bank's item grid, as Quest Helper lays its tab out
+    // The bank's item grid layout
     static final int PER_ROW = 8, DX = 48, DY = 36, X0 = 51, GAP = 5, LINE = 2, TEXT = 15;
     static final int TITLE_COLOR = 0xe4d8a2;
 

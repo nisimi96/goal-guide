@@ -39,11 +39,11 @@ public final class Planner
         public final String how;
         /** Hours at typical rates, -1 = not known. */
         public final double hours;
-        /** A quest step: the player plays it through (Quest Helper shows how). */
+        /** A quest step: the player plays it through (the wiki quick guide shows how). */
         public final boolean you;
         /** The goal this step is for (its label), null for a quest-chain step that may serve several. */
         public String goal;
-        /** QUEST: the quest's key (net.runelite.api.Quest name), so a guide can open it in Quest Helper. Null otherwise. */
+        /** QUEST: the quest's key (net.runelite.api.Quest name), so the guide can link its wiki quick guide. Null otherwise. */
         public String quest;
         /** QUEST: the goals this quest moves forward (labels); more than one = shared, done first. */
         public List<String> serves = List.of();
@@ -647,7 +647,7 @@ public final class Planner
     }
 
     /**
-     * Quest Helper's item text as an item name: "Iron spear or better (You will lose the spear)" -> "iron spear",
+     * A quest's item text as an item name: "Iron spear or better (You will lose the spear)" -> "iron spear",
      * "Any logs to make a fire" -> "logs", "Agility Potion (4)" -> "agility potion(4)".
      */
     static String clean(String name)

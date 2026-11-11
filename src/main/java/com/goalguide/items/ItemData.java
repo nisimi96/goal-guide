@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Every way to get every item, in memory: recipes, shops, ground spawns and drops (which include skilling gathers,
- * e.g. "Coal rocks, Always, mining 30"). Read once from the Not Enough Runes wiki database
+ * e.g. "Coal rocks, Always, mining 30"). Read once from the bundled OSRS Wiki item data
  * (github.com/Hannah-GBS/notenoughrunes, BSD 2-Clause; data scraped from the OSRS Wiki), then pure.
  * Items are keyed by lower-case name; versions ("Cosmic rune (Catalytic)") are folded into the name.
  */
@@ -143,7 +143,7 @@ public final class ItemData
 
     /**
      * The item a want names, or one of its kind: "rune pickaxe" is a "pickaxe", "dragon axe" an "axe" (not
-     * "pickaxe"). A "cat" is any cat or kitten (pet, lazy, wily, hell, overgrown; Quest Helper's CATS), a "hunting cat"
+     * "pickaxe"). A "cat" is any cat or kitten (pet, lazy, wily, hell, overgrown), a "hunting cat"
      * one that is not overgrown (HUNTING_CATS). A wooden cat is no cat.
      */
     public static boolean sameKind(String held, String want)
@@ -173,7 +173,7 @@ public final class ItemData
     public void add(Drop d) { names.putIfAbsent(key(d.item), d.item); drops.computeIfAbsent(key(d.item), k -> new ArrayList<>()).add(d); }
 
     /**
-     * Quest Helper's item text as an item name: "Iron spear or better (You will lose the spear)" -> "iron spear",
+     * A quest's item text as an item name: "Iron spear or better (You will lose the spear)" -> "iron spear",
      * "Any logs to make a fire" -> "logs", "Agility Potion (4)" -> "agility potion(4)". "(unf)" is kept.
      */
     public static String questText(String name)

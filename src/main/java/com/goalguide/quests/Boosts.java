@@ -8,12 +8,11 @@ import java.util.Map;
 import com.goalguide.items.ItemTree;
 
 /**
- * The everyday boosts: one item per line, how many levels it adds, and what it takes to make it. A requirement Quest
- * Helper marks boostable is met with a boost instead of training when the gap is no bigger than the boost.
+ * The everyday boosts: one item per line, how many levels it adds, and what it takes to make it. A quest requirement
+ * marked boostable is met with a boost instead of training when the gap is no bigger than the boost.
  *
- * <p>Idea from Codex Navigator's Boosts (github.com/Nubles/OSRS-Codex-Navigator, BSD 2-Clause); every row checked on
- * the OSRS Wiki 2026-10-25 (Temporary skill boost and each item's page). Navigator lists one item per skill; this
- * table keeps the cheaper ones too, because a low iron can brew an agility potion (Herblore 34) long before it can
+ * <p>Every row is from the OSRS Wiki, 2026-10-25 (Temporary skill boost and each item's page). The table keeps
+ * cheap boosts as well as strong ones, because a low iron can brew an agility potion (Herblore 34) long before it can
  * bake a summer pie (Cooking 95). Only plain, repeatable boosts: no spicy stew (random), no minigame-only potions,
  * no Bandit's brew (shop opens partway into Desert Treasure I), no POH tea.
  */

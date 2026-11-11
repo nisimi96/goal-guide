@@ -35,7 +35,7 @@ import net.runelite.client.ui.PluginPanel;
  */
 @PluginDescriptor(
     name = "Item Roots",
-    description = "Every way to get an item for this account, traced to its roots (data: Not Enough Runes' wiki scrape)",
+    description = "Every way to get an item for this account, traced to its roots (data: OSRS Wiki)",
     tags = {"iron", "ironman", "recipe", "source", "planner", "roots"},
     enabledByDefault = false
 )

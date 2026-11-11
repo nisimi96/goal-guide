@@ -128,7 +128,7 @@ final class KnowRead
     /** The rune pouch: its varbits keep the runes even while the pouch is in the bank. */
     /**
      * The follower "is my cat following me"): the NPC walking after the player, as one item named
-     * like it ("kitten", "hellcat"), the way Quest Helper counts a cat that follows you. Empty when none.
+     * like it ("kitten", "hellcat"), any cat that follows you. Empty when none.
      */
     static boolean follower(Client client, AccountState s, long now)
     {

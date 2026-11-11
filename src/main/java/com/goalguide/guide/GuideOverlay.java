@@ -13,7 +13,7 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 
 /**
- * The guide on the game screen like Quest Helper's box), in sections with a title each
+ * The guide on the game screen, in sections with a title each
  * "divide it into sections"): Now (the step, how, timer, items), Next, Timed run, Between steps.
  * Off with the sidebar's "Show on screen" box.
  */
@@ -61,7 +61,7 @@ public final class GuideOverlay extends OverlayPanel
             }
             getEntries(its);
             wikiEntry(gd.now.step);
-            if (gd.now.quest != null) line("Open it in Quest Helper from the panel", DIM);
+            if (gd.now.quest != null) line("Wiki quick guide: right-click this box", DIM);
         }
         else { getEntries(List.of()); wikiEntry(null); }
         if (gd.next != null)

@@ -43,7 +43,7 @@ public final class Waypoint
         if (Objects.equals(t, shown)) return;
         clear(client, map);
         if (t == null) return;
-        // Another plugin's arrow (Quest Helper mid quest) stays: the pin still shows the way
+        // Another plugin's arrow stays: the pin still shows the way
         if (!client.hasHintArrow()) client.setHintArrow(t);
         pin = WorldMapPoint.builder().worldPoint(t).image(icon()).name(label == null ? "Goal Guide" : label)
             .tooltip(label == null ? "Goal Guide" : label).snapToEdge(true).jumpOnClick(true).build();

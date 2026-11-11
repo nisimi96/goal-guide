@@ -14,7 +14,7 @@ import net.runelite.client.plugins.banktags.BankTagsService;
 import net.runelite.client.plugins.banktags.TagManager;
 
 /**
- * The bank button like Quest Helper's): shows only what the Now step uses, through RuneLite's own
+ * The bank button: shows only what the Now step uses, through RuneLite's own
  * Bank Tags plugin (a tag named "goal guide" that holds the step's items). Needs Bank Tags on. It only filters
  * what the bank shows; it never withdraws or moves anything.
  */

@@ -657,7 +657,7 @@ public final class GoalsView
         private final JPanel ideas = new JPanel();
         private final javax.swing.JComboBox<String> sit = new javax.swing.JComboBox<>(new String[]{"I have 30 min", "I have 1 hour", "I have 2 hours", "I have 3 hours"});
         private boolean quiet;
-        /** The guide: Now, Next, recommendations, and the Quest Helper button. */
+        /** The guide: Now, Next, recommendations, and the wiki quick guide button. */
         private final JLabel guide = new JLabel();
         private final JButton questHelper = new JButton("Wiki quick guide");
         private final JLabel questHint = new JLabel();

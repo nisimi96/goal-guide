@@ -12,7 +12,7 @@ import com.goalguide.goals.Planner;
  */
 public final class Guide
 {
-    /** One line of the guide: the step, how, and the quest key when Quest Helper can open it. */
+    /** One line of the guide: the step, how, and the quest key for its wiki quick guide. */
     public static final class Line
     {
         public final String what, how, quest;
