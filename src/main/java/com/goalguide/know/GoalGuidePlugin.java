@@ -69,15 +69,11 @@ public class GoalGuidePlugin extends Plugin
         }
         com.goalguide.goals.GoalsView.migrateConfig(configManager);
         goals = new com.goalguide.goals.GoalsView(configManager, clientToolbar, executor);
-        // A main's Get steps show the Grand Exchange price (RuneLite's own prices)
+        // A main's Get steps show the Grand Exchange price. search() reads RuneLite's price list only, so it is safe off the client thread.
         com.goalguide.goals.Prices.set(name ->
         {
-            com.goalguide.items.ItemData d = com.goalguide.items.ItemDb.get();
-            for (int id : d == null ? java.util.List.<Integer>of() : d.ids(name))
-            {
-                long p = itemManager.getItemPrice(id);
-                if (p > 0) return (int) Math.min(p, Integer.MAX_VALUE);
-            }
+            for (net.runelite.http.api.item.ItemPrice p : itemManager.search(name))
+                if (p.getName().equalsIgnoreCase(name)) return (int) Math.min(p.getPrice(), Integer.MAX_VALUE);
             return 0;
         });
         goals.start();

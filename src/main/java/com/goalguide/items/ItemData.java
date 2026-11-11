@@ -138,14 +138,6 @@ public final class ItemData
     public final Map<Integer, String> byId = new HashMap<>();
     public final Map<String, List<Recipe>> recipes = new HashMap<>();
 
-    /** The game ids of an item (noted, charged and so on). */
-    public List<Integer> ids(String name)
-    {
-        String k = key(name);
-        List<Integer> out = new ArrayList<>();
-        byId.forEach((id, n) -> { if (key(n).equals(k)) out.add(id); });
-        return out;
-    }
     public final Map<String, List<Shop>> shops = new HashMap<>();
     public final Map<String, List<Spawn>> spawns = new HashMap<>();
     public final Map<String, List<Drop>> drops = new HashMap<>();

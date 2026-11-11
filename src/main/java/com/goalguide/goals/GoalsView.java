@@ -105,7 +105,12 @@ public final class GoalsView
         {
             queued = false;
             try { plan(); }
-            catch (RuntimeException e) { log.warn("Goal Guide: planning failed", e); }
+            catch (RuntimeException | AssertionError e)
+            {
+                log.warn("Goal Guide: planning failed", e);
+                GoalsPanel pn = panel;
+                if (pn != null) pn.showRoute(null, Text.color(Text.RED, "Something went wrong working out the route. It's in the RuneLite log."));
+            }
         });
     }
 
@@ -178,7 +183,7 @@ public final class GoalsView
             {
                 show.accept(StepDetail.html(s, a, st == null ? Map.of() : st.items(), item -> source(a, item), ItemDb.get(), who));
             }
-            catch (RuntimeException e)
+            catch (RuntimeException | AssertionError e)
             {
                 log.warn("Goal Guide: step detail failed", e);
                 show.accept(Text.color(Text.RED, "Couldn't work this step out."));
