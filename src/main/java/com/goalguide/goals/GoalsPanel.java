@@ -25,9 +25,11 @@ import com.goalguide.quests.QuestPlan;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
+import net.runelite.client.ui.components.materialtabs.MaterialTab;
+import net.runelite.client.ui.components.materialtabs.MaterialTabGroup;
 import net.runelite.client.util.LinkBrowser;
 
-/** The sidebar: add goals, the guide box, then the route as cards you can open. */
+/** The sidebar. Goals tab: add goals, the guide box, then the route as cards you can open. Runs tab: the run switches. */
 final class GoalsPanel extends PluginPanel
 {
     private static final Color BG = ColorScheme.DARK_GRAY_COLOR;
@@ -35,6 +37,7 @@ final class GoalsPanel extends PluginPanel
     private final GoalsView view;
     private final JPanel list = Ui.column(BG);
     private final JPanel route = Ui.column(BG);
+    private final RunsPanel runs;
     private final JLabel hint = Ui.text("", Ui.WIDTH);
     private final JLabel guide = Ui.text("", Ui.WIDTH);
     private final JButton wiki = Ui.button("Wiki guide", null, this::openWiki);
@@ -48,6 +51,7 @@ final class GoalsPanel extends PluginPanel
     {
         super(true);
         this.view = view;
+        this.runs = new RunsPanel(view);
         setBackground(BG);
         setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         setLayout(new BorderLayout());
@@ -67,7 +71,7 @@ final class GoalsPanel extends PluginPanel
         };
         field.addActionListener(e -> add.run());
         field.setAlignmentX(LEFT_ALIGNMENT);
-        stack(top, title, field, Ui.button("Add goal", null, add), hint);
+        stack(top, field, Ui.button("Add goal", null, add), hint);
         top.add(Box.createVerticalStrut(6));
         top.add(list);
         top.add(Box.createVerticalStrut(8));
@@ -80,12 +84,27 @@ final class GoalsPanel extends PluginPanel
         wiki.setVisible(false);
         stack(box, guide, wiki, onScreen);
 
+        JPanel goalsTab = Ui.column(BG);
+        goalsTab.add(top);
+        goalsTab.add(box);
+        goalsTab.add(Box.createVerticalStrut(8));
+        goalsTab.add(route);
+
+        JPanel display = new JPanel(new BorderLayout());
+        display.setBackground(BG);
+        MaterialTabGroup tabs = new MaterialTabGroup(display);
+        MaterialTab goals = new MaterialTab("Goals", tabs, goalsTab);
+        tabs.addTab(goals);
+        tabs.addTab(new MaterialTab("Runs", tabs, runs));
+        tabs.select(goals);
         JPanel all = Ui.column(BG);
-        all.add(top);
-        all.add(box);
-        all.add(Box.createVerticalStrut(8));
-        all.add(route);
+        stack(all, title, tabs, display);
         add(all, BorderLayout.NORTH);
+    }
+
+    void showRuns(com.goalguide.items.ItemTree.Account a, com.goalguide.facts.Runs.Switches sw)
+    {
+        runs.show(a, sw);
     }
 
     private static void stack(JPanel p, JComponent... cs)

@@ -27,5 +27,6 @@ public class BankFilterTest
         assertFalse(BankFilter.shows("Rune axe", pick));
         assertTrue(BankFilter.shows("Super restore(4)", Set.of("super restore")));
         assertEquals(Set.of(), BankFilter.wanted(null));
+        assertTrue(BankFilter.shows("Amulet of glory(4)", BankFilter.keys(List.of("Amulet of glory"))));
     }
 }

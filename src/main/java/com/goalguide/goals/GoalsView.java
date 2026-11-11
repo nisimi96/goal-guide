@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import com.goalguide.facts.Method;
 import com.goalguide.facts.MethodTables;
+import com.goalguide.facts.Runs;
 import com.goalguide.guide.Guide;
 import com.goalguide.guide.Icons;
 import com.goalguide.guide.StepItems;
@@ -28,7 +29,7 @@ import net.runelite.client.ui.NavigationButton;
 @Slf4j
 public final class GoalsView
 {
-    static final String GROUP = "goalguide", KEY = "goals", GUIDE_ON_SCREEN = "guideOnScreen";
+    static final String GROUP = "goalguide", KEY = "goals", GUIDE_ON_SCREEN = "guideOnScreen", RUNS_OFF = "runsOff", STOPS_OFF = "stopsOff";
 
     private final ConfigManager config;
     private final ClientToolbar toolbar;
@@ -75,6 +76,7 @@ public final class GoalsView
         nav = null;
         panel = null;
         Guide.set(null);
+        Runs.switches(null);
     }
 
     /** Plans again off the client thread. At most one plan waits at a time. */
@@ -103,6 +105,7 @@ public final class GoalsView
         {
             profile = p;
             goals = Goal.decodeAll(config.getConfiguration(GROUP, p, KEY));
+            Runs.switches(Runs.Switches.decode(config.getConfiguration(GROUP, p, RUNS_OFF), config.getConfiguration(GROUP, p, STOPS_OFF)));
         }
         GoalsPanel pn = panel;
         if (pn == null) return;
@@ -114,6 +117,8 @@ public final class GoalsView
             pn.showRoute(null, Text.color(Text.YELLOW, "Log in once with the plugin on so it can see your account."));
             return;
         }
+        ItemTree.Account a = st.toAccount();
+        pn.showRuns(a, Runs.switches());
         if (goals.isEmpty())
         {
             Guide.set(null);
@@ -121,7 +126,6 @@ public final class GoalsView
             pn.showRoute(null, Text.color(Text.GREY, "No goals yet. Try Fishing 70, Priest in Peril, Ardougne medium or 1000 raw karambwan."));
             return;
         }
-        ItemTree.Account a = st.toAccount();
         Planner.Route r = Planner.plan(QuestData.get(), ItemDb.get(), a, st.questPoints, goals);
         Guide gd = Guide.of(r);
         if (gd != null && gd.now != null) gd.items = StepItems.of(gd.now.step, st.items(), item -> source(a, item));
@@ -200,6 +204,26 @@ public final class GoalsView
         if (i <= 0 || i >= next.size()) return;
         next.add(0, next.remove(i));
         save(next);
+    }
+
+    void setRun(String run, boolean on)
+    {
+        saveSwitches(Runs.switches().withRun(run, on));
+    }
+
+    void setStop(String run, String stop, boolean on)
+    {
+        saveSwitches(Runs.switches().withStop(run, stop, on));
+    }
+
+    private void saveSwitches(Runs.Switches next)
+    {
+        Runs.switches(next);
+        String p = profile;
+        if (p == null) return;
+        config.setConfiguration(GROUP, p, RUNS_OFF, next.runsText());
+        config.setConfiguration(GROUP, p, STOPS_OFF, next.stopsText());
+        replan();
     }
 
     private void save(List<Goal> next)

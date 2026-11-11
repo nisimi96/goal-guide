@@ -1,5 +1,6 @@
 package com.goalguide.guide;
 
+import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import net.runelite.api.ChatMessageType;
@@ -10,14 +11,15 @@ import net.runelite.api.gameval.SpriteID;
 import net.runelite.api.widgets.JavaScriptCallback;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetType;
+import com.goalguide.facts.Runs;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.banktags.BankTagsService;
 import net.runelite.client.plugins.banktags.TagManager;
 
 /**
  * The "GG" button on the bank's top bar. A click shows only the Now step's items, through
- * RuneLite's Bank Tags filter; another click shows the whole bank. It only hides items from view.
- * Client thread.
+ * RuneLite's Bank Tags filter; another click shows the whole bank. Right-click picks a run that is
+ * switched on instead. It only hides items from view. Client thread.
  */
 public class BankButton
 {
@@ -32,6 +34,10 @@ public class BankButton
 
     private Widget button, text;
     private Set<String> wanted = Set.of();
+    /** The run the filter shows, null for the step. */
+    private String run;
+    /** The runs on the menu when the button was made. */
+    private List<String> runs = List.of();
 
     public void start()
     {
@@ -52,10 +58,11 @@ public class BankButton
         if (items == null || items.isHidden())
         {
             if (isOn()) bankTags.closeBankTag();
+            run = null;
             remove();
             return;
         }
-        if (button == null) add();
+        if (button == null || !runs.equals(Runs.switches().onRuns())) add();
         Set<String> now = now();
         if (!now.equals(wanted))
         {
@@ -67,6 +74,8 @@ public class BankButton
 
     private void add()
     {
+        remove();
+        runs = Runs.switches().onRuns();
         Widget bar = client.getWidget(InterfaceID.Bankmain.UNIVERSE);
         if (bar == null || bar.isHidden() || bar.getWidth() <= 0) return;
         int x = bar.getWidth() - X_FROM_RIGHT;
@@ -76,7 +85,8 @@ public class BankButton
         button.setHasListener(true);
         button.setName("<col=ff9040>Goal Guide</col>");
         button.setAction(0, "Show step items");
-        button.setOnOpListener((JavaScriptCallback) e -> click());
+        for (int i = 0; i < runs.size(); i++) button.setAction(i + 1, "Show " + runs.get(i) + " items");
+        button.setOnOpListener((JavaScriptCallback) e -> click(e.getOp() - 1));
         button.revalidate();
         text = bar.createChild(-1, WidgetType.TEXT);
         place(text, x);
@@ -88,10 +98,18 @@ public class BankButton
         text.revalidate();
     }
 
-    private void click()
+    /** Op 0 is the step (a toggle), op 1 and on are the runs. */
+    private void click(int op)
     {
-        if (isOn()) bankTags.closeBankTag();
-        else if (wanted.isEmpty()) client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Goal Guide: this step uses no items.", null);
+        String pick = op >= 1 && op <= runs.size() ? runs.get(op - 1) : null;
+        if (isOn() && pick == null)
+        {
+            bankTags.closeBankTag();
+            return;
+        }
+        run = pick;
+        wanted = now();
+        if (wanted.isEmpty()) client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Goal Guide: this step uses no items.", null);
         else open();
     }
 
@@ -107,8 +125,10 @@ public class BankButton
         return TAG.equals(bankTags.getActiveTag());
     }
 
-    private static Set<String> now()
+    /** The names the filter shows now: the picked run's items, else the step's. */
+    private Set<String> now()
     {
+        if (run != null) return BankFilter.keys(Runs.items(run));
         Guide g = Guide.current();
         return g == null ? Set.of() : BankFilter.wanted(g.items);
     }
