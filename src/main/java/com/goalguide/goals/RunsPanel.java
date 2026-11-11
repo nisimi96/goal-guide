@@ -34,7 +34,7 @@ final class RunsPanel extends JPanel
             if (sig.equals(shown)) return;
             shown = sig;
             removeAll();
-            add(Ui.text(Text.color(Text.GREY, "Switches are saved for this account. A run that is on shows up on the bank button's right-click menu."), Ui.WIDTH));
+            add(Ui.text(Text.color(Text.GREY, "Switches are saved for this account. The bank button shows the items of every run that is on, with the step's."), Ui.WIDTH));
             for (String run : Runs.names())
             {
                 add(Box.createVerticalStrut(6));
