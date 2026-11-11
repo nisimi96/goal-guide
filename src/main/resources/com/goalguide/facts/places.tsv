@@ -1,0 +1,350 @@
+# kind	location	members	x	y	plane	needs
+# Anvils, furnaces and banks from the OSRS Wiki pages Anvil, Furnace, Bank booth and Bank chest, read 2026-11-11.
+# Wiki content is CC BY-NC-SA 3.0. Some spots are a map pin near the object, not its exact tile.
+anvil	South-Eastern Prifddinas	yes	3287	6055	0	SONG_OF_THE_ELVES
+anvil	South-Eastern Prifddinas	yes	3285	6054	0	SONG_OF_THE_ELVES
+anvil	South-Eastern Prifddinas	yes	3288	6053	0	SONG_OF_THE_ELVES
+anvil	Wyrmscraig	yes	2590	2250	0	FALLEN_FROM_GRACE,SAILING 62
+anvil	Varrock anvil building	no	3188	3426	0	-
+anvil	Varrock anvil building	no	3188	3424	0	-
+anvil	Varrock anvil building	no	3188	3421	0	-
+anvil	Fortis Colosseum	yes	1801	9489	0	CHILDREN_OF_THE_SUN
+anvil	Fortis Colosseum	yes	1805	9501	0	CHILDREN_OF_THE_SUN
+anvil	Port Khazard	yes	2652	3164	0	-
+anvil	Port Khazard	yes	2650	3164	0	-
+anvil	Port Khazard	yes	2652	3166	0	-
+anvil	The Summer Shore	yes	3178	2427	0	SAILING 45
+anvil	Deepfin Point	yes	1949	2761	0	SAILING 67
+anvil	Void Knights' Outpost	yes	2652	2658	0	-
+anvil	Void Knights' Outpost	yes	2650	2658	0	-
+anvil	Yanille	yes	2613	3081	0	-
+anvil	Yanille	yes	2616	3081	0	-
+anvil	Yanille	yes	2613	3078	0	-
+anvil	Auburnvale	yes	1403	3341	0	-
+anvil	Blast Furnace	yes	1938	4971	0	THE_GIANT_DWARF,SMITHING 60
+anvil	Blast Furnace	yes	1940	4971	0	THE_GIANT_DWARF,SMITHING 60
+anvil	Blast Furnace	yes	1942	4971	0	THE_GIANT_DWARF,SMITHING 60
+anvil	Ruins of Camdozaal	no	2960	5803	0	-
+anvil	Ruins of Camdozaal	no	2955	5802	0	-
+anvil	Jatizso	yes	2397	3805	0	THE_FREMENNIK_TRIALS
+anvil	Jatizso	yes	2394	3796	0	THE_FREMENNIK_TRIALS
+anvil	Cam Torum	yes	1446	9582	1	PERILOUS_MOONS
+anvil	Cam Torum	yes	1446	9586	1	PERILOUS_MOONS
+anvil	Keldagrim	yes	2828	10201	0	THE_GIANT_DWARF
+anvil	Keldagrim	yes	2869	10202	0	THE_GIANT_DWARF
+anvil	Mistrock	yes	1401	2863	0	-
+anvil	Tal Teklan	yes	1214	3110	0	-
+anvil	Seers' Village	yes	2713	3492	0	-
+anvil	Seers' Village	yes	2712	3495	0	-
+anvil	Seers' Village	yes	2714	3495	0	-
+anvil	Central Varrock	no	3228	3436	0	-
+anvil	Central Varrock	no	3228	3434	0	-
+anvil	Ancient Prison	yes	2881	5223	0	-
+anvil	Kourend Castle	yes	1596	3664	0	-
+anvil	Myths' Guild	yes	2464	2848	2	DRAGON_SLAYER_II
+anvil	Shipyard	yes	2066	2719	0	-
+anvil	Eastern Varrock	no	3246	3404	0	-
+anvil	Eastern Varrock	no	3248	3404	0	-
+anvil	Wilderness (Mage Arena)	yes	3062	3952	0	-
+anvil	Nardah	yes	3409	2921	0	-
+anvil	Lovakengj	yes	1529	3832	0	-
+anvil	Lovakengj	yes	1530	3829	0	-
+anvil	Lovakengj	yes	1527	3829	0	-
+anvil	Giants' Plateau	no	3360	3155	0	-
+anvil	Burthorpe	yes	2918	3573	0	-
+anvil	Mudskipper Point	no	2999	3144	0	-
+anvil	Hemenster	yes	2639	3420	0	-
+anvil	Hemenster	yes	2637	3418	0	-
+anvil	Hemenster	yes	2635	3416	0	-
+anvil	Draynor Village	no	3112	9689	0	-
+anvil	Outer Fortis	yes	1778	3057	0	CHILDREN_OF_THE_SUN
+anvil	Outer Fortis	yes	1778	3060	0	CHILDREN_OF_THE_SUN
+anvil	Isle of Souls	yes	2218	2784	0	-
+anvil	Dwarven Mine	no	3012	9814	0	-
+anvil	Dwarven Mine	no	3012	9811	0	-
+anvil	Wilderness Resource Area	yes	3190	3938	0	-
+anvil	Falador	no	2950	3452	0	DORICS_QUEST
+anvil	Falador	no	2950	3451	0	DORICS_QUEST
+anvil	Miscellania	yes	2551	3898	0	-
+anvil	Dorgesh-Kaan	yes	2710	5273	0	-
+anvil	Rellekka	yes	2620	3665	0	THE_FREMENNIK_TRIALS
+anvil	Rellekka	yes	2620	3663	0	THE_FREMENNIK_TRIALS
+anvil	Rellekka	yes	2620	3661	0	THE_FREMENNIK_TRIALS
+anvil	The Warrens	yes	1766	10158	0	-
+anvil	Corsair Cove Dungeon	no	1962	9072	0	-
+anvil	Darkmeyer	yes	3664	3363	0	SINS_OF_THE_FATHER
+anvil	Darkmeyer	yes	3664	3361	0	SINS_OF_THE_FATHER
+anvil	Darkmeyer	yes	3666	3363	0	SINS_OF_THE_FATHER
+anvil	Darkmeyer	yes	3666	3361	0	SINS_OF_THE_FATHER
+anvil	Lovakengj	yes	1402	3755	0	-
+anvil	Lovakengj	yes	1400	3758	0	-
+anvil	Wilderness (Western Ruins)	no	2991	3689	0	-
+anvil	Lassar Undercity	yes	2615	6366	0	DESERT_TREASURE_II__THE_FALLEN_EMPIRE
+anvil	West Ardougne	yes	2501	3330	0	-
+anvil	West Ardougne	yes	2499	3332	0	-
+anvil	Slepe	yes	3754	3318	0	-
+anvil	Slepe	yes	3754	3320	0	-
+anvil	Ruins of Ullek	yes	3406	2834	0	-
+anvil	Underground Pass	yes	2441	6086	0	-
+anvil	Karamja	yes	2790	3101	0	-
+furnace	Wyrmscraig	yes	2590	2250	0	FALLEN_FROM_GRACE,SAILING 62
+furnace	Shilo Village	yes	2857	2967	0	SHILO_VILLAGE
+furnace	Prifddinas	yes	3287	6052	0	SONG_OF_THE_ELVES
+furnace	Deepfin Point	yes	1948	2755	0	SAILING 67
+furnace	Edgeville	no	3110	3499	0	-
+furnace	Neitiznot	yes	2344	3811	0	-
+furnace	Mount Karuulm	yes	1325	3807	0	-
+furnace	The Summer Shore	yes	3174	2429	0	TROUBLED_TORTUGANS
+furnace	Port Phasmatys	yes	3688	3480	0	-
+furnace	Piscatoris	yes	2342	3678	0	SWAN_SONG
+furnace	Civitas illa Fortis	yes	1770	3112	0	CHILDREN_OF_THE_SUN
+furnace	Cam Torum	yes	1453	9584	0	PERILOUS_MOONS
+furnace	Al Kharid	no	3273	3187	0	-
+furnace	Burgh de Rott	yes	3527	3209	0	-
+furnace	Lovakengj	yes	1507	3773	0	-
+furnace	Tal Teklan	yes	1208	3112	0	-
+furnace	Falador	no	2976	3369	0	-
+furnace	Auburnvale	yes	1375	3371	0	-
+furnace	Zanaris	yes	2400	4473	0	LOST_CITY
+furnace	East Ardougne	yes	2602	3312	0	-
+furnace	Tyras Camp	yes	2193	3146	0	-
+furnace	Lumbridge	no	3227	3257	0	-
+furnace	Wilderness Resource Area	yes	3192	3935	0	-
+furnace	Entrana	yes	2834	3352	0	-
+furnace	Rellekka	yes	2617	3667	0	THE_FREMENNIK_TRIALS
+furnace	Wilderness, Level 28	no	3144	3737	0	-
+furnace	Darkmeyer	yes	3657	3336	0	SINS_OF_THE_FATHER
+furnace	Lassar Undercity	yes	2607	6368	0	DESERT_TREASURE_II__THE_FALLEN_EMPIRE
+furnace	Lassar Undercity	yes	2607	6350	0	DESERT_TREASURE_II__THE_FALLEN_EMPIRE
+furnace	The Forsaken Tower	yes	1384	3828	0	-
+furnace	Salvager Overlook	yes	1622	3291	0	CHILDREN_OF_THE_SUN
+furnace	Enakhra's Temple	yes	3115	9323	1	ENAKHRAS_LAMENT
+bank	Arceuus	yes	1623	3740	0	-
+bank	Arceuus	yes	1636	3740	0	-
+bank	Arceuus	yes	1623	3743	0	-
+bank	Arceuus	yes	1636	3743	0	-
+bank	Arceuus	yes	1623	3746	0	-
+bank	Arceuus	yes	1636	3746	0	-
+bank	Arceuus	yes	1623	3749	0	-
+bank	Arceuus	yes	1636	3749	0	-
+bank	Port Piscarilius	yes	1796	3791	0	-
+bank	Port Piscarilius	yes	1800	3791	0	-
+bank	Port Piscarilius	yes	1804	3791	0	-
+bank	Port Piscarilius	yes	1808	3791	0	-
+bank	Lovakengj north bank	yes	1435	3822	0	-
+bank	Lovakengj north bank	yes	1439	3834	0	-
+bank	Lovakengj north bank	yes	1435	3824	0	-
+bank	Lovakengj north bank	yes	1439	3828	0	-
+bank	Lovakengj north bank	yes	1435	3834	0	-
+bank	Lovakengj north bank	yes	1439	3822	0	-
+bank	Lovakengj north bank	yes	1435	3832	0	-
+bank	Seers' Village	yes	2728	3494	0	-
+bank	Seers' Village	yes	2721	3494	0	-
+bank	Seers' Village	yes	2722	3494	0	-
+bank	Seers' Village	yes	2724	3494	0	-
+bank	Seers' Village	yes	2727	3494	0	-
+bank	Seers' Village	yes	2729	3494	0	-
+bank	Prifddinas (Hefin district)	yes	3255	6104	0	SONG_OF_THE_ELVES
+bank	Prifddinas (Hefin district)	yes	3256	6104	0	SONG_OF_THE_ELVES
+bank	Prifddinas (Hefin district)	yes	3256	6110	0	SONG_OF_THE_ELVES
+bank	Prifddinas (Hefin district)	yes	3258	6104	0	SONG_OF_THE_ELVES
+bank	Prifddinas (Hefin district)	yes	3258	6110	0	SONG_OF_THE_ELVES
+bank	Lovakengj south bank	yes	1520	3741	0	-
+bank	Lovakengj south bank	yes	1530	3737	0	-
+bank	Lovakengj south bank	yes	1522	3741	0	-
+bank	Lovakengj south bank	yes	1526	3741	0	-
+bank	Lovakengj south bank	yes	1522	3737	0	-
+bank	Lovakengj south bank	yes	1528	3741	0	-
+bank	Lovakengj south bank	yes	1524	3741	0	-
+bank	Lovakengj south bank	yes	1530	3741	0	-
+bank	East Ardougne south bank	yes	2656	3280	0	-
+bank	East Ardougne south bank	yes	2656	3286	0	-
+bank	East Ardougne south bank	yes	2656	3283	0	-
+bank	Nardah	yes	3426	2889	0	-
+bank	Nardah	yes	3426	2891	0	-
+bank	Nardah	yes	3426	2893	0	-
+bank	Nardah	yes	3426	2894	0	-
+bank	East Ardougne north bank	yes	2618	3331	0	-
+bank	East Ardougne north bank	yes	2619	3331	0	-
+bank	East Ardougne north bank	yes	2615	3331	0	-
+bank	Falador east bank	no	3010	3354	0	-
+bank	Falador east bank	no	3011	3354	0	-
+bank	Falador east bank	no	3012	3354	0	-
+bank	Falador east bank	no	3013	3354	0	-
+bank	Falador east bank	no	3014	3354	0	-
+bank	Falador east bank	no	3015	3354	0	-
+bank	Varrock west bank	no	3186	3438	0	-
+bank	Varrock west bank	no	3186	3440	0	-
+bank	Varrock west bank	no	3186	3442	0	-
+bank	Varrock west bank	no	3186	3444	0	-
+bank	Varrock west bank	no	3186	3436	0	-
+bank	Al Kharid	no	3268	3164	0	-
+bank	Al Kharid	no	3268	3166	0	-
+bank	Al Kharid	no	3268	3167	0	-
+bank	Al Kharid	no	3268	3168	0	-
+bank	Al Kharid	no	3268	3169	0	-
+bank	Edgeville	no	3095	3489	0	-
+bank	Edgeville	no	3095	3491	0	-
+bank	Edgeville	no	3096	3493	0	-
+bank	Edgeville	no	3098	3493	0	-
+bank	Draynor Village	no	3091	3242	0	-
+bank	Draynor Village	no	3091	3243	0	-
+bank	Draynor Village	no	3091	3245	0	-
+bank	Darkmeyer	yes	3603	3368	0	SINS_OF_THE_FATHER
+bank	Darkmeyer	yes	3604	3368	0	SINS_OF_THE_FATHER
+bank	Darkmeyer	yes	3605	3368	0	SINS_OF_THE_FATHER
+bank	Darkmeyer	yes	3607	3368	0	SINS_OF_THE_FATHER
+bank	Varrock east bank	no	3252	3419	0	-
+bank	Varrock east bank	no	3253	3419	0	-
+bank	Varrock east bank	no	3254	3419	0	-
+bank	Varrock east bank	no	3255	3419	0	-
+bank	Varrock east bank	no	3256	3419	0	-
+bank	Varrock east bank	no	3251	3419	0	-
+bank	Clan Hall	no	1745	5477	0	-
+bank	Clan Hall	no	1746	5477	0	-
+bank	Clan Hall	no	1747	5477	0	-
+bank	Clan Hall	no	1748	5477	0	-
+bank	Falador west bank	no	2945	3367	0	-
+bank	Falador west bank	no	2946	3367	0	-
+bank	Falador west bank	no	2947	3367	0	-
+bank	Falador west bank	no	2948	3367	0	-
+bank	Falador west bank	no	2949	3367	0	-
+bank	Sophanem	yes	2801	5170	0	-
+bank	Sophanem	yes	2798	5170	0	-
+bank	Sophanem	yes	2799	5170	0	-
+bank	Sophanem	yes	2800	5170	0	-
+bank	Mos Le'Harmless	yes	3681	2981	0	-
+bank	Mos Le'Harmless	yes	3681	2982	0	-
+bank	Mos Le'Harmless	yes	3681	2983	0	-
+bank	Port Phasmatys	yes	3690	3465	0	-
+bank	Port Phasmatys	yes	3687	3465	0	-
+bank	Port Phasmatys	yes	3688	3465	0	-
+bank	Port Phasmatys	yes	3691	3465	0	-
+bank	Shayzien	yes	1487	3591	0	-
+bank	Shayzien	yes	1487	3592	0	-
+bank	Shayzien	yes	1487	3593	0	-
+bank	Canifis	yes	3513	3478	0	-
+bank	Canifis	yes	3513	3479	0	-
+bank	Canifis	yes	3513	3480	0	-
+bank	Canifis	yes	3513	3481	0	-
+bank	Canifis	yes	3513	3482	0	-
+bank	Canifis	yes	3513	3483	0	-
+bank	Hosidius	yes	1747	3598	0	-
+bank	Hosidius	yes	1747	3599	0	-
+bank	Hosidius	yes	1747	3600	0	-
+bank	Farming Guild	yes	1248	3759	0	-
+bank	Farming Guild	yes	1249	3759	0	-
+bank	Dorgesh-Kaan	yes	2700	5347	0	-
+bank	Dorgesh-Kaan	yes	2700	5348	0	-
+bank	Dorgesh-Kaan	yes	2700	5349	0	-
+bank	Dorgesh-Kaan	yes	2700	5350	0	-
+bank	Dorgesh-Kaan	yes	2700	5351	0	-
+bank	Dorgesh-Kaan	yes	2700	5352	0	-
+bank	Yanille	yes	2614	3091	0	-
+bank	Yanille	yes	2614	3092	0	-
+bank	Yanille	yes	2614	3094	0	-
+bank	Corsair Cove	no	2569	2865	0	-
+bank	Lunar Isle	yes	2097	3920	0	-
+bank	Lunar Isle	yes	2098	3920	0	-
+bank	Lunar Isle	yes	2099	3920	0	-
+bank	Void Knights' Outpost	yes	2665	2652	0	-
+bank	Void Knights' Outpost	yes	2667	2652	0	-
+bank	Void Knights' Outpost	yes	2668	2652	0	-
+bank	Void Knights' Outpost	yes	2666	2652	0	-
+bank	Keldagrim	yes	2836	10206	0	THE_GIANT_DWARF
+bank	Keldagrim	yes	2838	10206	0	THE_GIANT_DWARF
+bank	Fishing Guild	yes	2585	3418	0	-
+bank	Fishing Guild	yes	2585	3419	0	-
+bank	Fishing Guild	yes	2585	3421	0	-
+bank	Fishing Guild	yes	2585	3422	0	-
+bank	Burgh de Rott	yes	3494	3211	0	-
+bank	Tutorial Island	yes	3120	3124	0	-
+bank	Tutorial Island	yes	3122	3124	0	-
+bank	Catherby	yes	2807	3442	0	-
+bank	Catherby	yes	2809	3442	0	-
+bank	Catherby	yes	2811	3442	0	-
+bank	Catherby	yes	2810	3442	0	-
+bank	Warriors' Guild	yes	2842	3543	0	-
+bank	Prifddinas (Trahaearn district)	yes	3296	6058	0	SONG_OF_THE_ELVES
+bank	Prifddinas (Trahaearn district)	yes	3296	6059	0	SONG_OF_THE_ELVES
+bank	Prifddinas (Trahaearn district)	yes	3296	6060	0	SONG_OF_THE_ELVES
+bank	Ver Sinhaza	yes	3649	3207	0	-
+bank	Ver Sinhaza	yes	3651	3207	0	-
+bank	Ver Sinhaza	yes	3652	3207	0	-
+bank	Cooks' Guild	yes	3147	3449	0	-
+bank	Cooks' Guild	yes	3148	3449	0	-
+bank	Tree Gnome Stronghold (Grand Tree), floor 1	yes	2441	3487	1	-
+bank	Tree Gnome Stronghold (Grand Tree), floor 1	yes	2441	3488	1	-
+bank	Tree Gnome Stronghold (Grand Tree), floor 1	yes	2441	3489	1	-
+bank	Tree Gnome Stronghold (Grand Tree), floor 1	yes	2448	3481	1	-
+bank	Tree Gnome Stronghold (Grand Tree), floor 1	yes	2449	3481	1	-
+bank	Tree Gnome Stronghold (Grand Tree), floor 1	yes	2450	3481	1	-
+bank	Tree Gnome Stronghold south bank, floor 1	yes	2444	3425	1	-
+bank	Tree Gnome Stronghold south bank, floor 1	yes	2447	3424	1	-
+bank	Tree Gnome Stronghold south bank, floor 1	yes	2447	3427	1	-
+bank	Tree Gnome Stronghold south bank, floor 1	yes	2444	3424	1	-
+bank	Kourend Castle, floor 2	yes	1610	3680	2	-
+bank	Kourend Castle, floor 2	yes	1611	3680	2	-
+bank	Kourend Castle, floor 2	yes	1612	3680	2	-
+bank	Kourend Castle, floor 2	yes	1613	3680	2	-
+bank	Lumbridge Castle, floor 2	no	3209	3221	2	-
+bank	Lumbridge Castle, floor 2	no	3208	3221	2	-
+bank	Shantay Pass	yes	3309	3120	0	-
+bank	Woodcutting Guild Ent dungeon	yes	1551	9872	0	-
+bank	Mining Guild	yes	3012	9718	0	-
+bank	Castle Wars	no	2444	3083	0	-
+bank	Trouble Brewing	yes	3810	3020	0	-
+bank	Hosidius beach	yes	1718	3465	0	-
+bank	Crafting Guild	yes	2936	3280	0	-
+bank	Barbarian Assault	yes	2537	3573	0	-
+bank	Land's End	yes	1513	3421	0	-
+bank	Neitiznot	yes	2334	3808	0	THE_FREMENNIK_TRIALS
+bank	Neitiznot	yes	2335	3808	0	THE_FREMENNIK_TRIALS
+bank	Neitiznot	yes	2338	3808	0	THE_FREMENNIK_TRIALS
+bank	Neitiznot	yes	2339	3808	0	THE_FREMENNIK_TRIALS
+bank	Vinery	yes	1809	3567	0	-
+bank	Hosidius Kitchen	yes	1675	3615	0	-
+bank	Shayzien Encampment	yes	1483	3645	0	-
+bank	Shayzien Encampment	yes	1486	3645	0	-
+bank	Port Khazard	yes	2661	3163	0	-
+bank	Blast Furnace	yes	1948	4956	0	THE_GIANT_DWARF
+bank	Mage Arena	yes	2534	4711	0	-
+bank	Rogues' Den	yes	3039	4969	0	-
+bank	Motherlode Mine	yes	3761	5666	0	-
+bank	Zanaris	yes	2380	4460	0	LOST_CITY
+bank	Zanaris	yes	2380	4459	0	LOST_CITY
+bank	Zanaris	yes	2380	4458	0	LOST_CITY
+bank	Zanaris	yes	2380	4457	0	LOST_CITY
+bank	Zanaris	yes	2380	4456	0	LOST_CITY
+bank	Farming Guild	yes	1253	3742	0	-
+bank	Ferox Enclave	yes	3130	3632	0	-
+bank	Sulphur mine	yes	1454	3859	0	-
+bank	Blast mine	yes	1476	3877	0	-
+bank	Blast mine	yes	1495	3874	0	-
+bank	Blast mine	yes	1479	3851	0	-
+bank	Blast mine	yes	1501	3856	0	-
+bank	Ape Atoll	yes	2780	2782	0	-
+bank	Woodcutting Guild	yes	1592	3475	0	-
+bank	Legends' Guild, floor 2	yes	2732	3382	2	-
+bank	Legends' Guild, floor 2	yes	2731	3379	2	-
+bank	Legends' Guild, floor 2	yes	2733	3379	2	-
+bank	Wintertodt	yes	1641	3944	0	-
+bank	Mount Quidamortem	yes	1254	3572	0	-
+bank	Myths' Guild, floor 1	yes	2465	2849	1	DRAGON_SLAYER_II
+bank	Hallowed Sepulchre	yes	2395	5985	0	-
+bank	Hallowed Sepulchre	yes	2405	5986	0	-
+bank	Mor Ul Rek	yes	2445	5181	0	-
+bank	Mor Ul Rek	yes	2544	5141	0	-
+bank	Museum Camp	yes	3742	3805	0	-
+bank	Fossil Island Volcano	yes	3820	3809	0	-
+bank	Mount Karuulm	yes	1324	3825	0	-
+bank	Soul Wars lobby	yes	2212	2860	0	-
+bank	Ruins of Unkah	yes	3155	2835	0	-
+bank	Ruins of Camdozaal	no	2979	5798	0	-
+bank	Giants' Foundry	yes	3375	11493	0	-
+bank	Temple of the Eye	yes	3619	9473	0	-
+bank	Daimon's Crater	yes	3426	4070	0	-
+bank	Daimon's Crater	yes	3420	4057	0	-
+bank	Hunter Guild	yes	1542	3039	0	-
+bank	Mage Training Arena	yes	3367	3318	1	-
+bank	Alchemical Society	yes	1399	9313	0	-
