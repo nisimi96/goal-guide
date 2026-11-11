@@ -17,13 +17,13 @@ public class MadeFromTest
     {
         ItemData d = ItemDb.read();
         ItemTree.Account a = ItemTree.Account.fresh();
-        List<String> names = names(StepItems.madeFrom(ItemTree.trace(d, a, "Steel dagger"), 1, Map.of(), x -> null));
+        List<String> names = names(StepItems.madeFrom(d, a, "Steel dagger", 1, Map.of(), x -> null));
         assertTrue(names.toString(), names.contains("hammer"));
         assertTrue(names.toString(), names.contains("steel bar"));
         assertTrue(names.toString(), names.contains("iron ore"));
         assertTrue(names.toString(), names.contains("coal"));
         // With a bar in the bank, no ore
-        names = names(StepItems.madeFrom(ItemTree.trace(d, a, "Steel dagger"), 1, Map.of(AccountState.BANK, Map.of("steel bar", 1)), x -> null));
+        names = names(StepItems.madeFrom(d, a, "Steel dagger", 1, Map.of(AccountState.BANK, Map.of("steel bar", 1)), x -> null));
         assertFalse(names.toString(), names.contains("iron ore"));
     }
 

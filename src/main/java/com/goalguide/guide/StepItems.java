@@ -112,38 +112,37 @@ public final class StepItems
      * What an item is made from: the recipe's tools and materials for {@code qty} of it, and, for a material you
      * are short of, what that is made from in turn ("Steel dagger": Hammer, Steel bar; no bar: Iron ore, Coal).
      */
-    public static List<Item> madeFrom(ItemTree.Node n, int qty, Map<String, Map<String, Integer>> storages, Function<String, String> from)
+    public static List<Item> madeFrom(ItemData d, ItemTree.Account a, String item, int qty, Map<String, Map<String, Integer>> storages,
+        Function<String, String> from)
     {
         Map<String, Item> out = new LinkedHashMap<>();
-        madeFrom(n, qty, storages, from, out, 0);
+        madeFrom(d, a, item, qty, storages, from, out, 0);
         return new ArrayList<>(out.values());
     }
 
-    private static void madeFrom(ItemTree.Node n, int qty, Map<String, Map<String, Integer>> storages, Function<String, String> from,
-        Map<String, Item> out, int depth)
+    private static void madeFrom(ItemData d, ItemTree.Account a, String item, int qty, Map<String, Map<String, Integer>> storages,
+        Function<String, String> from, Map<String, Item> out, int depth)
     {
-        ItemTree.Way w = recipe(n);
+        ItemTree.Way w = recipe(ItemTree.trace(d, a, item));
         if (w == null || qty <= 0 || depth >= MADE_FROM_DEPTH) return;
         if (w.tools != null)
             for (String t : w.tools.split(",\\s*")) out.putIfAbsent(ItemData.key(t), item(t, 1, false, false, storages, from));
-        for (int i = 0; i < w.materials.size() && i < w.children.size(); i++)
+        for (Object[] m : w.materials)
         {
-            String name = (String) w.materials.get(i)[0];
-            int need = (int) Math.ceil(qty * (Double) w.materials.get(i)[1]);
+            String name = (String) m[0];
+            int need = (int) Math.ceil(qty * (Double) m[1]);
             Item it = item(name, need, false, false, storages, from);
             out.putIfAbsent(ItemData.key(name), it);
-            if (it.has == Has.MISSING) madeFrom(w.children.get(i), need - it.total, storages, from, out, depth + 1);
+            if (it.has == Has.MISSING) madeFrom(d, a, name, need - it.total, storages, from, out, depth + 1);
         }
     }
 
-    /** The item's picked recipe, else its cheapest open one; null when it is not made. */
+    /** The item's cheapest recipe, even one that needs a level first (that is what you'll make it with); null when it isn't made. */
     static ItemTree.Way recipe(ItemTree.Node n)
     {
-        if (n == null) return null;
-        if (n.best != null && n.best.kind == ItemTree.Kind.RECIPE) return n.best;
         ItemTree.Way pick = null;
         for (ItemTree.Way w : n.ways)
-            if (w.kind == ItemTree.Kind.RECIPE && w.open() && (pick == null || w.cost < pick.cost)) pick = w;
+            if (w.kind == ItemTree.Kind.RECIPE && (pick == null || w.cost < pick.cost)) pick = w;
         return pick;
     }
 
