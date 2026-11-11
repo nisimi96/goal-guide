@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import com.goalguide.items.ItemTree;
 import com.goalguide.quests.QuestPlan;
+import net.runelite.api.Quest;
 
 /**
  * Farming and bird house runs: their stops, what opens each stop, and what each run takes from the bank.
@@ -29,13 +30,20 @@ public final class Runs
             this.needs = needs;
         }
 
-        /** "needs My Arms Big Adventure", "needs Farming 65", or null when this account can use it. */
+        /** "needs My Arm's Big Adventure", "needs Farming 65", or null when this account can use it. */
         public String closed(ItemTree.Account a)
         {
             if (needs == null) return null;
             String[] p = needs.split(" ");
             if (p.length == 2) return a.skills.getOrDefault(p[0], 1) >= Integer.parseInt(p[1]) ? null : "needs " + QuestPlan.pretty(p[0]) + " " + p[1];
-            return a.questsDone.contains(needs) ? null : "needs " + QuestPlan.pretty(needs);
+            return a.questsDone.contains(needs) ? null : "needs " + questName(needs);
+        }
+
+        /** The game's own quest name ("Making Friends with My Arm"); a diary key reads as words. */
+        private static String questName(String key)
+        {
+            for (Quest q : Quest.values()) if (q.name().equals(key)) return q.getName();
+            return QuestPlan.pretty(key);
         }
     }
 
