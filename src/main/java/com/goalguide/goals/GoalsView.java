@@ -160,6 +160,7 @@ public final class GoalsView
                     Trip.Stop stop = Trip.next(d, a, part.item, amount(part), st.items());
                     if (stop == null) continue;
                     gd.trip = stop;
+                    gd.tripPlaces = com.goalguide.facts.Places.best(stop.place, a, 0, 0);
                     break;
                 }
             }

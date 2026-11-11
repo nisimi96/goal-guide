@@ -35,6 +35,8 @@ public final class Guide
     public volatile List<Part> parts = List.of();
     /** Where to go next to make the first item still to get (bank, furnace, anvil); null when nowhere. */
     public volatile Trip.Stop trip;
+    /** The map places for the trip's stop that suit this account (wiki), any order; empty when unknown. */
+    public volatile List<com.goalguide.facts.Places.Place> tripPlaces = List.of();
 
     /** "Get 6 x Plank": the item to get and the items getting it uses. */
     public static final class Part

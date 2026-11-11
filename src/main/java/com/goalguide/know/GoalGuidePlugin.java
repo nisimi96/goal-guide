@@ -171,7 +171,7 @@ public class GoalGuidePlugin extends Plugin
         tick++;
         bankButton.tick();
         com.goalguide.guide.Guide gd = com.goalguide.guide.Guide.current();
-        placeMarker.tick(gd == null ? null : gd.trip);
+        placeMarker.tick(gd == null ? null : gd.trip, gd == null ? java.util.List.of() : gd.tripPlaces);
         if (state == null || client.getGameState() != GameState.LOGGED_IN) return;
         long now = System.currentTimeMillis();
         boolean full = fullReadAt >= 0 && tick >= fullReadAt;
