@@ -8,6 +8,7 @@ import net.runelite.api.ScriptID;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.events.ScriptPreFired;
 import net.runelite.api.events.StatChanged;
@@ -18,9 +19,7 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.plugins.banktags.BankTagsPlugin;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 
 /**
@@ -36,7 +35,6 @@ import net.runelite.client.plugins.PluginDescriptor;
     internalName = "goalguide",
     legacyDataDirectory = "goal-guide"
 )
-@PluginDependency(BankTagsPlugin.class)
 public class GoalGuidePlugin extends Plugin
 {
     /** Full re-read of levels and quests (quest states run a client script each, so not every tick). */
@@ -87,7 +85,6 @@ public class GoalGuidePlugin extends Plugin
         overlayManager.add(overlay);
         clientThread.invokeLater(() ->
         {
-            bankButton.start();
             if (client.getGameState() == GameState.LOGGED_IN)
             {
                 switchTo(configManager.getRSProfileKey());
@@ -207,6 +204,13 @@ public class GoalGuidePlugin extends Plugin
     public void onScriptPostFired(ScriptPostFired e)
     {
         if (e.getScriptId() == ScriptID.BANKMAIN_FINISHBUILDING) bankButton.afterLayout();
+        else if (e.getScriptId() == ScriptID.BANKMAIN_SEARCHING) bankButton.afterSearching();
+    }
+
+    @Subscribe
+    public void onMenuOptionClicked(MenuOptionClicked e)
+    {
+        bankButton.clicked(e);
     }
 
     @Subscribe

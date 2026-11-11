@@ -2,20 +2,20 @@ package com.goalguide.guide;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.FontID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
+import net.runelite.api.MenuEntry;
+import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.gameval.SpriteID;
 import net.runelite.api.widgets.JavaScriptCallback;
 import net.runelite.api.widgets.Widget;
@@ -25,62 +25,44 @@ import com.goalguide.items.ItemData;
 import com.goalguide.items.ItemDb;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.plugins.banktags.BankTagsPlugin;
-import net.runelite.client.plugins.banktags.BankTagsService;
-import net.runelite.client.plugins.banktags.TagManager;
-import net.runelite.client.plugins.banktags.tabs.Layout;
-import net.runelite.client.plugins.banktags.tabs.LayoutManager;
+import net.runelite.client.plugins.bank.BankSearch;
 
 /**
  * The "GG" button on the bank's top bar: a toggle. On shows only the Now step's items and the items of
- * every run switched on, as a RuneLite Bank Tags layout with a title per section; off shows the whole bank.
- * The layout is ours alone (tag "goal guide") and goes when the plugin stops. Client thread.
+ * every run switched on, each under its own title (see BankSections); off shows the whole bank.
+ * Withdrawing stays the bank's own: a click on one of our pictures goes to that item's real bank slot.
+ * Client thread.
  */
-@Slf4j
 public class BankButton
 {
-    static final String TAG = "goal guide";
     static final int SIZE = 25, Y = 5, X_FROM_RIGHT = 52;
     static final int ON = 0x7fd17f, OFF = 0xff981f;
 
     @Inject private Client client;
     @Inject private ItemManager itemManager;
-    @Inject private TagManager tags;
-    @Inject private BankTagsService bankTags;
+    @Inject private BankSearch bankSearch;
     @Inject private ClientThread clientThread;
-    @Inject private LayoutManager layouts;
-    @Inject private BankTagsPlugin bankTagsPlugin;
 
     private Widget button, text;
+    private boolean on;
     private List<BankFilter.Section> sections = List.of();
-    private Set<String> wanted = Set.of();
-    private BankSections.Plan plan;
-    /** Item name to a game id, for the faded missing items; built once per item data. */
+    /** Item name to a game id, for items not in the bank; built once per item data. */
     private Map<String, Integer> ids = Map.of();
     private ItemData idsFor;
 
-    public void start()
-    {
-        // Only the laid-out items, so Bank Tags adds nothing to the layout by itself
-        tags.registerTag(TAG, id -> plan != null && plan.has(itemManager.canonicalize(id)));
-    }
-
     public void stop()
     {
-        if (isOn()) bankTags.closeBankTag();
-        tags.unregisterTag(TAG);
-        layouts.removeLayout(TAG);
-        plan = null;
+        if (on) setOn(false);
         remove();
     }
 
-    /** Each tick: the button follows the bank, and the filter follows the step. */
+    /** Each tick: the button follows the bank, and the sections follow the step. */
     public void tick()
     {
         Widget items = client.getWidget(InterfaceID.Bankmain.ITEMS);
         if (items == null || items.isHidden())
         {
-            if (isOn()) bankTags.closeBankTag();
+            on = false;
             remove();
             return;
         }
@@ -89,14 +71,8 @@ public class BankButton
         List<BankFilter.Section> now = BankFilter.sections(Guide.current(), Runs.switches());
         boolean changed = !now.equals(sections);
         sections = now;
-        if (changed)
-        {
-            Set<String> all = new HashSet<>();
-            for (BankFilter.Section s : now) all.addAll(s.keys);
-            wanted = all;
-            if (isOn()) open();
-        }
-        if (text != null) text.setTextColor(isOn() ? ON : OFF);
+        if (changed && on) bankSearch.reset(true);
+        if (text != null) text.setTextColor(on ? ON : OFF);
     }
 
     private void add()
@@ -124,24 +100,14 @@ public class BankButton
 
     private void click()
     {
-        if (isOn()) bankTags.closeBankTag();
-        else if (wanted.isEmpty()) client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Goal Guide: no step items and no runs on.", null);
-        else open();
+        if (!on && sections.isEmpty()) client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Goal Guide: no step items and no runs on.", null);
+        else setOn(!on);
     }
 
-    private void open()
+    private void setOn(boolean v)
     {
-        plan = BankSections.plan(sections, this::idOf, this::idsOf);
-        // Close first, so a new step lays the bank out again. The layout goes straight to Bank Tags; reading
-        // it back from config (openBankTag) gave no layout in game, and the items came packed.
-        if (isOn()) bankTags.closeBankTag();
-        bankTagsPlugin.openTag(TAG, new Layout(TAG, plan.ids), BankTagsService.OPTION_HIDE_TAG_NAME);
-        if (bankTags.getActiveLayout() == null) log.debug("Goal Guide bank layout did not open");
-    }
-
-    private boolean isOn()
-    {
-        return TAG.equals(bankTags.getActiveTag());
+        on = v;
+        bankSearch.reset(true);
     }
 
     /** The bank is about to lay out: our titles and counts go. */
@@ -150,12 +116,52 @@ public class BankButton
         BankSections.clear(client);
     }
 
-    /** The bank laid out: with the filter on, group its items under the sections. */
+    /** The bank laid out: with the button on, show our sections. */
     public void afterLayout()
     {
-        if (!isOn()) return;
-        BankSections.Plan p = plan;
-        if (p != null) clientThread.invokeAtTickEnd(() -> BankSections.lay(client, p));
+        if (!on) return;
+        clientThread.invokeAtTickEnd(() -> BankSections.lay(client, client.getItemContainer(InventoryID.BANK), sections,
+            this::idOf, this::idsOf, this::nameOf, withdrawActions(),
+            () -> clientThread.invokeLater(() -> BankSections.scrollbar(client))));
+    }
+
+    /** While on, the bank lays out as one list (as when searching), so no tab splits our sections. */
+    public void afterSearching()
+    {
+        if (on) client.getIntStack()[client.getIntStackSize() - 1] = 1;
+    }
+
+    /**
+     * A click on one of our pictures: the slot it sits in is not where the item lives in the bank, so point
+     * the bank's own withdraw at the item's real slot.
+     */
+    public void clicked(MenuOptionClicked e)
+    {
+        if (!on || e.getParam1() != InterfaceID.Bankmain.ITEMS) return;
+        MenuEntry m = e.getMenuEntry();
+        Widget w = m.getWidget();
+        ItemContainer bank = client.getItemContainer(InventoryID.BANK);
+        if (w == null || w.getItemId() <= -1 || bank == null) return;
+        int slot = bank.find(w.getItemId());
+        if (slot > -1 && m.getParam0() != slot) m.setParam0(slot);
+    }
+
+    /** The bank's withdraw options by action index, following its quantity buttons. */
+    private String[] withdrawActions()
+    {
+        int type = client.getVarbitValue(VarbitID.BANK_QUANTITY_TYPE), x = client.getVarbitValue(VarbitID.BANK_REQUESTEDQUANTITY);
+        String[] a = new String[10];
+        String[] first = {"1", "5", "10", String.valueOf(Math.max(1, x)), "All"};
+        a[0] = "Withdraw-" + first[type >= 0 && type < first.length ? type : 0];
+        if (type != 0) a[1] = "Withdraw-1";
+        a[2] = "Withdraw-5";
+        a[3] = "Withdraw-10";
+        if (x > 0) a[4] = "Withdraw-" + x;
+        a[5] = "Withdraw-X";
+        a[6] = "Withdraw-All";
+        a[7] = "Withdraw-All-but-1";
+        a[9] = "Examine";
+        return a;
     }
 
     private String nameOf(int id)
@@ -187,11 +193,10 @@ public class BankButton
             for (Item it : bank.getItems())
             {
                 if (it.getId() <= 0 || it.getQuantity() <= 0) continue;
-                int id = itemManager.canonicalize(it.getId());
-                if (StepItems.matches(ItemData.key(nameOf(id)), key)) n.merge(id, it.getQuantity(), Integer::sum);
+                if (StepItems.matches(ItemData.key(nameOf(it.getId())), key)) n.merge(it.getId(), it.getQuantity(), Integer::sum);
             }
         List<Integer> out = new ArrayList<>(n.keySet());
-        out.sort((a, b) -> n.get(b) - n.get(a));
+        out.sort((p, q) -> n.get(q) - n.get(p));
         return out;
     }
 
