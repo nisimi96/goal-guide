@@ -276,6 +276,9 @@ public final class ItemTree
         {
             // a minigame's reward shop (Nightmare Zone, Last Man Standing) takes its own points, whatever the data says
             boolean coins = "Coins".equalsIgnoreCase(s.currency) && !s.shop.toLowerCase(Locale.ROOT).contains("reward");
+            // a shop with its own currency and no price is an in-activity supply shop (Theatre of Blood, Fractured
+            // Archive): its points only exist inside that activity, so it is no way to get the item
+            if (!coins && s.price < 0) continue;
             String price = s.price < 0 ? "" : " for " + String.format("%,d", s.price) + " " + (coins ? "gp" : s.currency);
             Way w = new Way(coins ? Kind.SHOP : Kind.CURRENCY, "buy at " + trimDot(s.shop) + price, null);
             w.say = "Buy it at " + trimDot(s.shop) + price;

@@ -1,21 +1,19 @@
 package com.goalguide.know;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import com.goalguide.items.ItemTree;
+import net.runelite.client.util.Filepath;
 
 /**
  * The one place the guide asks "what does this account have right now?". The Goal Guide plugin fills it from the
- * client and saves one file per account (~/.runelite/goal-guide/know-&lt;profile&gt;.json), so a storage seen once is
+ * client and saves one file per account (know-&lt;profile&gt;.json in the plugin's data folder), so a storage seen once is
  * known after a restart, and the planners still work logged out.
  *
  * Readers: {@link #state()} or {@link #account()} for a planner copy. Null means no account known yet (the guide
@@ -26,8 +24,9 @@ public final class Know
 {
     private Know() { }
 
-    static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static volatile File dir;
+    /** RuneLite's Gson, set by the plugin at startup. */
+    private static volatile Gson gson = new Gson();
+    private static volatile Filepath dir;
     private static volatile AccountState current;
     private static volatile boolean live;
     private static final List<Consumer<AccountState>> LISTENERS = new CopyOnWriteArrayList<>();
@@ -85,54 +84,11 @@ public final class Know
 
     // ---- the plugin side
 
-    /** The guide's own folder under .runelite (renamed from "iron-loop" 2026-11-11; {@link #home()} moves old files). */
-    public static final String HOME = "goal-guide", OLD_HOME = "iron-loop";
-    private static volatile boolean moved;
-
-    /** ~/.runelite/goal-guide, made on first use; files left in the old folder are moved in once. Any thread. */
-    public static File home()
-    {
-        File home = new File(net.runelite.client.RuneLite.RUNELITE_DIR, HOME);
-        if (!moved) synchronized (Know.class)
-        {
-            if (!moved)
-            {
-                moved = true;
-                move(new File(net.runelite.client.RuneLite.RUNELITE_DIR, OLD_HOME), home);
-            }
-        }
-        return home;
-    }
-
-    /** Moves every file of {@code from} not already in {@code to}, then removes {@code from} when it is empty. */
-    static void move(File from, File to)
-    {
-        File[] files = from.listFiles();
-        if (files == null) return;
-        if (!to.isDirectory() && !to.mkdirs()) return;
-        for (File f : files)
-        {
-            File t = new File(to, f.getName());
-            if (t.exists()) continue;
-            try
-            {
-                Files.move(f.toPath(), t.toPath());
-            }
-            catch (IOException e)
-            {
-                log.warn("Goal Guide: could not move {} to {}", f, t, e);
-            }
-        }
-        String[] left = from.list();
-        if (left != null && left.length == 0 && !from.delete()) log.debug("Goal Guide: old folder {} kept", from);
-    }
-
-    /** The folder the states are saved in, null before startUp. */
-    public static File dir() { return dir; }
-
-    static void dir(File d)
+    /** The plugin's data folder (null before startUp) and RuneLite's Gson. */
+    static void init(Filepath d, Gson g)
     {
         dir = d;
+        if (g != null) gson = g.newBuilder().setPrettyPrinting().create();
     }
 
     static void set(AccountState s, boolean isLive)
@@ -161,13 +117,13 @@ public final class Know
     {
         synchronized (s)
         {
-            return GSON.toJson(s);
+            return gson.toJson(s);
         }
     }
 
     static AccountState fromJson(String json)
     {
-        AccountState s = GSON.fromJson(json, AccountState.class);
+        AccountState s = gson.fromJson(json, AccountState.class);
         if (s == null) return null;
         // a field added later reads as null from an older file
         AccountState blank = new AccountState();
@@ -186,25 +142,25 @@ public final class Know
     /** The saved state of one account, or a fresh one. Never null. */
     static AccountState load(String profile)
     {
-        File d = dir;
+        Filepath d = dir;
         if (d != null && profile != null)
         {
-            File f = new File(d, fileName(profile));
-            if (f.isFile())
+            try
             {
-                try
+                Filepath f = d.joinSegment(fileName(profile));
+                if (f.isFile())
                 {
-                    AccountState s = fromJson(new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8));
+                    AccountState s = fromJson(read(f));
                     if (s != null)
                     {
                         s.profile = profile;
                         return s;
                     }
                 }
-                catch (IOException | RuntimeException e)
-                {
-                    log.warn("Know: could not read {}", f, e);
-                }
+            }
+            catch (IOException | RuntimeException e)
+            {
+                log.warn("Know: could not read the saved state of {}", profile, e);
             }
         }
         AccountState s = new AccountState();
@@ -215,33 +171,47 @@ public final class Know
     /** The most recently saved account, for a client that has not logged in yet. Null when none. */
     static AccountState lastSaved()
     {
-        File d = dir;
-        File[] files = d == null ? null : d.listFiles((x, n) -> n.startsWith("know-") && n.endsWith(".json"));
-        if (files == null || files.length == 0) return null;
-        File newest = files[0];
-        for (File f : files) if (f.lastModified() > newest.lastModified()) newest = f;
-        try
+        Filepath d = dir;
+        if (d == null || !d.isDirectory()) return null;
+        Filepath newest = null;
+        long newestAt = Long.MIN_VALUE;
+        try (java.util.stream.Stream<Filepath> files = d.walk(1))
         {
-            return fromJson(new String(Files.readAllBytes(newest.toPath()), StandardCharsets.UTF_8));
+            for (Filepath f : (Iterable<Filepath>) files::iterator)
+            {
+                String n = f.getFileName();
+                if (n == null || !n.startsWith("know-") || !n.endsWith(".json") || !f.isFile()) continue;
+                long at = f.getLastModifiedTime().toMillis();
+                if (at > newestAt) { newest = f; newestAt = at; }
+            }
+            return newest == null ? null : fromJson(read(newest));
         }
         catch (IOException | RuntimeException e)
         {
-            log.warn("Know: could not read {}", newest, e);
+            log.warn("Know: could not read the last saved state", e);
             return null;
+        }
+    }
+
+    private static String read(Filepath f) throws IOException
+    {
+        try (java.io.InputStream in = f.openInputStream())
+        {
+            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
 
     /** Writes the JSON (made on the client thread) to the account's file, through a temp file so a crash never leaves half a file. */
     static void write(String profile, String json)
     {
-        File d = dir;
+        Filepath d = dir;
         if (d == null || profile == null) return;
         try
         {
-            Files.createDirectories(d.toPath());
-            File f = new File(d, fileName(profile)), tmp = new File(d, fileName(profile) + ".tmp");
-            Files.write(tmp.toPath(), json.getBytes(StandardCharsets.UTF_8));
-            Files.move(tmp.toPath(), f.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            d.createDirectories();
+            Filepath f = d.joinSegment(fileName(profile)), tmp = d.joinSegment(fileName(profile) + ".tmp");
+            tmp.write(json.getBytes(StandardCharsets.UTF_8));
+            tmp.moveTo(f, StandardCopyOption.REPLACE_EXISTING);
         }
         catch (IOException e)
         {

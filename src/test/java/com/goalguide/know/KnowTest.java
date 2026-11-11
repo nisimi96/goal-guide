@@ -77,8 +77,7 @@ public class KnowTest
     @Test
     public void jsonRoundTripAndFileSave() throws Exception
     {
-        File dir = Files.createTempDirectory("know").toFile();
-        Know.dir(dir);
+        Know.init(net.runelite.client.util.Filepath.Unchecked.getRooted(Files.createTempDirectory("know")), new com.google.gson.Gson());
         AccountState s = sample();
         Know.write("abc", Know.toJson(s));
         AccountState back = Know.load("abc");

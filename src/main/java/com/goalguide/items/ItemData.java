@@ -1,9 +1,5 @@
 package com.goalguide.items;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -282,69 +278,63 @@ public final class ItemData
         return s == null || s.trim().isEmpty() ? null : s.trim();
     }
 
-    /** Reads the whole database (about 60k rows, well under a second). */
-    public static ItemData load(Connection db) throws SQLException
+    /** Reads the bundled item data (item_data.tsv.gz, about 70k rows; see tools/item_data.py). */
+    public static ItemData load(java.io.BufferedReader in) throws java.io.IOException
     {
         ItemData d = new ItemData();
-        try (Statement st = db.createStatement())
+        Map<Integer, Recipe> byId = new HashMap<>();
+        String line;
+        while ((line = in.readLine()) != null)
         {
-            Map<Integer, Recipe> byId = new HashMap<>();
-            try (ResultSet rs = st.executeQuery("SELECT ID, FACILITIES, TOOLS, IS_MEMBERS, OUTPUT_ITEM_NAME, OUTPUT_QUANTITY, OUTPUT_SUBTEXT FROM PRODUCTION_RECIPES"))
+            if (line.isEmpty() || line.startsWith("#")) continue;
+            String[] c = line.split("\t", -1);
+            for (int i = 0; i < c.length; i++) if (c[i].equals("\\N")) c[i] = null;
+            switch (c[0])
             {
-                while (rs.next())
-                {
-                    String out = rs.getString(5);
-                    if (out == null) continue;
-                    Recipe r = new Recipe(out, intOr(rs.getString(6), 1), rs.getString(2), rs.getString(3), rs.getString(7), rs.getBoolean(4));
-                    byId.put(rs.getInt(1), r);
+                case "R":
+                    if (c[5] == null) break;
+                    Recipe r = new Recipe(c[5], intOr(c[6], 1), c[2], c[3], c[7], bool(c[4]));
+                    byId.put(intOr(c[1], -1), r);
                     d.add(r);
-                }
-            }
-            try (ResultSet rs = st.executeQuery("SELECT RECIPE_ID, ITEM_NAME, QUANTITY FROM PRODUCTION_MATERIALS"))
-            {
-                while (rs.next())
+                    break;
+                case "M":
                 {
-                    Recipe r = byId.get(rs.getInt(1));
-                    if (r != null && rs.getString(2) != null) r.materials.add(new String[]{rs.getString(2), String.valueOf(intOr(rs.getString(3), 1))});
+                    Recipe m = byId.get(intOr(c[1], -1));
+                    if (m != null && c[2] != null) m.materials.add(new String[]{c[2], String.valueOf(intOr(c[3], 1))});
+                    break;
                 }
-            }
-            try (ResultSet rs = st.executeQuery("SELECT RECIPE_ID, NAME, LEVEL FROM PRODUCTION_SKILLS"))
-            {
-                while (rs.next())
+                case "K":
                 {
-                    Recipe r = byId.get(rs.getInt(1));
-                    if (r != null) r.skills.put(rs.getString(2), intOr(rs.getString(3), 1));
+                    Recipe k = byId.get(intOr(c[1], -1));
+                    if (k != null) k.skills.put(c[2], intOr(c[3], 1));
+                    break;
                 }
-            }
-            try (ResultSet rs = st.executeQuery("SELECT si.ITEM_NAME, s.NAME, s.LOCATION, si.CURRENCY, si.BUY_PRICE, s.IS_MEMBERS, si.STOCK FROM SHOP_ITEMS si JOIN SHOPS s ON s.ID = si.SHOP_ID"))
-            {
-                while (rs.next())
-                    if (rs.getString(1) != null)
-                    {
-                        Shop sh = new Shop(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), intOr(rs.getString(5), -1), rs.getBoolean(6));
-                        sh.stock = rs.getString(7) == null ? "" : rs.getString(7).trim();
-                        d.add(sh);
-                    }
-            }
-            try (ResultSet rs = st.executeQuery("SELECT NAME, LOCATION, IS_MEMBERS FROM SPAWN_ITEMS"))
-            {
-                while (rs.next()) d.add(new Spawn(rs.getString(1), rs.getString(2), rs.getBoolean(3)));
-            }
-            try (ResultSet rs = st.executeQuery("SELECT ITEM_NAME, SOURCE, RARITY, DROP_LEVEL, DROP_TYPE, QUANTITY_LOW, QUANTITY_HIGH FROM DROP_SOURCES"))
-            {
-                while (rs.next())
-                    if (rs.getString(1) != null)
-                        d.add(new Drop(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7)));
-            }
-            try (ResultSet rs = st.executeQuery("SELECT NAME, ID FROM ITEMS"))
-            {
-                while (rs.next())
-                {
-                    d.names.putIfAbsent(key(rs.getString(1)), rs.getString(1));
-                    d.byId.putIfAbsent(rs.getInt(2), rs.getString(1));
-                }
+                case "S":
+                    if (c[1] == null) break;
+                    Shop sh = new Shop(c[1], c[2], c[3], c[4], intOr(c[5], -1), bool(c[6]));
+                    sh.stock = c[7] == null ? "" : c[7].trim();
+                    d.add(sh);
+                    break;
+                case "P":
+                    d.add(new Spawn(c[1], c[2], bool(c[3])));
+                    break;
+                case "D":
+                    if (c[1] == null) break;
+                    d.add(new Drop(c[1], c[2], c[3], c[4], c[5], intOr(c[6], 0), intOr(c[7], 0)));
+                    break;
+                case "I":
+                    d.names.putIfAbsent(key(c[1]), c[1]);
+                    d.byId.putIfAbsent(intOr(c[2], -1), c[1]);
+                    break;
+                default:
+                    break;
             }
         }
         return d;
+    }
+
+    private static boolean bool(String s)
+    {
+        return s != null && (s.equals("1") || s.equalsIgnoreCase("true"));
     }
 }

@@ -1,6 +1,5 @@
 package com.goalguide.know;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,15 +29,16 @@ import net.runelite.client.plugins.PluginManager;
  * storage as last seen (bank, bag, worn, seed vault, potion storage, rune pouch, looting bag, kits, quiver, POH
  * costume room) and the herb and bird house timers. Item Roots and other readers read it through {@link Know}.
  *
- * Passive: it reads and saves, it never clicks or types. Saved to ~/.runelite/goal-guide/know-&lt;profile&gt;.json.
- * Stand-alone: GuideIsBotFreeTest fails on any import from outside the guide or on a word that names other work.
- * Other plugins may add travel times or measured rates through Know and MeasuredRates; without them it still works.
+ * Passive: it reads and saves, it never clicks or types. Saved as know-&lt;profile&gt;.json in the plugin's data folder.
  */
+@lombok.extern.slf4j.Slf4j
 @PluginDescriptor(
     name = "Goal Guide",
     description = "Plans your goals (quests, diaries, levels, stock) as one route for your account mode, and shows the next step on screen. Knows your levels, quests, storages and farming timers. Clicks nothing.",
     tags = {"iron", "ironman", "guide", "planner", "quest", "goals", "bank", "seed vault", "storage", "timers"},
-    enabledByDefault = true
+    enabledByDefault = true,
+    internalName = "goalguide",
+    legacyDataDirectory = "goal-guide"
 )
 public class GoalGuidePlugin extends Plugin
 {
@@ -52,7 +52,7 @@ public class GoalGuidePlugin extends Plugin
     @Inject private PluginManager pluginManager;
     @Inject private ScheduledExecutorService executor;
     @Inject private net.runelite.client.ui.ClientToolbar clientToolbar;
-    @Inject private okhttp3.OkHttpClient http;
+    @Inject private com.google.gson.Gson gson;
     @Inject private net.runelite.client.ui.overlay.OverlayManager overlayManager;
     @Inject private net.runelite.client.Notifier notifier;
     @Inject private net.runelite.client.ui.overlay.worldmap.WorldMapPointManager worldMapPointManager;
@@ -71,7 +71,15 @@ public class GoalGuidePlugin extends Plugin
     @Override
     protected void startUp()
     {
-        Know.dir(Know.home());
+        try
+        {
+            Know.init(getPluginDirectory(), gson);
+        }
+        catch (java.io.IOException e)
+        {
+            log.warn("Goal Guide: no data folder, saving is off", e);
+            Know.init(null, gson);
+        }
         goals = new com.goalguide.goals.GoalsView(configManager, clientToolbar, executor);
         goals.plugins(pluginManager);
         goals.hooks(clientThread::invokeLater, notifier::notify);
@@ -86,7 +94,7 @@ public class GoalGuidePlugin extends Plugin
             return 0;
         });
         com.goalguide.guide.BankFilter.nameOf(id -> itemManager.getItemComposition(itemManager.canonicalize(id)).getName());
-        goals.start(http);
+        goals.start();
         // USER 2026-11-11: the guide box on the game screen (Now, Next, what else is good now)
         com.goalguide.guide.Guide.show(overlayManager, goals::guideOnScreen);
         com.goalguide.guide.Waypoint.bus(eventBus);

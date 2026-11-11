@@ -3,11 +3,7 @@ package com.goalguide.goals;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
@@ -122,13 +118,13 @@ public final class GoalsView
         config.setConfiguration(GROUP, GUIDE_ON_SCREEN, String.valueOf(on));
     }
 
-    public void start(okhttp3.OkHttpClient http)
+    public void start()
     {
         panel = new Panel(this);
         nav = NavigationButton.builder().tooltip("Goal Guide").icon(com.goalguide.guide.Icons.initials("GG")).priority(11).panel(panel).build();
         toolbar.addNavigation(nav);
         Know.listen(onKnow);
-        ItemDb.load(http, d -> replan());
+        ItemDb.load(d -> replan());
         replan();
     }
 
@@ -406,37 +402,14 @@ public final class GoalsView
         return 60;
     }
 
-    /** One line per change of the "now" pick, so a few days of picks can be read back: ~/.runelite/goal-guide/decide-<profile>.log */
+    /** One debug line per change of the "now" pick. */
     private void log(String profile, Decide.Decision d)
     {
         Decide.Pick p = d.now();
         String said = p == null ? "nothing to do" : p.say();
         if (said.equals(lastSaid) || profile == null) return;
         lastSaid = said;
-        File dir = Know.dir();
-        if (dir == null) return;
-        String line = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + " | " + said
-            + (d.guards.isEmpty() ? "" : " | guards: " + String.join(" ", d.guards)) + System.lineSeparator();
-        try
-        {
-            Files.createDirectories(dir.toPath());
-            File f = new File(dir, "decide-" + profile.replaceAll("[^A-Za-z0-9_.-]", "_") + ".log");
-            roll(f);
-            Files.write(f.toPath(), line.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        }
-        catch (IOException e)
-        {
-            log.debug("Goal Guide: decide log", e);
-        }
-    }
-
-    /** Logs stay small: past this size the file becomes name.old (one old file kept) and a new one starts. */
-    static final long LOG_MAX_BYTES = 256 * 1024;
-
-    static void roll(File f) throws IOException
-    {
-        if (f.length() < LOG_MAX_BYTES) return;
-        Files.move(f.toPath(), new File(f.getParentFile(), f.getName() + ".old").toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        log.debug("Now: {}{}", said, d.guards.isEmpty() ? "" : " | guards: " + String.join(" ", d.guards));
     }
 
     /** "What now": the pick, why, the sitting and the guards. */

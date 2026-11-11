@@ -28,7 +28,6 @@ import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.PluginPanel;
-import okhttp3.OkHttpClient;
 
 /**
  * Item Roots: type an item, see every way this account can get it, traced down to the roots (free, coins, a kill,
@@ -45,7 +44,6 @@ public class ItemRootsPlugin extends Plugin
     @Inject private Client client;
     @Inject private ClientThread clientThread;
     @Inject private ClientToolbar clientToolbar;
-    @Inject private OkHttpClient http;
 
     private NavigationButton navButton;
     private Panel panel;
@@ -59,7 +57,7 @@ public class ItemRootsPlugin extends Plugin
         navButton = NavigationButton.builder().tooltip("Item Roots").icon(com.goalguide.guide.Icons.initials("IR")).priority(12).panel(panel).build();
         clientToolbar.addNavigation(navButton);
         panel.show("<i>" + ItemDb.status() + "</i>");
-        ItemDb.load(http, d -> panel.show("<i>" + ItemDb.status() + "</i>"));
+        ItemDb.load(d -> panel.show("<i>" + ItemDb.status() + "</i>"));
         Know.listen(knowChanged);
         // timers count down while nothing changes, so the box refreshes on its own too
         knowTimer = new javax.swing.Timer(30_000, e -> showKnow());

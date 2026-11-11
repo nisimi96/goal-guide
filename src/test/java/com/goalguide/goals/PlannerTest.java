@@ -187,17 +187,4 @@ public class PlannerTest
         assertTrue(tithe.how, tithe.hours > 0 && tithe.how.startsWith("Tithe Farm"));
     }
 
-    @Test
-    public void decideLogRollsOver() throws Exception
-    {
-        java.io.File dir = java.nio.file.Files.createTempDirectory("decide").toFile();
-        java.io.File f = new java.io.File(dir, "decide-x.log");
-        java.nio.file.Files.write(f.toPath(), new byte[(int) GoalsView.LOG_MAX_BYTES]);
-        GoalsView.roll(f);
-        assertTrue(!f.exists());
-        assertTrue(new java.io.File(dir, "decide-x.log.old").exists());
-        java.nio.file.Files.write(f.toPath(), new byte[10]);
-        GoalsView.roll(f);
-        assertTrue("a small log stays", f.exists());
-    }
 }

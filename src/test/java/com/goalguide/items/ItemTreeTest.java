@@ -103,16 +103,11 @@ public class ItemTreeTest
         for (String q : ItemTree.QUEST_GATES.values()) Quest.valueOf(q);
     }
 
-    /** The real database, when it is on this machine (the cloud test kit downloads it): famous trees reach roots. */
+    /** The bundled item data: famous trees reach roots. */
     @Test public void realDataReachesRoots() throws Exception
     {
-        File f = new File(System.getProperty("itemroots.db", "/tmp/ner/db/data.sqlite"));
-        Assume.assumeTrue("no item database here", f.isFile());
-        ItemData d;
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + f.getAbsolutePath()))
-        {
-            d = ItemData.load(c);
-        }
+        ItemData d = ItemDb.read();
+        assertNotNull(ItemDb.status(), d);
         Account a = new Account();
         for (net.runelite.api.Skill s : net.runelite.api.Skill.values()) a.skills.put(s.name(), 70);
         for (String item : List.of("Bracelet of slaughter", "Steel bar", "Mahogany plank", "Prayer potion(4)", "Teak plank"))
