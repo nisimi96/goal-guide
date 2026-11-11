@@ -128,7 +128,17 @@ public final class GoalsView
         }
         Planner.Route r = Planner.plan(QuestData.get(), ItemDb.get(), a, st.questPoints, goals);
         Guide gd = Guide.of(r);
-        if (gd != null && gd.now != null) gd.items = StepItems.of(gd.now.step, st.items(), item -> source(a, item));
+        if (gd != null && gd.now != null)
+        {
+            gd.items = StepItems.of(gd.now.step, st.items(), item -> source(a, item));
+            if (gd.now.step != null)
+            {
+                List<Guide.Part> parts = new ArrayList<>();
+                for (Planner.Step p : gd.now.step.parts)
+                    parts.add(new Guide.Part(p.verb() + p.what, p.item, StepItems.of(p, st.items(), item -> source(a, item))));
+                gd.parts = parts;
+            }
+        }
         Guide.set(gd);
         pn.showGuide(gd);
         pn.showRoute(r, null);

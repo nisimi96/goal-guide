@@ -34,6 +34,20 @@ public class BankFilterTest
     }
 
     @Test
+    public void gettingAQuestsItemsIsASectionPerItem()
+    {
+        Guide g = Guide.of(GuideTest.route());
+        StepItems.Item axe = StepItems.of(g.now.step, Map.of(), x -> null).get(0);
+        g.parts = List.of(new Guide.Part("Get 6 x Plank", "Plank", List.of(axe)), new Guide.Part("Get Bucket", "Bucket", List.of()));
+        List<BankFilter.Section> secs = BankFilter.sections(g, Runs.Switches.ALL_ON.withRun("Herb run", false)
+            .withRun("Tree run", false).withRun("Fruit tree run", false).withRun("Bird houses", false));
+        assertEquals(2, secs.size());
+        assertEquals("Get 6 x Plank", secs.get(0).title);
+        assertEquals(secs.get(0), BankFilter.sectionOf("Plank", secs));
+        assertEquals(secs.get(1), BankFilter.sectionOf("Bucket", secs));
+    }
+
+    @Test
     public void kindsAndDosesMatch()
     {
         assertTrue(BankFilter.shows("Rune pickaxe", Set.of("pickaxe")));

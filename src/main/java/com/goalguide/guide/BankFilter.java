@@ -9,7 +9,8 @@ import com.goalguide.facts.Runs;
 import com.goalguide.items.ItemData;
 
 /**
- * What the bank button shows, in sections: the Now step's items, then each run that is on.
+ * What the bank button shows, in sections: the Now step's items (one section per item when it gets a
+ * quest's items), then each run that is on.
  * A bank item counts when it is one of a section's items, or of its kind ("rune pickaxe" for "pickaxe"). Pure.
  */
 public final class BankFilter
@@ -44,11 +45,22 @@ public final class BankFilter
         }
     }
 
-    /** The step (when it uses items), then each run that is on. */
+    /** The step (when it uses items) or its parts, then each run that is on. */
     public static List<Section> sections(Guide g, Runs.Switches sw)
     {
         List<Section> out = new ArrayList<>();
-        if (g != null && g.now != null && !g.items.isEmpty())
+        if (g != null && !g.parts.isEmpty())
+        {
+            // Getting a quest's items: a section per item to get, holding that item and what getting it uses
+            for (Guide.Part p : g.parts)
+            {
+                List<String> names = new ArrayList<>();
+                if (p.item != null) names.add(p.item);
+                for (StepItems.Item i : p.items) names.add(i.name);
+                out.add(new Section(p.title, keys(names), p.items));
+            }
+        }
+        else if (g != null && g.now != null && !g.items.isEmpty())
         {
             List<String> names = new ArrayList<>();
             for (StepItems.Item i : g.items) names.add(i.name);
