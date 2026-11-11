@@ -12,6 +12,7 @@ import com.goalguide.facts.Runs;
 import com.goalguide.guide.Guide;
 import com.goalguide.guide.Icons;
 import com.goalguide.guide.StepItems;
+import com.goalguide.guide.Trip;
 import com.goalguide.items.ItemData;
 import com.goalguide.items.ItemDb;
 import com.goalguide.items.ItemTree;
@@ -151,6 +152,16 @@ public final class GoalsView
                     parts.add(new Guide.Part(part.verb() + part.what, part.item, its));
                 }
                 gd.parts = parts;
+                // The trip to make the first item still to get: bank, furnace, anvil
+                ItemData d = ItemDb.get();
+                for (Planner.Step part : gets)
+                {
+                    if (d == null || part.item == null) break;
+                    Trip.Stop stop = Trip.next(d, a, part.item, amount(part), st.items());
+                    if (stop == null) continue;
+                    gd.trip = stop;
+                    break;
+                }
             }
         }
         Guide.set(gd);

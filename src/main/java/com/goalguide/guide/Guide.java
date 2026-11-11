@@ -33,6 +33,8 @@ public final class Guide
     public volatile List<StepItems.Item> items = List.of();
     /** When the Now step gets a quest's items: one part per item to get, with what that part uses. */
     public volatile List<Part> parts = List.of();
+    /** Where to go next to make the first item still to get (bank, furnace, anvil); null when nowhere. */
+    public volatile Trip.Stop trip;
 
     /** "Get 6 x Plank": the item to get and the items getting it uses. */
     public static final class Part

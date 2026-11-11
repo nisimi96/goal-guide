@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.ScriptID;
+import net.runelite.api.events.GameObjectDespawned;
+import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
@@ -51,6 +53,7 @@ public class GoalGuidePlugin extends Plugin
     private com.goalguide.goals.GoalsView goals;
     private com.goalguide.guide.GuideOverlay overlay;
     @Inject private com.goalguide.guide.BankButton bankButton;
+    @Inject private com.goalguide.guide.PlaceMarker placeMarker;
 
     private AccountState state;
     private String profile;
@@ -83,6 +86,7 @@ public class GoalGuidePlugin extends Plugin
         goals.start();
         overlay = new com.goalguide.guide.GuideOverlay(goals::guideOnScreen);
         overlayManager.add(overlay);
+        overlayManager.add(placeMarker);
         clientThread.invokeLater(() ->
         {
             if (client.getGameState() == GameState.LOGGED_IN)
@@ -101,12 +105,14 @@ public class GoalGuidePlugin extends Plugin
     protected void shutDown()
     {
         overlayManager.remove(overlay);
+        overlayManager.remove(placeMarker);
         overlay = null;
         com.goalguide.goals.Prices.set(null);
         if (goals != null) { goals.stop(); goals = null; }
         clientThread.invoke(() ->
         {
             bankButton.stop();
+            placeMarker.stop();
             save(true);
             if (state != null) Know.set(state, false);
             state = null;
@@ -115,8 +121,21 @@ public class GoalGuidePlugin extends Plugin
     }
 
     @Subscribe
+    public void onGameObjectSpawned(GameObjectSpawned e)
+    {
+        placeMarker.spawned(e.getGameObject());
+    }
+
+    @Subscribe
+    public void onGameObjectDespawned(GameObjectDespawned e)
+    {
+        placeMarker.despawned(e.getGameObject());
+    }
+
+    @Subscribe
     public void onGameStateChanged(GameStateChanged e)
     {
+        if (e.getGameState() == GameState.LOADING) placeMarker.sceneLoading();
         if (e.getGameState() == GameState.LOGGED_IN)
         {
             switchTo(configManager.getRSProfileKey());
@@ -151,6 +170,8 @@ public class GoalGuidePlugin extends Plugin
     {
         tick++;
         bankButton.tick();
+        com.goalguide.guide.Guide gd = com.goalguide.guide.Guide.current();
+        placeMarker.tick(gd == null ? null : gd.trip);
         if (state == null || client.getGameState() != GameState.LOGGED_IN) return;
         long now = System.currentTimeMillis();
         boolean full = fullReadAt >= 0 && tick >= fullReadAt;

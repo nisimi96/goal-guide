@@ -49,6 +49,8 @@ public final class GuideOverlay extends OverlayPanel
             line(gd.now.what, GREEN);
             if (!gd.now.how.isEmpty())
                 for (String part : gd.now.how.split(", (?=[a-z])")) line("• " + part, GREY);
+            Trip.Stop trip = gd.trip;
+            if (trip != null) line("Go to: " + trip.place.toLowerCase(Locale.ROOT) + ", " + trip.say, YELLOW);
             List<StepItems.Item> its = new ArrayList<>();
             int carried = 0;
             for (StepItems.Item i : gd.items)
