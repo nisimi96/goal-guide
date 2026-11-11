@@ -86,31 +86,34 @@ final class BankSections
             line(box, y);
             text(box, s.title, TITLE_COLOR, X0, y + GAP, PER_ROW * DX, TITLE);
             y += GAP + TITLE;
-            List<StepItems.Item> seen = new ArrayList<>();
+            // Same order in every section: the section's items as listed (the thing to get, then its tools and
+            // materials), each by its real bank picture when it's in this section, else a copy; then the rest
+            List<Widget> left = new ArrayList<>(g.getValue());
             int i = 0;
-            for (Widget w : g.getValue())
-            {
-                int x = X0 + (i % PER_ROW) * DX, at = y + (i / PER_ROW) * DY;
-                w.setOriginalX(x);
-                w.setOriginalY(at);
-                w.revalidate();
-                StepItems.Item it = BankFilter.itemOf(names.get(w), s.items);
-                if (it != null && !seen.contains(it))
-                {
-                    seen.add(it);
-                    count(box, it, x, at);
-                }
-                i++;
-            }
-            // Items with no bank picture here: one you lack (faded), or one whose picture sits in an earlier
-            // section or on you (a copy, so every section shows all it needs: the bar for each sword)
             for (StepItems.Item it : s.items)
             {
-                int id = seen.contains(it) ? 0 : idOf.applyAsInt(it.name);
-                if (id <= 0) continue;
+                Widget real = null;
+                for (Widget w : left) if (BankFilter.itemOf(names.get(w), s.items) == it) { real = w; break; }
                 int x = X0 + (i % PER_ROW) * DX, at = y + (i / PER_ROW) * DY;
-                picture(box, id, it.name, x, at, BankFilter.isShort(it) ? FADED : SOLID);
+                if (real != null)
+                {
+                    left.remove(real);
+                    move(real, x, at);
+                }
+                else
+                {
+                    // One you lack shows faded; one whose picture is in an earlier section or on you shows solid
+                    int id = idOf.applyAsInt(it.name);
+                    if (id <= 0) continue;
+                    picture(box, id, it.name, x, at, BankFilter.isShort(it) ? FADED : SOLID);
+                }
                 count(box, it, x, at);
+                i++;
+            }
+            // Other matches of this section (a second kind of the same item, a run's items): no count
+            for (Widget w : left)
+            {
+                move(w, X0 + (i % PER_ROW) * DX, y + (i / PER_ROW) * DY);
                 i++;
             }
             y += Math.max(1, (i + PER_ROW - 1) / PER_ROW) * DY;
@@ -147,6 +150,13 @@ final class BankSections
         w.setOpacity(opacity);
         w.setName("<col=ff9040>" + name + "</col>");
         place(w, x, y, ITEM_W, ITEM_H);
+    }
+
+    private static void move(Widget w, int x, int y)
+    {
+        w.setOriginalX(x);
+        w.setOriginalY(y);
+        w.revalidate();
     }
 
     private static void line(Widget box, int y)
