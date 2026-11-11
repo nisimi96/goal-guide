@@ -1,0 +1,212 @@
+# item	kind (shop, free, reward, method, coins, you, planned)	detail. Every tool and used-up item of every method table needs a row (wiki 2026-10-25).
+small fishing net	shop	fishing shops, e.g. Gerrant's Fishy Business in Port Sarim (coins)
+fishing rod	shop	fishing shops (coins)
+fly fishing rod	shop	fishing shops (coins)
+fishing bait	shop	fishing shops (coins)
+feather	shop	fishing shops (coins); also free from killing chickens
+lobster pot	shop	fishing shops (coins)
+harpoon	shop	fishing shops (coins)
+knife	shop	many general stores, Trader Stan, Ardougne spice stall (coins)
+barbarian rod	reward	Otto Godblessed at Otto's Grotto: ask about the fishing rod, it is under his bed (Barbarian Training, free)
+cormorant's glove	reward	Alry the Angler at Lake Molch, free with 35 Hunter
+karambwan vessel	shop	Tiadeche's Karambwan Stall, Tai Bwo Wannai (2 coins), one from Tai Bwo Wannai Trio
+raw karambwanji	method	karambwanji
+sandworms	shop	Tynan's Fishing Supplies, Port Piscarilius (90 coins); or dig sandworm castings there with 15 Hunter
+drift net	planned	Crafting 26: two jute fibre on the Fossil Island loom; jute is grown in a hops patch (no hops row in the Farming table yet)
+# Farming and Herblore (wiki 2026-11-11)
+rake	shop	Farming shops, or the tool leprechaun at any patch (coins)
+seed dibber	shop	Farming shops (coins)
+spade	shop	general stores and Farming shops (coins)
+watering can	shop	Farming shops (coins); Tithe Farm gives Gricoller's can for points
+herb seeds	method	masterfarmer
+guam leaf	method	herbrun
+marrentill	method	herbrun
+tarromin	method	herbrun
+harralander	method	herbrun
+ranarr weed	method	herbrun
+toadflax	method	herbrun
+irit leaf	method	herbrun
+avantoe	method	herbrun
+kwuarm	method	herbrun
+snapdragon	method	herbrun
+cadantine	method	herbrun
+lantadyme	method	herbrun
+dwarf weed	method	herbrun
+torstol	method	herbrun
+vial of water	shop	Herblore shops sell vials; fill them at any fountain or sink (coins)
+eye of newt	shop	Betty's Magic Emporium, Port Sarim: eye of newt packs (coins)
+chocolate dust	shop	Hudo, Grand Tree Groceries (10 in stock); or grind chocolate bars with a pestle and mortar (coins)
+snape grass	free	spawns on Waterbirth Island (members); also allotments at 61 Farming
+mort myre fungus	free	cast Bloom in Mort Myre Swamp with a blessed silver sickle (Nature Spirit)
+dragon scale dust	free	blue dragon scale spawns in Taverley Dungeon, ground with a pestle and mortar
+wine of zamorak	free	Chaos Temple spawn (telegrab), or the Deep Wilderness Dungeon
+amylase crystal	reward	Grace's shop: an amylase pack (100 crystals) for 10 marks of grace (rooftop courses)
+super energy(4)	free	decant the 3-dose potions the Herblore table makes: Bob Barter (Grand Exchange) or Zahur (Nardah)
+super attack(4)	free	decant the 3-dose potions the Herblore table makes: Bob Barter (Grand Exchange) or Zahur (Nardah)
+super strength(4)	free	decant the 3-dose potions the Herblore table makes: Bob Barter (Grand Exchange) or Zahur (Nardah)
+super defence(4)	free	decant the 3-dose potions the Herblore table makes: Bob Barter (Grand Exchange) or Zahur (Nardah)
+unicorn horn dust	planned	unicorn horns from unicorns, ground with a pestle and mortar (no drops table yet)
+limpwurt root	planned	flower patches at 26 Farming, or Kurask / Nechryael drops (no flower row or drops table yet)
+red spiders' eggs	planned	spidines (Tower of Life), temple spiders (Forthos Dungeon), Sarachnis (no drops table yet)
+goat horn dust	planned	desert goat horns, ground with a pestle and mortar (no drops table yet)
+white berries	planned	bush patches at 59 Farming, or Kurasks (no bush row in the Farming table yet)
+potato cactus	planned	cactus patches at 64 Farming, or the Kalphite Queen (no cactus row in the Farming table yet)
+crushed nest	planned	bird nests (Woodcutting, bird houses, Wyson) ground with a pestle and mortar (no Woodcutting/Hunter table yet)
+# Agility (OSRS Wiki, 2026-10-23)
+crossbow + mith grapple	planned	Smithing + Fletching (mith grapple) and a crossbow
+light source	shop	shop: a candle or lantern (Crafting makes them too)
+ring of charos	reward	reward: Creature of Fenkenstrain
+waterskins	shop	shop: Shantay Pass and Nardah general stores (coins)
+food	planned	Fishing and Cooking, or a shop
+clockwork suit	you	you: made during Cold War
+ninja or kruk greegree	reward	reward: Monkey Madness I
+drakan's medallion	reward	reward: Sins of the Father
+200 coins entry	coins	coins: any money maker
+# Methods that make what the new tables use (2026-11-11)
+adamantite bar	method	smithsbfbars
+air battlestaff	method	craftbattlestaves
+antifire potion(3)	method	antifire
+black chinchompa	method	huntblackchinchompas
+blessed bone shards	method	minemcalcified
+bruma root	method	wcwintertodt
+diamond	method	craftcutgems
+dragon bones	method	praybluedragonstaverleychaos
+emerald	method	craftcutgems
+gold bar	method	smithsbfgold
+green d'hide body	method	craftdhidebodies
+headless arrow	method	fletchheadlessarrows
+iron bar	method	magesuperheatitem
+iron dart tip	method	smithsdart
+iron ore	method	minemironf
+logs	method	wcregulartrees
+maple logs	method	wcmapletrees
+mithril bar	method	smithsbfbars
+oak logs	method	wcoaktrees
+raw anglerfish	method	anglerfish
+raw karambwan	method	karambwan
+raw lobster	method	lobster
+raw salmon	method	flybank
+raw sardine	method	bait
+raw shark	method	shark
+raw trout	method	flybank
+red chinchompa	method	huntcarnivorouschinchompas
+redwood logs	method	wcredwood
+ruby	method	craftcutgems
+runite bar	method	smithsbfbars
+sapphire	method	craftcutgems
+stamina potion(4)	method	stamina
+steel bar	method	smithsbfbars
+steel cannonball	method	smithscannon
+teak logs	method	wcteak15tick
+willow logs	method	wcwillowtrees
+wrath rune	method	rcwrathrunes
+yew logs	method	wcyewtrees
+# Combat, Prayer, Magic and the artisan skills (OSRS Wiki 2026-11-11). "you" = the player gets it (drop, quest step, own skilling).
+hammer	shop	general stores and Smithing shops (coins)
+saw	shop	general stores and Construction shops, e.g. Sawmill operators (coins)
+chisel	shop	general stores and Crafting shops (coins)
+tinderbox	shop	general stores (coins)
+needle	shop	Crafting shops (coins)
+thread	shop	Crafting shops (coins)
+pickaxe	shop	pickaxe shops, e.g. Nurmof's Pickaxe Shop in the Dwarven Mine (coins)
+adamant pickaxe	shop	pickaxe shops, e.g. Nurmof's Pickaxe Shop in the Dwarven Mine (coins)
+bronze axe	shop	axe shops, e.g. Bob's Brilliant Axes in Lumbridge (coins)
+steel axe	shop	axe shops, e.g. Bob's Brilliant Axes in Lumbridge (coins)
+adamant axe	shop	axe shops (coins)
+rune axe	shop	axe shops, e.g. the Woodcutting Guild's shop (coins)
+dragon axe	you	drop from the Dagannoth Kings and other bosses (or the Grand Exchange on a main)
+glassblowing pipe	shop	Crafting shops (coins)
+staff of air	shop	magic shops, e.g. Zaff's Superior Staffs in Varrock (coins)
+staff of fire	shop	magic shops, e.g. Zaff's Superior Staffs in Varrock (coins)
+battlestaff	shop	Zaff's Superior Staffs in Varrock: a few a day, more with the Varrock diary (coins)
+mind rune	shop	rune shops (coins)
+law rune	shop	rune shops (coins)
+nature rune	shop	rune shops (coins)
+earth rune	shop	rune shops (coins)
+fire rune	shop	rune shops (coins)
+astral rune	shop	Baba Yaga's Magic Shop, Lunar Isle (coins)
+pure essence	you	mine it in the Rune essence mine (members, Mining 30, after Rune Mysteries)
+tiara	you	cast a silver bar in a tiara mould at a furnace (Crafting 23)
+earth talisman	you	monster drops (or the Grand Exchange on a main)
+binding necklace	you	Lvl-2 Enchant on an emerald necklace (Crafting and Magic)
+dark essence fragments	you	mine dense essence in Arceuus, venerate it at the Dark Altar and chisel the dark blocks
+bucket of slime	free	fill a bucket at the pool of slime under the Ectofuntus
+ectophial	reward	Ghosts Ahoy
+anti-dragon shield	reward	Duke Horacio in Lumbridge Castle, free once Dragon Slayer I is started
+dragon scimitar	shop	Daga's Scimitar Smithy, Ape Atoll, after Monkey Madness I (coins)
+looting bag	free	dropped by monsters in the Wilderness
+rune pouch	reward	Slayer reward shop (Slayer points)
+dragon hunter lance	you	made from a hydra's claw and a Zamorakian hasta
+superior dragon bones	you	drop from Vorkath and frost dragons
+ensouled giant head	you	drop from giants (hill giants and others)
+jug of blessed wine	you	jugs of wine blessed at the Exposed altar in Cam Torum
+rock hammer	shop	Slayer masters' shops (coins)
+venator bow	you	made from venator shards (Phantom Muspah drop)
+amethyst arrow	you	Fletching 82: amethyst arrowtips on headless arrows (or the Grand Exchange on a main)
+eclipse atlatl	reward	Moons of Peril reward chests (Perilous Moons)
+atlatl dart	reward	Moons of Peril reward chests (Perilous Moons)
+dorgeshuun crossbow	shop	Nardok's Bone Weapons in Dorgesh-Kaan, after The Lost Tribe (coins)
+bone bolts	shop	Nardok's Bone Weapons in Dorgesh-Kaan, after The Lost Tribe (coins)
+dwarf multicannon	shop	Nulodion at the Dwarven Mine, after Dwarf Cannon (coins)
+ammo mould	shop	Nulodion at the Dwarven Mine, after Dwarf Cannon (coins)
+ava's attractor	reward	Ava in Draynor Manor, after Animal Magnetism
+bronze knife	you	smith it from a bronze bar (Smithing 7)
+maple shortbow	you	Fletching 50: cut and string a maple shortbow
+adamant arrow	you	Fletching 60: adamant arrowtips on headless arrows (or archery shops)
+chinchompa	you	Hunter 53: box traps on grey chinchompas
+gem bag	reward	Motherlode Mine shop (golden nuggets)
+coal bag	reward	Motherlode Mine shop (golden nuggets)
+dynamite	shop	Thirus in Lovakengj (coins)
+ice gloves	you	drop from the Ice Queen under White Wolf Mountain
+goldsmith gauntlets	reward	Family Crest
+gold ore	shop	Ordan at the Blast Furnace (coins)
+bronze bar	you	smelt a copper ore and a tin ore at a furnace (Smithing 1)
+plank	shop	Sawmill operators turn logs into planks (coins)
+oak plank	shop	Sawmill operators turn oak logs into planks (coins)
+teak plank	shop	Sawmill operators turn teak logs into planks (coins)
+mahogany plank	shop	Sawmill operators turn mahogany logs into planks (coins)
+steel nails	you	smith steel nails from a steel bar (Smithing 34)
+mythical cape	reward	Myths' Guild, after Dragon Slayer II
+leather	shop	tanners, e.g. Ellis in Al Kharid, tan cowhides (coins)
+green dragonhide	you	drop from green dragons
+blue dragonhide	you	drop from blue dragons
+red dragonhide	you	drop from red dragons
+black dragonhide	you	drop from black dragons
+costume needle	reward	the Costumer, after Death on the Isle
+uncut sapphire	you	gem rocks (Mining 40), monster drops, or the Grand Exchange on a main
+uncut emerald	you	gem rocks (Mining 40), monster drops, or the Grand Exchange on a main
+uncut ruby	you	gem rocks (Mining 40), monster drops, or the Grand Exchange on a main
+uncut diamond	you	gem rocks (Mining 40), monster drops, or the Grand Exchange on a main
+bucket of sand	shop	Trader Crewmembers on the charter ships (coins)
+soda ash	shop	Trader Crewmembers on the charter ships (coins)
+seaweed	you	big net fishing, or giant seaweed from the underwater patches on Fossil Island
+noose wand	shop	Hunter shops, e.g. Aleck's Hunter Emporium in Yanille (coins)
+bird snare	shop	Hunter shops, e.g. Aleck's Hunter Emporium in Yanille (coins)
+box trap	shop	Hunter shops, e.g. Aleck's Hunter Emporium in Yanille (coins)
+butterfly net	shop	Hunter shops, e.g. Aleck's Hunter Emporium in Yanille (coins)
+rope	shop	general stores and Hunter shops (coins)
+herb sack	reward	Tithe Farm reward shop (points)
+potato seed	you	pickpocket Master Farmers, or seed drops
+arrow shaft	you	cut logs into arrow shafts with a knife (Fletching 1)
+bronze arrowtips	shop	archery shops, e.g. Hickton's Archery Emporium in Catherby (coins)
+iron arrowtips	shop	archery shops, e.g. Hickton's Archery Emporium in Catherby (coins)
+steel arrowtips	shop	archery shops, e.g. Hickton's Archery Emporium in Catherby (coins)
+mithril arrowtips	shop	archery shops, e.g. Hickton's Archery Emporium in Catherby (coins)
+broad arrowheads	reward	Slayer masters' shops, after unlocking Broader Fletching (Slayer points)
+bronze bolts (unf)	coins	Grand Exchange (this row is for mains)
+blurite bolts (unf)	coins	Grand Exchange (this row is for mains)
+iron bolts (unf)	coins	Grand Exchange (this row is for mains)
+silver bolts (unf)	coins	Grand Exchange (this row is for mains)
+steel bolts (unf)	coins	Grand Exchange (this row is for mains)
+mithril bolts (unf)	coins	Grand Exchange (this row is for mains)
+adamant bolts (unf)	coins	Grand Exchange (this row is for mains)
+runite bolts (unf)	coins	Grand Exchange (this row is for mains)
+dragon bolts (unf)	coins	Grand Exchange (this row is for mains)
+green logs	coins	Grand Exchange (the Grand Exchange burning row is for mains)
+arctic pine logs	you	chop arctic pines on Neitiznot (Woodcutting 54), no Woodcutting row yet
+mahogany logs	you	chop mahogany trees (Woodcutting 50), no Woodcutting row yet
+magic logs	you	chop magic trees (Woodcutting 75), no Woodcutting row yet
+shortbow	shop	archery shops (coins)
+spyglass	reward	talk to Chartin' Charles McAtless (wiki Spyglass, 2026-11-11)
+captain's log	reward	given by Junior Jim during Pandemonium (wiki Captain's log, 2026-11-11)
+salvaging hook	you	a facility you build on your boat: bronze needs Sailing 15, Construction 1, 4 planks, 16 bronze nails, 6 bronze bars, 1 rope (wiki Salvaging hook, 2026-11-11)

@@ -1,0 +1,36 @@
+# id	name	kind	level	xp	quests	skills	tools	uses	gives	members	used	where	note	source	modes
+# Agility training methods (OSRS Wiki, 2026-10-23). "?" = rate not on the wiki.
+touristtrap	The Tourist Trap (xp lamp on Agility)	quest	1	1:0	THE_TOURIST_TRAP	-	-	-	-	y	y	-	the wiki: its Agility rewards alone take 1 to 26	OSRS Wiki, 2026-10-23	all
+recruitment	Recruitment Drive	quest	1	1:0	RECRUITMENT_DRIVE	-	-	-	-	y	y	-	Agility xp reward	OSRS Wiki, 2026-10-23	all
+grandtree	The Grand Tree	quest	25	25:0	THE_GRAND_TREE	-	-	-	-	y	y	-	Agility xp reward, needs 25 Agility	OSRS Wiki, 2026-10-23	all
+depths	The Depths of Despair	quest	18	18:0	THE_DEPTHS_OF_DESPAIR	-	-	-	-	y	y	-	1,500 Agility xp, needs 18 Agility	OSRS Wiki, 2026-10-23	all
+deathisle	Death on the Isle	quest	32	32:0	DEATH_ON_THE_ISLE	THIEVING 34	-	-	-	y	y	-	needs 32 Agility and 34 Thieving	OSRS Wiki, 2026-10-23	all
+gnome	Gnome Stronghold course	course	1	1:10000	-	-	-	-	-	y	y	-	also: marks of grace. no fails, no food	OSRS Wiki, 2026-10-23	all
+shayzienbasic	Shayzien Basic course	course	1	1:10000	-	-	-	-	-	y	n	-	also: marks of grace. 153.5 xp a lap	OSRS Wiki, 2026-10-23	all
+draynor	Draynor Village rooftop	course	1	1:10000	-	-	-	-	mark of grace=1:12	y	y	-	also: marks of grace.	OSRS Wiki, 2026-10-23	all
+alkharid	Al Kharid rooftop	course	20	20:12000	-	-	-	-	mark of grace=20:10	y	y	-	also: marks of grace.	OSRS Wiki, 2026-10-23	all
+varrock	Varrock rooftop	course	30	30:14000	-	-	-	-	mark of grace=30:10	y	y	-	also: marks of grace.	OSRS Wiki, 2026-10-23	all
+barbarian	Barbarian Outpost course	course	35	35:12000 60:18000	ALFRED_GRIMHANDS_BARCRAWL	-	-	-	-	y	y	-	also: marks of grace. also ~5k Strength xp/h	OSRS Wiki, 2026-10-23	all
+monkeybars	Edgeville Dungeon monkey bars	course	15	15:13200	-	-	-	-	-	y	n	-	in the Wilderness part of the dungeon; up to 13.2k/h	OSRS Wiki, 2026-10-23	all
+skullball	Werewolf Skullball	minigame	25	25:15000	CREATURE_OF_FENKENSTRAIN	-	ring of charos	-	-	y	n	-	750 xp a game under 4 min; ~15k/h is our estimate from the wiki's lap times	OSRS Wiki, 2026-10-23	all
+penguin	Penguin Agility course	course	30	30:22000 70:30000	COLD_WAR	-	clockwork suit	-	-	y	n	-	Cold War only partly needed; fails even at 99; giant squirrel pet	OSRS Wiki, 2026-10-23	all
+canifis	Canifis rooftop	course	40	40:19700	PRIEST_IN_PERIL	-	-	-	mark of grace=40:17	y	y	-	also: marks of grace. best marks per hour early	OSRS Wiki, 2026-10-23	all
+shayzien	Shayzien Advanced course	course	45	45:30000	-	-	crossbow + mith grapple	-	-	y	y	-	-	OSRS Wiki, 2026-10-23	all
+apeatoll	Ape Atoll course	course	48	48:32000 60:47000 75:55000	MONKEY_MADNESS_I	-	ninja or kruk greegree	-	-	y	y	-	-	OSRS Wiki, 2026-10-23	all
+falador	Falador rooftop	course	50	50:35000	-	-	-	-	mark of grace=50:11	y	y	-	also: marks of grace.	OSRS Wiki, 2026-10-23	all
+wyrmbasic	Colossal Wyrm (basic)	course	50	50:31000	CHILDREN_OF_THE_SUN	-	-	-	-	y	y	-	also: blessed bone shards (Prayer), termites, amylase packs (8 marks each at Grace). few clicks	OSRS Wiki, 2026-10-23	all
+wyrmadvanced	Colossal Wyrm (advanced)	course	62	62:42000	CHILDREN_OF_THE_SUN	-	-	-	-	y	y	-	also: blessed bone shards (Prayer), termites, amylase packs. few clicks	OSRS Wiki, 2026-10-23	all
+seers	Seers' Village rooftop	course	60	60:46800	-	-	-	-	mark of grace=60:12	y	y	-	also: marks of grace. 58k/h with the Kandarin hard diary teleport	OSRS Wiki, 2026-10-23	all
+werewolf	Werewolf course	course	60	60:52000 80:67000	CREATURE_OF_FENKENSTRAIN	-	ring of charos	-	mark of grace=60:12	y	y	-	-	OSRS Wiki, 2026-10-23	all
+dorgeshkaan	Dorgesh-Kaan course	course	70	70:50000 90:60000 99:63000	DEATH_TO_THE_DORGESHUUN	-	light source	-	-	y	n	-	also: Turgall's part deliveries. Agility route 50-60k/h, 63k at 99	OSRS Wiki, 2026-10-23	all
+underwater	Underwater Agility and Thieving	minigame	60	60:35000 99:58200	BONE_VOYAGE,RECIPE_FOR_DISASTER__PIRATE_PETE	-	-	-	-	y	n	-	also: Thieving xp too (both: ~38.8k Agility + 142k Thieving). no hard level, wiki says 60+; rates scale with level, 35k at 60 is our estimate, 58.2k at 99 is the wiki's	OSRS Wiki, 2026-10-23	all
+rockslide	Rockslide shortcut (Vampyrium), from 78 with The Blood Moon Rises	passive	78	78:0	THE_BLOOD_MOON_RISES	-	drakan's medallion	-	-	y	y	-	also: +3.5-4k Agility xp/h on top of Ardougne or Sepulchre. the wiki's 100-120k 'effective' is paired with Ardougne or Sepulchre; the shortcut alone adds 3.5-4k	OSRS Wiki, 2026-10-23	all
+pollnivneach	Pollnivneach rooftop	course	70	70:52300	-	-	-	-	mark of grace=70:13	y	y	-	also: marks of grace. 60k/h with the Desert hard diary	OSRS Wiki, 2026-10-23	all
+prifddinas	Prifddinas course	course	75	75:54000 80:58000 85:62000 90:66000	SONG_OF_THE_ELVES	-	-	-	-	y	y	-	also: marks of grace. crystal shards from the portals	OSRS Wiki, 2026-10-23	all
+rellekka	Rellekka rooftop	course	80	80:55000	-	-	-	-	mark of grace=80:14	y	y	-	also: marks of grace. 65k/h with the Fremennik hard diary	OSRS Wiki, 2026-10-23	all
+ardougne	Ardougne rooftop	course	90	90:70000	-	-	-	-	mark of grace=90:17	y	y	-	also: marks of grace.	OSRS Wiki, 2026-10-23	all
+pyramid	Agility Pyramid	minigame	30	30:25000 55:28000 67:35000 75:42100 88:44700	-	-	waterskins;food	-	coins=30:200000	y	y	-	also: pyramid tops: 10,000 coins each from Simon Templeton. the iron coin maker: ~130k gp/h at 30-50, ~260k at 70+	OSRS Wiki, 2026-10-23	all
+brimhaven	Brimhaven Agility Arena	minigame	20	20:30000 40:45000 99:67000	-	-	200 coins entry	-	-	y	y	-	also: arena tickets (xp or rewards).	OSRS Wiki, 2026-10-23	all
+wilderness	Wilderness course	course	52	52:55000	-	-	-	-	-	y	y	-	also: tickets, alchables, blighted supplies, medium clues. player killers: off unless allowed	OSRS Wiki, 2026-10-23	all
+sepulchre	Hallowed Sepulchre	minigame	52	52:45000 62:60000 72:75000 77:85000 87:98500	SINS_OF_THE_FATHER	-	food	-	-	y	y	-	also: hallowed marks, coffin loot (planks, nails, cosmics), Ring of endurance (floor 5). floors at 52/62/72/77/87; 62-77 rates are an estimate between the wiki's 45k and 98.5k	OSRS Wiki, 2026-10-23	all
+barbfish	Barbarian Fishing (Fishing method)	passive	15	15:0	-	FISHING 48,STRENGTH 15	-	-	-	y	y	-	also: ~9,000 Agility xp per 100,000 Fishing xp. Fishing to 99 this way gives at least 74 Agility	OSRS Wiki, 2026-10-23	all

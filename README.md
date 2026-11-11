@@ -1,8 +1,8 @@
 # Goal Guide
 
-A RuneLite plugin that plans the route to your goals (quests, skill levels, achievement diaries and items) and guides you step by step, with hour estimates.
+Tell it what you want (a quest, a skill level, a diary, a stack of items) and it works out the route for your account, with rough hours. The next step sits in a small box on your game screen.
 
-Also includes **Item Roots**: every way to get an item for your account, traced back to its sources.
+It only reads the game. It never clicks or types for you.
 
 All game data comes from the [OSRS Wiki](https://oldschool.runescape.wiki/).
 
