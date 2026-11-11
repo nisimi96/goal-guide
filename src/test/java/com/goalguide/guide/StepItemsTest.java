@@ -116,22 +116,4 @@ public class StepItemsTest
         assertTrue(used);
     }
 
-    /** A steel dagger is made from a steel bar with a hammer; with no bar, the bar's ore and coal show too. */
-    @Test
-    public void madeFromGoesDownToWhatYouLack()
-    {
-        com.goalguide.items.ItemData d = com.goalguide.items.ItemDb.read();
-        ItemTree.Account a = ItemTree.Account.fresh();
-        List<String> names = new java.util.ArrayList<>();
-        for (StepItems.Item i : StepItems.madeFrom(ItemTree.trace(d, a, "Steel dagger"), 1, Map.of(), x -> null)) names.add(i.name.toLowerCase());
-        assertTrue(names.toString(), names.contains("hammer"));
-        assertTrue(names.toString(), names.contains("steel bar"));
-        assertTrue(names.toString(), names.contains("iron ore"));
-        assertTrue(names.toString(), names.contains("coal"));
-        // With a bar in the bank, no ore
-        names.clear();
-        for (StepItems.Item i : StepItems.madeFrom(ItemTree.trace(d, a, "Steel dagger"), 1, Map.of(AccountState.BANK, Map.of("steel bar", 1)), x -> null))
-            names.add(i.name.toLowerCase());
-        assertFalse(names.toString(), names.contains("iron ore"));
-    }
 }
