@@ -6,7 +6,7 @@ import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
 /** Starts RuneLite with Goal Guide and Item Roots loaded (./gradlew run). */
-public class GoalGuideRun
+public class GoalGuidePluginTest
 {
 	public static void main(String[] args) throws Exception
 	{
