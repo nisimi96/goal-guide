@@ -15,7 +15,9 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.plugins.banktags.BankTagsPlugin;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 
 /**
@@ -27,10 +29,11 @@ import net.runelite.client.plugins.PluginDescriptor;
 @PluginDescriptor(
     name = "Goal Guide",
     description = "Turns your goals (quests, diaries, levels, items) into one route and shows the next step on screen",
-    tags = {"guide", "planner", "quest", "goals", "diary", "ironman"},
+    tags = {"guide", "planner", "quest", "goals", "diary", "ironman", "bank"},
     internalName = "goalguide",
     legacyDataDirectory = "goal-guide"
 )
+@PluginDependency(BankTagsPlugin.class)
 public class GoalGuidePlugin extends Plugin
 {
     /** Full re-read of levels and quests (quest states run a client script each, so not every tick). */
@@ -46,6 +49,7 @@ public class GoalGuidePlugin extends Plugin
     @Inject private net.runelite.client.ui.overlay.OverlayManager overlayManager;
     private com.goalguide.goals.GoalsView goals;
     private com.goalguide.guide.GuideOverlay overlay;
+    @Inject private com.goalguide.guide.BankButton bankButton;
 
     private AccountState state;
     private String profile;
@@ -80,6 +84,7 @@ public class GoalGuidePlugin extends Plugin
         overlayManager.add(overlay);
         clientThread.invokeLater(() ->
         {
+            bankButton.start();
             if (client.getGameState() == GameState.LOGGED_IN)
             {
                 switchTo(configManager.getRSProfileKey());
@@ -101,6 +106,7 @@ public class GoalGuidePlugin extends Plugin
         if (goals != null) { goals.stop(); goals = null; }
         clientThread.invoke(() ->
         {
+            bankButton.stop();
             save(true);
             if (state != null) Know.set(state, false);
             state = null;
@@ -144,6 +150,7 @@ public class GoalGuidePlugin extends Plugin
     public void onGameTick(GameTick e)
     {
         tick++;
+        bankButton.tick();
         if (state == null || client.getGameState() != GameState.LOGGED_IN) return;
         long now = System.currentTimeMillis();
         boolean full = fullReadAt >= 0 && tick >= fullReadAt;

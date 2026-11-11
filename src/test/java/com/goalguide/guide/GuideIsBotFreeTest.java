@@ -15,16 +15,16 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * The plugin has no automation and stands on its own: code only in com.goalguide, no other plugin used,
+ * The plugin has no automation and stands on its own: code only in com.goalguide, no plugin used but RuneLite's own Bank Tags,
  * and no bot or automation words anywhere in its code or data.
  */
 public class GuideIsBotFreeTest
 {
     static final List<String> ROOTS = List.of("src/main/java", "src/main/resources");
 
-    /** The plugin framework is all it may name under net.runelite.client.plugins. */
+    /** The plugin framework and RuneLite's own Bank Tags are all it may name under net.runelite.client.plugins. */
     static final Set<String> ALLOWED = Set.of("Plugin", "PluginDescriptor", "PluginDependency", "PluginManager",
-        "PluginInstantiationException", "PluginType", "PluginPanel");
+        "PluginInstantiationException", "PluginType", "PluginPanel", "banktags");
 
     private static final Pattern REF = Pattern.compile("net\\.runelite\\.client\\.plugins\\.([A-Za-z0-9_]+)");
 
