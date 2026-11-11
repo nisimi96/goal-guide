@@ -1,6 +1,9 @@
 package com.goalguide.guide;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import net.runelite.api.ChatMessageType;
@@ -12,14 +15,17 @@ import net.runelite.api.widgets.JavaScriptCallback;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetType;
 import com.goalguide.facts.Runs;
+import com.goalguide.items.ItemData;
+import com.goalguide.items.ItemDb;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.banktags.BankTagsService;
 import net.runelite.client.plugins.banktags.TagManager;
 
 /**
  * The "GG" button on the bank's top bar: a toggle. On shows only the Now step's items and the items of
- * every run switched on, through RuneLite's Bank Tags filter; off shows the whole bank. It only hides
- * items from view. Client thread.
+ * every run switched on, through RuneLite's Bank Tags filter, each under its own title; off shows the
+ * whole bank. It only hides items from view. Client thread.
  */
 public class BankButton
 {
@@ -31,13 +37,18 @@ public class BankButton
     @Inject private ItemManager itemManager;
     @Inject private TagManager tags;
     @Inject private BankTagsService bankTags;
+    @Inject private ClientThread clientThread;
 
     private Widget button, text;
+    private List<BankFilter.Section> sections = List.of();
     private Set<String> wanted = Set.of();
+    /** Item name to a game id, for the faded missing items; built once per item data. */
+    private Map<String, Integer> ids = Map.of();
+    private ItemData idsFor;
 
     public void start()
     {
-        tags.registerTag(TAG, id -> BankFilter.shows(itemManager.getItemComposition(itemManager.canonicalize(id)).getName(), wanted));
+        tags.registerTag(TAG, id -> BankFilter.shows(nameOf(id), wanted));
     }
 
     public void stop()
@@ -58,10 +69,15 @@ public class BankButton
             return;
         }
         if (button == null) add();
-        Set<String> now = now();
-        if (!now.equals(wanted))
+        // Counts follow every replan; the bank only lays out again when the sections change
+        List<BankFilter.Section> now = BankFilter.sections(Guide.current(), Runs.switches());
+        boolean changed = !now.equals(sections);
+        sections = now;
+        if (changed)
         {
-            wanted = now;
+            Set<String> all = new HashSet<>();
+            for (BankFilter.Section s : now) all.addAll(s.keys);
+            wanted = all;
             if (isOn()) open();
         }
         if (text != null) text.setTextColor(isOn() ? ON : OFF);
@@ -109,13 +125,37 @@ public class BankButton
         return TAG.equals(bankTags.getActiveTag());
     }
 
-    /** The names the filter shows now: the step's items and those of every run that is on. */
-    private static Set<String> now()
+    /** The bank is about to lay out: our titles and counts go. */
+    public void beforeLayout()
     {
-        Guide g = Guide.current();
-        Set<String> out = new HashSet<>(g == null ? Set.of() : BankFilter.wanted(g.items));
-        for (String run : Runs.switches().onRuns()) out.addAll(BankFilter.keys(Runs.items(run)));
-        return out;
+        BankSections.clear(client);
+    }
+
+    /** The bank laid out: with the filter on, group its items under the sections. */
+    public void afterLayout()
+    {
+        if (!isOn()) return;
+        clientThread.invokeAtTickEnd(() -> BankSections.lay(client, sections, this::nameOf, this::idOf,
+            () -> clientThread.invokeLater(() -> BankSections.scrollbar(client))));
+    }
+
+    private String nameOf(int id)
+    {
+        return itemManager.getItemComposition(itemManager.canonicalize(id)).getName();
+    }
+
+    private int idOf(String name)
+    {
+        ItemData d = ItemDb.get();
+        if (d == null) return 0;
+        if (d != idsFor)
+        {
+            Map<String, Integer> m = new HashMap<>();
+            d.byId.forEach((id, n) -> m.merge(ItemData.key(n), id, Math::min));
+            ids = m;
+            idsFor = d;
+        }
+        return ids.getOrDefault(ItemData.key(name), 0);
     }
 
     private static void place(Widget w, int x)

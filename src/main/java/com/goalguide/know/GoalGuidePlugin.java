@@ -4,9 +4,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.ScriptID;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.ScriptPostFired;
+import net.runelite.api.events.ScriptPreFired;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.widgets.Widget;
@@ -192,6 +195,18 @@ public class GoalGuidePlugin extends Plugin
         if (state == null) return;
         change(KnowRead.container(itemManager, state, e.getContainerId(), e.getItemContainer(), System.currentTimeMillis()));
         if (e.getContainerId() == InventoryID.BANK) potionsAt = tick + 1;
+    }
+
+    @Subscribe
+    public void onScriptPreFired(ScriptPreFired e)
+    {
+        if (e.getScriptId() == ScriptID.BANKMAIN_FINISHBUILDING) bankButton.beforeLayout();
+    }
+
+    @Subscribe
+    public void onScriptPostFired(ScriptPostFired e)
+    {
+        if (e.getScriptId() == ScriptID.BANKMAIN_FINISHBUILDING) bankButton.afterLayout();
     }
 
     @Subscribe

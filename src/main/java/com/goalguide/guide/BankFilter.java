@@ -5,25 +5,60 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import com.goalguide.facts.Runs;
 import com.goalguide.items.ItemData;
 
 /**
- * What the bank button shows: the Now step's items or a run's. A bank item counts when it is one of them,
- * or of its kind ("rune pickaxe" for "pickaxe"). Pure.
+ * What the bank button shows, in sections: the Now step's items, then each run that is on.
+ * A bank item counts when it is one of a section's items, or of its kind ("rune pickaxe" for "pickaxe"). Pure.
  */
 public final class BankFilter
 {
     private BankFilter() { }
 
-    /** The step's item names, lower case. */
-    public static Set<String> wanted(List<StepItems.Item> items)
+    /** One part of the filtered bank: a title, its item names (lower case), and the step's items with counts. */
+    public static final class Section
     {
-        List<String> names = new ArrayList<>();
-        if (items != null) for (StepItems.Item i : items) names.add(i.name);
-        return keys(names);
+        public final String title;
+        public final Set<String> keys;
+        /** The step's items (have and need); empty for a run. */
+        public final List<StepItems.Item> items;
+
+        Section(String title, Set<String> keys, List<StepItems.Item> items)
+        {
+            this.title = title;
+            this.keys = keys;
+            this.items = items;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            return o instanceof Section && ((Section) o).title.equals(title) && ((Section) o).keys.equals(keys);
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return title.hashCode() * 31 + keys.hashCode();
+        }
     }
 
-    /** Item names (a run's list), lower case. */
+    /** The step (when it uses items), then each run that is on. */
+    public static List<Section> sections(Guide g, Runs.Switches sw)
+    {
+        List<Section> out = new ArrayList<>();
+        if (g != null && g.now != null && !g.items.isEmpty())
+        {
+            List<String> names = new ArrayList<>();
+            for (StepItems.Item i : g.items) names.add(i.name);
+            out.add(new Section("Now: " + g.now.what, keys(names), g.items));
+        }
+        for (String run : sw.onRuns()) out.add(new Section(run, keys(Runs.items(run)), List.of()));
+        return out;
+    }
+
+    /** Item names, lower case. */
     public static Set<String> keys(Collection<String> names)
     {
         Set<String> out = new LinkedHashSet<>();
@@ -31,12 +66,40 @@ public final class BankFilter
         return out;
     }
 
-    /** True when a bank item with this name is one the step uses. */
+    /** True when a bank item with this name is one of these. */
     public static boolean shows(String bankName, Set<String> wanted)
     {
         if (bankName == null) return false;
         String k = ItemData.key(bankName);
         for (String w : wanted) if (StepItems.matches(k, w)) return true;
         return false;
+    }
+
+    /** The first section a bank item belongs to, null when none. */
+    public static Section sectionOf(String bankName, List<Section> sections)
+    {
+        for (Section s : sections) if (shows(bankName, s.keys)) return s;
+        return null;
+    }
+
+    /** The step item a bank item is, null when none. */
+    public static StepItems.Item itemOf(String bankName, List<StepItems.Item> items)
+    {
+        if (bankName == null) return null;
+        String k = ItemData.key(bankName);
+        for (StepItems.Item i : items) if (StepItems.matches(k, ItemData.key(i.name))) return i;
+        return null;
+    }
+
+    /** "74/225" under a step item; a used-up item shows what you have. */
+    public static String count(StepItems.Item i)
+    {
+        return i.perHour ? String.valueOf(i.total) : i.total + "/" + i.need;
+    }
+
+    /** Short: fewer than the step needs. */
+    public static boolean isShort(StepItems.Item i)
+    {
+        return i.has == StepItems.Has.MISSING;
     }
 }

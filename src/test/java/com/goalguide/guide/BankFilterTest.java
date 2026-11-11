@@ -3,30 +3,42 @@ package com.goalguide.guide;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import com.goalguide.facts.Runs;
 import com.goalguide.know.AccountState;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-/** The bank button shows the step's items, and tools of the kind the step names. */
+/** The bank button shows the step's items and each run that is on, in sections, with have/need counts. */
 public class BankFilterTest
 {
     @Test
-    public void showsTheStepsItemsOnly()
+    public void sectionsAreTheStepThenRunsThatAreOn()
     {
-        List<StepItems.Item> items = StepItems.of(GuideTest.route().steps.get(0), Map.of(AccountState.BANK, Map.of("coins", 100)), x -> null);
-        Set<String> wanted = BankFilter.wanted(items);
-        assertTrue(wanted.contains("coins"));
-        assertTrue(BankFilter.shows("Coins", wanted));
-        assertFalse(BankFilter.shows("Lobster", wanted));
-        assertFalse(BankFilter.shows(null, wanted));
+        Guide g = Guide.of(GuideTest.route());
+        g.items = StepItems.of(g.now.step, Map.of(AccountState.BANK, Map.of("coins", 100)), x -> null);
+        Runs.Switches sw = Runs.Switches.ALL_ON.withRun("Tree run", false).withRun("Fruit tree run", false).withRun("Bird houses", false);
+        List<BankFilter.Section> secs = BankFilter.sections(g, sw);
+        assertEquals(2, secs.size());
+        assertEquals("Now: " + g.now.what, secs.get(0).title);
+        assertEquals("Herb run", secs.get(1).title);
+        assertEquals(secs.get(0), BankFilter.sectionOf("Coins", secs));
+        assertEquals(secs.get(1), BankFilter.sectionOf("Ranarr seed", secs));
+        assertNull(BankFilter.sectionOf("Lobster", secs));
 
-        Set<String> pick = Set.of("pickaxe");
-        assertTrue(BankFilter.shows("Rune pickaxe", pick));
-        assertFalse(BankFilter.shows("Rune axe", pick));
-        assertTrue(BankFilter.shows("Super restore(4)", Set.of("super restore")));
-        assertEquals(Set.of(), BankFilter.wanted(null));
+        StepItems.Item coins = BankFilter.itemOf("Coins", secs.get(0).items);
+        assertEquals("coins", coins.name.toLowerCase());
+        assertEquals("100/" + coins.need, BankFilter.count(coins));
+    }
+
+    @Test
+    public void kindsAndDosesMatch()
+    {
+        assertTrue(BankFilter.shows("Rune pickaxe", Set.of("pickaxe")));
+        assertFalse(BankFilter.shows("Rune axe", Set.of("pickaxe")));
         assertTrue(BankFilter.shows("Amulet of glory(4)", BankFilter.keys(List.of("Amulet of glory"))));
+        assertFalse(BankFilter.shows(null, Set.of("coins")));
     }
 }
