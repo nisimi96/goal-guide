@@ -54,11 +54,10 @@ public class QuestPlanTest
     {
         QuestData d = QuestData.get();
         assertEquals(48, d.diaries().size());
+        assertEquals(net.runelite.api.gameval.VarbitID.ARDOUGNE_EASY_REWARD, d.doneVarbit("ARDOUGNE_EASY_DIARY"));
         for (String k : d.diaries())
         {
-            String vb = d.doneVarbit(k);
-            assertNotNull(k, vb);
-            net.runelite.api.gameval.VarbitID.class.getField(vb).getInt(null);
+            assertTrue(k, d.doneVarbit(k) > 0);
             for (QuestData.Need n : d.needs(k))
             {
                 if (n.kind.equals("quest")) Quest.valueOf(n.what);

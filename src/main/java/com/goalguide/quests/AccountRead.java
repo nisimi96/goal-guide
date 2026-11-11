@@ -22,14 +22,8 @@ public final class AccountRead
         QuestData qd = QuestData.get();
         for (String diary : qd.diaries())
         {
-            String vb = qd.doneVarbit(diary);
-            try
-            {
-                if (vb != null && client.getVarbitValue(net.runelite.api.gameval.VarbitID.class.getField(vb).getInt(null)) == 1) a.questsDone.add(diary);
-            }
-            catch (ReflectiveOperationException ignored)
-            {
-            }
+            int vb = qd.doneVarbit(diary);
+            if (vb >= 0 && client.getVarbitValue(vb) == 1) a.questsDone.add(diary);
         }
         a.mode = modeName(client.getAccountType());
         a.iron = !a.mode.equals("main");
