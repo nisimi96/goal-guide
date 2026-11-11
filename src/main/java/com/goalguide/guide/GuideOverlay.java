@@ -62,7 +62,7 @@ public final class GuideOverlay extends OverlayPanel
                 section("Items", carried + "/" + its.size() + " on you");
                 for (StepItems.Item i : its) item(i);
             }
-            if (wikiShown != null) line("Right-click for the wiki", GREY);
+            if (wikiShown != null) line("Shift + right-click for the wiki", GREY);
         }
         if (gd.next != null)
         {
@@ -77,7 +77,7 @@ public final class GuideOverlay extends OverlayPanel
         return super.render(g);
     }
 
-    /** A right-click "Wiki" entry for the step under Do now. Client thread. */
+    /** A shift + right-click "Wiki" entry for the step under Do now (RuneLite shows overlay menus on shift only). Client thread. */
     private void wikiEntry(Planner.Step s)
     {
         String url = s == null ? null : StepDetail.wikiPage(s);
