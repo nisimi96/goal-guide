@@ -63,9 +63,9 @@ public class GuideTest
     }
 
     @Test
-    public void questHelperNames()
+    public void questWikiLinks()
     {
-        assertEquals("Desert Treasure I", QuestHelperLink.nameOf("DESERT_TREASURE_I"));
-        assertEquals("Ardougne Easy Diary", QuestHelperLink.nameOf("ARDOUGNE_EASY_DIARY"));
+        assertEquals("https://oldschool.runescape.wiki/w/Desert_Treasure_I/Quick_guide", com.goalguide.goals.StepDetail.questWikiUrl("DESERT_TREASURE_I"));
+        assertEquals("https://oldschool.runescape.wiki/w/Ardougne_Easy_Diary", com.goalguide.goals.StepDetail.questWikiUrl("ARDOUGNE_EASY_DIARY"));
     }
 }

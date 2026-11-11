@@ -1,6 +1,5 @@
 package com.goalguide.know;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -66,53 +65,12 @@ final class Timers
     static final Map<String, String> STOP_NAMES = Map.of("Kourend", "Hosidius", "Morytania", "Port Phasmatys", "Harmony", "Harmony Island");
 
     /**
-     * Each herb, tree and fruit tree patch as Time Tracking predicts it, by run and stop. Empty while Time Tracking
-     * is off. Its world and predictions are package-private, so they are read by reflection. Client thread.
+     * Each herb, tree and fruit tree patch by run and stop. Time Tracking keeps its patch list private, and Plugin Hub
+     * plugins may not use reflection, so this is empty for now: the run box shows the run's overall timer only.
      */
     static Map<String, Map<String, AccountState.Timer>> stops(PluginManager plugins, long nowMs)
     {
-        Map<String, Map<String, AccountState.Timer>> out = new LinkedHashMap<>();
-        FarmingTracker farming = farmingTracker(plugins);
-        if (farming == null) return out;
-        try
-        {
-            Field wf = FarmingTracker.class.getDeclaredField("farmingWorld");
-            wf.setAccessible(true);
-            Object world = wf.get(farming);
-            java.lang.reflect.Method tabs = world.getClass().getDeclaredMethod("getTabs");
-            tabs.setAccessible(true);
-            Map<?, ?> byTab = (Map<?, ?>) tabs.invoke(world);
-            for (Tab tab : STOP_TABS)
-            {
-                Object set = byTab.get(tab);
-                if (!(set instanceof Iterable)) continue;
-                Map<String, AccountState.Timer> run = new LinkedHashMap<>();
-                for (Object patch : (Iterable<?>) set)
-                {
-                    Object region = call(patch, "getRegion");
-                    String name = region == null ? null : (String) call(region, "getName");
-                    Object pred = farming.getClass().getMethod("predictPatch", patch.getClass()).invoke(farming, patch);
-                    if (name == null || pred == null) continue;
-                    Object crop = call(pred, "getCropState");
-                    long done = (Long) call(pred, "getDoneEstimate");
-                    AccountState.Timer t = stop(crop == null ? null : crop.toString(), done, nowMs);
-                    run.merge(STOP_NAMES.getOrDefault(name, name), t, Timers::worse);
-                }
-                out.put(name(tab), run);
-            }
-        }
-        catch (ReflectiveOperationException | RuntimeException e)
-        {
-            log.debug("Know: Time Tracking's patches are not reachable", e);
-        }
-        return out;
-    }
-
-    private static Object call(Object o, String method) throws ReflectiveOperationException
-    {
-        java.lang.reflect.Method m = o.getClass().getMethod(method);
-        m.setAccessible(true);
-        return m.invoke(o);
+        return new LinkedHashMap<>();
     }
 
     /** One patch from Time Tracking's crop state (HARVESTABLE, GROWING, DISEASED, DEAD, EMPTY, FILLING). */
@@ -199,21 +157,19 @@ final class Timers
             : new AccountState.Timer(AccountState.Timer.GROWING, ready, nowMs);
     }
 
-    /** Time Tracking's farming tracker while that plugin runs, else null. It is private to the plugin, so it is read by reflection. */
+    /** Time Tracking's farming tracker while that plugin runs, else null. */
     static FarmingTracker farmingTracker(PluginManager plugins)
     {
         for (Plugin p : plugins.getPlugins())
         {
-            if (!(p instanceof TimeTrackingPlugin) || !plugins.isPluginActive(p)) continue;
+            if (!(p instanceof TimeTrackingPlugin) || !plugins.isPluginActive(p) || p.getInjector() == null) continue;
             try
             {
-                Field f = TimeTrackingPlugin.class.getDeclaredField("farmingTracker");
-                f.setAccessible(true);
-                return (FarmingTracker) f.get(p);
+                return p.getInjector().getInstance(FarmingTracker.class);
             }
-            catch (ReflectiveOperationException | RuntimeException e)
+            catch (RuntimeException e)
             {
-                log.debug("Know: Time Tracking's farming tracker is not reachable", e);
+                log.debug("Time Tracking's farming tracker is not reachable", e);
                 return null;
             }
         }

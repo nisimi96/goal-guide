@@ -15,7 +15,12 @@ public final class MiniquestParts
 {
     private MiniquestParts() { }
 
-    public record Part(int varbit, String name) {}
+    @lombok.Value @lombok.experimental.Accessors(fluent = true)
+    public static class Part
+    {
+        int varbit;
+        String name;
+    }
 
     /** Part key (as a quest key in questsDone / method tables) -> varbit and name. */
     public static final Map<String, Part> PARTS = new LinkedHashMap<>();

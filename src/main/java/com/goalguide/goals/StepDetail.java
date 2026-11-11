@@ -216,6 +216,17 @@ public final class StepDetail
 
     static final String WIKI = "https://oldschool.runescape.wiki/w/";
 
+    /** A quest's wiki Quick guide by quest key (the game's quest name), or a diary's own page. */
+    public static String questWikiUrl(String key)
+    {
+        String name;
+        try { name = net.runelite.api.Quest.valueOf(key).getName(); }
+        catch (IllegalArgumentException e) { name = QuestPlan.pretty(key); }
+        boolean diary = com.goalguide.quests.QuestData.isDiary(key);
+        String page = URLEncoder.encode(name.trim().replace(' ', '_'), StandardCharsets.UTF_8).replace("%27", "'");
+        return WIKI + page + (diary ? "" : "/Quick_guide");
+    }
+
     /** A link in the card's colours: the text keeps its colour, a dotted line under it says it can be clicked. */
     static String link(String text, String url, String color)
     {

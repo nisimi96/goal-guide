@@ -66,7 +66,7 @@ public final class GoalsView
     private volatile int sitting = 60;
     /** The last "now" pick logged, so the log has one line per change. */
     private String lastSaid;
-    /** For the guide's "Open in Quest Helper" button. */
+    /** For the bank filter button (Bank Tags). */
     private volatile net.runelite.client.plugins.PluginManager plugins;
     /** USER 2026-11-11 Runs tab: runs and stops switched off, per account. */
     private volatile com.goalguide.decide.RunPrefs prefs = com.goalguide.decide.RunPrefs.ALL_ON;
@@ -120,13 +120,6 @@ public final class GoalsView
     void setGuideOnScreen(boolean on)
     {
         config.setConfiguration(GROUP, GUIDE_ON_SCREEN, String.valueOf(on));
-    }
-
-    /** Starts the quest in Quest Helper; the panel shows what went wrong, if anything. */
-    String openInQuestHelper(String questKey)
-    {
-        net.runelite.client.plugins.PluginManager p = plugins;
-        return p == null ? "Quest Helper link is not ready" : com.goalguide.guide.QuestHelperLink.open(p, questKey);
     }
 
     public void start(okhttp3.OkHttpClient http)
@@ -674,7 +667,7 @@ public final class GoalsView
         private boolean quiet;
         /** USER 2026-11-11 the guide: Now, Next, recommendations, and the Quest Helper button. */
         private final JLabel guide = new JLabel();
-        private final JButton questHelper = new JButton("Open in Quest Helper");
+        private final JButton questHelper = new JButton("Wiki quick guide");
         private final JLabel questHint = new JLabel();
         private final javax.swing.JCheckBox onScreen = new javax.swing.JCheckBox("Show the guide on the game screen");
         private volatile String questKey;
@@ -804,8 +797,7 @@ public final class GoalsView
             {
                 String k = questKey;
                 if (k == null) return;
-                String why = view.openInQuestHelper(k);
-                questHint.setText(why == null ? "" : "<html><font color='#f08a78'>" + esc(why) + "</font></html>");
+                net.runelite.client.util.LinkBrowser.browse(StepDetail.questWikiUrl(k));
             });
             items.setFont(FontManager.getRunescapeSmallFont());
             items.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
@@ -1103,7 +1095,7 @@ public final class GoalsView
                 if (!bank.isVisible()) bankHint.setText("");
                 questKey = key;
                 questHelper.setVisible(key != null);
-                if (key != null) questHelper.setText("Open " + com.goalguide.quests.QuestPlan.pretty(key) + " in Quest Helper");
+                if (key != null) questHelper.setText(com.goalguide.quests.QuestPlan.pretty(key) + ": wiki quick guide");
                 questHint.setText("");
                 String now = g == null || g.now == null ? null : g.now.what;
                 if (!java.util.Objects.equals(now, shownNow)) { shownNow = now; shownTimer = null; }
@@ -1340,18 +1332,6 @@ public final class GoalsView
             if (s.kind != Planner.Kind.QUEST) return;
             JLabel why = new JLabel();
             why.setFont(FontManager.getRunescapeSmallFont());
-            if (s.quest != null)
-            {
-                JButton qh = new JButton("Open in Quest Helper");
-                qh.setAlignmentX(LEFT_ALIGNMENT);
-                qh.addActionListener(e ->
-                {
-                    String w = view.openInQuestHelper(s.quest);
-                    why.setText(w == null ? "" : cardHtml("<font color='#f08a78'>" + esc(w) + "</font>"));
-                });
-                inside.add(Box.createVerticalStrut(3));
-                inside.add(qh);
-            }
             JButton wiki = new JButton(s.quest != null ? "Wiki quick guide" : "Wiki page");
             wiki.setAlignmentX(LEFT_ALIGNMENT);
             wiki.addActionListener(e -> net.runelite.client.util.LinkBrowser.browse(StepDetail.wikiUrl(s)));

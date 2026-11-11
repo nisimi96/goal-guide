@@ -19,7 +19,14 @@ public final class PatchTravel
 {
     private PatchTravel() { }
 
-    public record Patch(String name, WorldPoint tile, String quest, int farming) {}
+    @lombok.Value @lombok.experimental.Accessors(fluent = true)
+    public static class Patch
+    {
+        String name;
+        WorldPoint tile;
+        String quest;
+        int farming;
+    }
 
     public static final List<Patch> HERBS = List.of(
         new Patch("Falador", new WorldPoint(3058, 3311, 0), null, 0),
@@ -104,7 +111,14 @@ public final class PatchTravel
      * A quest, diary or level that would put a patch within {@link #QUICK_TICKS}: {@code needs} are goal texts the
      * goal box takes ("Agility 70", "Tree Gnome Village", "MORYTANIA_ELITE_DIARY").
      */
-    public record Idea(String run, String patch, int ticks, List<String> needs) {}
+    @lombok.Value @lombok.experimental.Accessors(fluent = true)
+    public static class Idea
+    {
+        String run;
+        String patch;
+        int ticks;
+        List<String> needs;
+    }
 
     /** Two minutes, in ticks: USER 2026-10-25. */
     public static final int QUICK_TICKS = 200;

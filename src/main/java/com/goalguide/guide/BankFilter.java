@@ -1,6 +1,5 @@
 package com.goalguide.guide;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -236,19 +235,9 @@ public final class BankFilter
         return null;
     }
 
-    /** Bank Tags' own tag store (its field, else its injector). */
+    /** Bank Tags' own tag store, from its injector. */
     static TagManager tagManager(BankTagsPlugin p)
     {
-        try
-        {
-            Field f = BankTagsPlugin.class.getDeclaredField("tagManager");
-            f.setAccessible(true);
-            Object t = f.get(p);
-            if (t instanceof TagManager) return (TagManager) t;
-        }
-        catch (ReflectiveOperationException | RuntimeException ignored)
-        {
-        }
         try
         {
             return p.getInjector() == null ? null : p.getInjector().getInstance(TagManager.class);
