@@ -105,17 +105,10 @@ public final class QuestPlan
     {
         if (n.note.startsWith("ItemCollections."))
             return COLLECTIONS.getOrDefault(n.note.substring("ItemCollections.".length()), n.what);
-        if (items != null)
+        if (items != null && n.note.matches("\\d+"))
         {
-            try
-            {
-                int id = net.runelite.api.gameval.ItemID.class.getField(n.note).getInt(null);
-                String name = items.byId.get(id);
-                if (name != null) return name;
-            }
-            catch (ReflectiveOperationException | RuntimeException ignored)
-            {
-            }
+            String name = items.byId.get(Integer.parseInt(n.note));
+            if (name != null) return name;
         }
         return n.what;
     }

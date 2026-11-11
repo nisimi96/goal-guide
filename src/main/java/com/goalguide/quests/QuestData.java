@@ -15,8 +15,8 @@ import java.util.Map;
  * quest_reqs.tsv (taken from Quest Helper's source, github.com/Zoinkwiz/quest-helper, BSD 2-Clause).
  *
  * <p>The 48 achievement diary tiers come the same way into diary_reqs.tsv, keyed like MORYTANIA_MEDIUM_DIARY, so a
- * diary is a goal the planner walks like a quest. Each tier has a "varbit" row: the
- * VarbitID name that reads 1 once the tier is done.
+ * diary is a goal the planner walks like a quest. Each tier has a "varbit" row: its
+ * varbit id (the note column) that reads 1 once the tier is done.
  */
 public final class QuestData
 {
@@ -27,7 +27,7 @@ public final class QuestData
         /** Quest name (net.runelite.api.Quest), Skill name, or item display name. */
         public final String what;
         public final int amount;
-        /** Quest: FINISHED or IN_PROGRESS; skill: "boostable"; item: the ItemID constant or ItemCollections.X. */
+        /** Quest: FINISHED or IN_PROGRESS; skill: "boostable"; item: the game item id or ItemCollections.X; varbit: the varbit id. */
         public final String note;
 
         Need(String kind, String what, int amount, String note)
@@ -72,11 +72,11 @@ public final class QuestData
         return out;
     }
 
-    /** The VarbitID constant name that reads 1 when the diary tier is done, or null. */
-    public String doneVarbit(String diary)
+    /** The varbit id that reads 1 when the diary tier is done, or -1. */
+    public int doneVarbit(String diary)
     {
-        for (Need n : needs(diary)) if (n.kind.equals("varbit")) return n.what;
-        return null;
+        for (Need n : needs(diary)) if (n.kind.equals("varbit") && n.note.matches("\\d+")) return Integer.parseInt(n.note);
+        return -1;
     }
 
     /** The level a quest or diary asks of this skill (upper case), 0 when none. */
