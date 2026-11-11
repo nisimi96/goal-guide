@@ -1,6 +1,5 @@
 package com.goalguide.guide;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -18,21 +17,23 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 /**
  * Marks where the trip's next stop is: the closest anvil, furnace or bank booth in the loaded scene gets the
- * game's own hint arrow (over it and on the minimap) and an outline. Places are found from objects as they
+ * game's own hint arrow (over it and on the minimap), and its model outlined like Object Markers does. Places are found from objects as they
  * spawn, by their in-game name, so nothing is scanned per frame. Only marks: it never clicks or walks.
  * Client thread, except render.
  */
 @Singleton
 public class PlaceMarker extends Overlay
 {
-    static final Color OUTLINE = new Color(0, 229, 255);
+    static final Color OUTLINE = new Color(0, 229, 255), FILL = new Color(0, 229, 255, 40);
     /** In-game object names that count as each trip place. */
     static final String[][] NAMES = {{"anvil", "anvil"}, {"furnace", "furnace"}, {"bank", "bank booth"}, {"bank", "bank chest"}};
 
     @Inject private Client client;
+    @Inject private ModelOutlineRenderer outlines;
 
     private final Set<GameObject> places = new HashSet<>();
     private GameObject target;
@@ -122,11 +123,15 @@ public class PlaceMarker extends Overlay
     public Dimension render(Graphics2D g)
     {
         GameObject t = target;
-        Shape hull = t == null ? null : t.getConvexHull();
-        if (hull == null) return null;
-        g.setColor(OUTLINE);
-        g.setStroke(new BasicStroke(2));
-        g.draw(hull);
+        if (t == null) return null;
+        // Like RuneLite's Object Markers with "Highlight hull" and "Highlight outline": a light fill and the model's outline
+        Shape hull = t.getConvexHull();
+        if (hull != null)
+        {
+            g.setColor(FILL);
+            g.fill(hull);
+        }
+        outlines.drawOutline(t, 2, OUTLINE, 4);
         return null;
     }
 }
