@@ -63,4 +63,16 @@ public class BankFilterTest
         assertTrue(BankFilter.shows("Amulet of glory(4)", BankFilter.keys(List.of("Amulet of glory"))));
         assertFalse(BankFilter.shows(null, Set.of("coins")));
     }
+
+    @Test
+    public void kindsGoByWholeWords()
+    {
+        assertEquals(BankFilter.kind("Spade"), BankFilter.kind("Seed dibber"));
+        assertEquals(BankFilter.kind("Ranarr seed"), BankFilter.kind("Hammerstone seed"));
+        assertEquals(BankFilter.kind("Ectophial"), BankFilter.kind("Grand seed pod"));
+        assertEquals(BankFilter.kind("Ectophial"), BankFilter.kind("Eternal teleport crystal"));
+        assertEquals(BankFilter.kind("Falador teleport"), BankFilter.kind("Teleport to house"));
+        assertEquals(BankFilter.kind("Apples(5)"), BankFilter.kind("Tomatoes(5)"));
+        assertEquals(BankFilter.kind("Ring of wealth"), BankFilter.kind("Explorer's ring 4"));
+    }
 }

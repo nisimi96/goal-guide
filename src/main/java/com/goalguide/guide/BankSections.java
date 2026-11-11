@@ -2,6 +2,7 @@ package com.goalguide.guide;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -126,17 +127,28 @@ final class BankSections
         line(box, y);
         text(box, title, TITLE_COLOR, X0, y + GAP, PER_ROW * DX, TITLE);
         y += GAP + TITLE;
-        int i = 0;
-        for (; i < ids.size() && slot[0] < before; i++, slot[0]++)
+        // A run's or teleport section's items go by kind, each kind on rows of its own (tablets, then rings...);
+        // a step's items keep their order (the item, its tools, its materials)
+        boolean byKind = items.stream().allMatch(it -> it == null);
+        List<Integer> order = new ArrayList<>();
+        for (int n = 0; n < ids.size(); n++) order.add(n);
+        if (byKind) order.sort(Comparator.comparingInt(n -> BankFilter.kind(nameOf.apply(ids.get(n)))));
+        int cell = 0, lastKind = -1;
+        for (int n : order)
         {
-            int x = X0 + (i % PER_ROW) * DX, at = y + (i / PER_ROW) * DY;
-            Widget w = kids[slot[0]];
+            if (slot[0] >= before) break;
+            int kind = byKind ? BankFilter.kind(nameOf.apply(ids.get(n))) : 0;
+            if (lastKind >= 0 && kind != lastKind && cell % PER_ROW != 0) cell += PER_ROW - cell % PER_ROW;
+            lastKind = kind;
+            int x = X0 + (cell % PER_ROW) * DX, at = y + (cell / PER_ROW) * DY;
+            Widget w = kids[slot[0]++];
             if (w == null) continue;
-            show(w, ids.get(i), bank.count(ids.get(i)), nameOf.apply(ids.get(i)), withdraw);
+            show(w, ids.get(n), bank.count(ids.get(n)), nameOf.apply(ids.get(n)), withdraw);
             place(w, x, at, ITEM_W, ITEM_H);
-            if (items.get(i) != null) count(box, items.get(i), x, at);
+            if (items.get(n) != null) count(box, items.get(n), x, at);
+            cell++;
         }
-        return y + Math.max(1, (i + PER_ROW - 1) / PER_ROW) * DY;
+        return y + Math.max(1, (cell + PER_ROW - 1) / PER_ROW) * DY;
     }
 
     /** Fills a bank slot with an item: the bank's count and withdraw actions, or faded with none when you have none. */

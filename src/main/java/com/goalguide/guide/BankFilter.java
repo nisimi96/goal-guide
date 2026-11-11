@@ -78,6 +78,29 @@ public final class BankFilter
         return out;
     }
 
+    /** Kinds of item, in the order the bank shows them, each kind starting a new row. */
+    static final String[][] KINDS = {
+        {"spade", "rake", "dibber", "secateurs", "hammer", "chisel", "coins"},
+        {"sapling"}, {"seed"}, {"(5)", "sweetcorn", "watermelon", "coconut", "cactus spine"}, {"compost"},
+        {"logs"}, {"bird house", "clockwork"},
+        {"teleport"}, {"ring"}, {"necklace", "amulet", "pendant", "bracelet"}, {"cape", "cloak", "gloves"},
+        {"whistle", "seed pod", "talisman", "crystal", "sphere", "ectophial", "book", "memoirs"},
+    };
+
+    /** The row kind of an item, by whole words of its name; anything else last. */
+    public static int kind(String name)
+    {
+        String k = " " + (name == null ? "" : ItemData.key(name)) + " ";
+        // The last kind's words first: a "grand seed pod" is not a seed, a "teleport crystal" not a tablet
+        for (int n = 0; n < KINDS.length; n++)
+        {
+            int i = (n + KINDS.length - 1) % KINDS.length;
+            for (String w : KINDS[i])
+                if (k.contains(" " + w + " ") || w.startsWith("(") && k.contains(w)) return i;
+        }
+        return KINDS.length;
+    }
+
     /** Item names, lower case. */
     public static Set<String> keys(Collection<String> names)
     {
