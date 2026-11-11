@@ -75,4 +75,12 @@ public class BankFilterTest
         assertEquals(BankFilter.kind("Apples(5)"), BankFilter.kind("Tomatoes(5)"));
         assertEquals(BankFilter.kind("Ring of wealth"), BankFilter.kind("Explorer's ring 4"));
     }
+
+    @Test
+    public void bankCountIsShortAndGoesOnceOnYou()
+    {
+        assertEquals("486K", BankFilter.shortNumber(486_781));
+        assertEquals("12M", BankFilter.shortNumber(12_345_678));
+        assertEquals("76", BankFilter.shortNumber(76));
+    }
 }

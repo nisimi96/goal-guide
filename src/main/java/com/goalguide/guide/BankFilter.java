@@ -140,6 +140,25 @@ public final class BankFilter
         return i.perHour ? String.valueOf(i.total) : i.total + "/" + i.need;
     }
 
+    /**
+     * The bank's small text under a step item, or null for none: nothing once enough is on you; the number to
+     * take when the bank has enough ("76"); have/need when short ("22/76"). Big numbers short, like the
+     * bank's own ("486K", "12M").
+     */
+    public static String bankCount(StepItems.Item i)
+    {
+        if (i.perHour || i.carried >= i.need) return null;
+        if (!isShort(i)) return shortNumber(i.need);
+        return shortNumber(i.total) + "/" + shortNumber(i.need);
+    }
+
+    static String shortNumber(long n)
+    {
+        if (n >= 10_000_000) return n / 1_000_000 + "M";
+        if (n >= 100_000) return n / 1_000 + "K";
+        return String.valueOf(n);
+    }
+
     /** Short: fewer than the step needs. */
     public static boolean isShort(StepItems.Item i)
     {

@@ -178,11 +178,13 @@ final class BankSections
         if (box != null) client.runScript(ScriptID.UPDATE_SCROLLBAR, InterfaceID.Bankmain.SCROLLBAR, InterfaceID.Bankmain.ITEMS, box.getScrollY());
     }
 
-    /** "74/225" along the bottom of an item, red with a cross when short. */
+    /** Under an item: how many to take, or "74/225" in red with a cross when short; nothing once it's on you. */
     private static void count(Widget box, StepItems.Item it, int x, int y)
     {
+        String n = BankFilter.bankCount(it);
+        if (n == null) return;
         boolean isShort = BankFilter.isShort(it);
-        text(box, BankFilter.count(it), isShort ? SHORT : ENOUGH, x, y + ITEM_H - 10, ITEM_W, 10);
+        text(box, n, isShort ? SHORT : ENOUGH, x, y + ITEM_H - 10, ITEM_W, 10);
         if (!isShort) return;
         Widget c = box.createChild(-1, WidgetType.GRAPHIC);
         c.setSpriteId(SpriteID.Checkbox.CROSSED);
