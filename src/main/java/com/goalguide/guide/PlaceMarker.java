@@ -34,6 +34,7 @@ public class PlaceMarker extends Overlay
 
     @Inject private Client client;
     @Inject private ModelOutlineRenderer outlines;
+    @Inject private RouteRequest route;
 
     private final Set<GameObject> places = new HashSet<>();
     private GameObject target;
@@ -87,6 +88,8 @@ public class PlaceMarker extends Overlay
         }
         target = best;
         WorldPoint p = best == null ? null : best.getWorldLocation();
+        // Shortest Path or Travel Guide, if installed, draws the way there
+        route.to(p == null ? Set.of() : Set.of(p));
         if (p != null && !p.equals(ours))
         {
             client.setHintArrow(p);
@@ -106,6 +109,7 @@ public class PlaceMarker extends Overlay
     public void stop()
     {
         clear();
+        route.to(Set.of());
         places.clear();
     }
 
