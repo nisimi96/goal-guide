@@ -52,6 +52,8 @@ public final class Planner
         public long ge;
         /** GET / STOCK: the item to get (for its how-to-get-it steps). Null otherwise. */
         public String item;
+        /** A group: the items one quest still needs, each its own step. Empty otherwise. */
+        public final List<Step> parts = new ArrayList<>();
         /** QUEST: already started (its items not held may be used up: shown, never fetched again). */
         public boolean started;
         /** TRAIN: the skill ("THIEVING") and the levels, for the recommended methods. Null / 0 otherwise. */
@@ -160,6 +162,12 @@ public final class Planner
         void add(Step s)
         {
             steps.add(s);
+            count(s);
+        }
+
+        private void count(Step s)
+        {
+            if (!s.parts.isEmpty()) { s.parts.forEach(this::count); return; }
             ge += s.ge;
             if (s.kind == Kind.DONE) return;
             if (s.hours >= 0) hours += s.hours;
@@ -248,12 +256,15 @@ public final class Planner
                 if (fill.contains(sk) && levelOf(k) > firstNeed.get(sk)) fromFiller.add(QuestPlan.pretty(sk) + " " + levelOf(k));
                 else train(r, a, trainedTo, sk, levelOf(k));
             });
+            List<Step> gets = new ArrayList<>();
             qs.missingItems.forEach((name, nh) ->
             {
                 Step g = get(items, a, name, nh[0] - nh[1], qs.quest);
                 g.item = name;
-                r.add(g);
+                gets.add(g);
             });
+            if (gets.size() == 1) r.add(gets.get(0));
+            else if (gets.size() > 1) r.add(group(qs.quest, gets));
             List<String> quest = new ArrayList<>(qs.haveItems);
             quest.addAll(qs.missingItems.keySet());
             for (String it : quest)
@@ -614,6 +625,23 @@ public final class Planner
             if (m != null && !out.contains(m)) out.add(m);
         }
         return out;
+    }
+
+    /** One step for every item a quest still needs: "Get items for X", the items listed in how. */
+    static Step group(String quest, List<Step> parts)
+    {
+        double hours = 0;
+        boolean known = false;
+        List<String> names = new ArrayList<>();
+        for (Step p : parts)
+        {
+            names.add(p.what);
+            if (p.hours >= 0) { hours += p.hours; known = true; }
+        }
+        Step g = new Step(Kind.GET, "items for " + QuestPlan.pretty(quest), String.join(", ", names), known ? hours : -1, false);
+        g.parts.addAll(parts);
+        for (Step p : parts) g.uses.addAll(p.uses);
+        return g;
     }
 
     /**

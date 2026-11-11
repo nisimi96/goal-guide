@@ -72,7 +72,9 @@ public class StepItemsTest
         ItemTree.Account a = ItemTree.Account.fresh();
         a.owned.put("kitten", 1);
         Planner.Route r = Planner.plan(q, null, a, 300, List.of(com.goalguide.goals.Goal.quest("ICTHLARINS_LITTLE_HELPER")));
-        for (Planner.Step s : r.steps) assertFalse("no Get step for the cat: " + s, s.kind == Planner.Kind.GET && s.what.toLowerCase().contains("cat"));
+        for (Planner.Step s : r.steps)
+            for (Planner.Step g : s.parts.isEmpty() ? List.of(s) : s.parts)
+                assertFalse("no Get step for the cat: " + g, g.kind == Planner.Kind.GET && g.what.toLowerCase().contains("cat"));
         Planner.Step ilh = null;
         for (Planner.Step s : r.steps) if ("ICTHLARINS_LITTLE_HELPER".equals(s.quest)) ilh = s;
         boolean carried = false;
