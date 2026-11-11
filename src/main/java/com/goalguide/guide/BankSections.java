@@ -21,7 +21,8 @@ import net.runelite.api.widgets.WidgetType;
  * While the bank button is on, the bank shows only our sections, each under a line and a title. Like Quest
  * Helper's bank tab, every picture is one of the bank's own item slots, filled in order with the item to
  * show; so an item two sections need (the steel bar for each sword) shows in both, and BankButton points
- * each click at the item's real bank slot. An item not in the bank shows faded with nothing to click.
+ * each click at the item's real bank slot. A step item not in the bank shows faded with nothing to click;
+ * run and teleport items not in the bank go, once each, in a last "Not in bank" section.
  * Step items get a have/need count, red with a cross when short. The bank's next build resets the slots.
  * Client thread.
  */
@@ -77,10 +78,13 @@ final class BankSections
                 || w.getType() == WidgetType.TEXT && w.getText() != null && w.getText().startsWith("Tab")))
                 w.setHidden(true);
         before = kids.length;
-        int slot = 0, y = 0;
+        int[] slot = {0};
+        int y = 0;
+        // Run and teleport items not in the bank all go in one last section, once each
+        List<Integer> notInBank = new ArrayList<>();
         for (BankFilter.Section s : sections)
         {
-            // What to show: a step's items with counts, or a run's items
+            // What to show: a step's items with counts, or a run's items you have
             List<Integer> ids = new ArrayList<>();
             List<StepItems.Item> items = new ArrayList<>();
             if (!s.items.isEmpty())
@@ -94,29 +98,45 @@ final class BankSections
             else
                 for (String k : s.keys)
                     for (int id : idsOf.apply(k))
-                        if (!ids.contains(id))
+                    {
+                        if (bank.count(id) <= 0)
+                        {
+                            if (!notInBank.contains(id)) notInBank.add(id);
+                        }
+                        else if (!ids.contains(id))
                         {
                             ids.add(id);
                             items.add(null);
                         }
-            if (ids.isEmpty()) continue;
-            line(box, y);
-            text(box, s.title, TITLE_COLOR, X0, y + GAP, PER_ROW * DX, TITLE);
-            y += GAP + TITLE;
-            int i = 0;
-            for (; i < ids.size() && slot < before; i++, slot++)
-            {
-                int x = X0 + (i % PER_ROW) * DX, at = y + (i / PER_ROW) * DY;
-                Widget w = kids[slot];
-                if (w == null) continue;
-                show(w, ids.get(i), bank.count(ids.get(i)), nameOf.apply(ids.get(i)), withdraw);
-                place(w, x, at, ITEM_W, ITEM_H);
-                if (items.get(i) != null) count(box, items.get(i), x, at);
-            }
-            y += Math.max(1, (i + PER_ROW - 1) / PER_ROW) * DY;
+                    }
+            y = section(box, kids, s.title, ids, items, bank, nameOf, withdraw, slot, y);
         }
+        List<StepItems.Item> none = new ArrayList<>();
+        for (int i = 0; i < notInBank.size(); i++) none.add(null);
+        y = section(box, kids, BankFilter.NOT_IN_BANK, notInBank, none, bank, nameOf, withdraw, slot, y);
         box.setScrollHeight(Math.max(y, box.getHeight()));
         fixScroll.run();
+    }
+
+    /** One section: line, title and its items in the next free bank slots; returns the height below it. */
+    private static int section(Widget box, Widget[] kids, String title, List<Integer> ids, List<StepItems.Item> items,
+        ItemContainer bank, IntFunction<String> nameOf, String[] withdraw, int[] slot, int y)
+    {
+        if (ids.isEmpty()) return y;
+        line(box, y);
+        text(box, title, TITLE_COLOR, X0, y + GAP, PER_ROW * DX, TITLE);
+        y += GAP + TITLE;
+        int i = 0;
+        for (; i < ids.size() && slot[0] < before; i++, slot[0]++)
+        {
+            int x = X0 + (i % PER_ROW) * DX, at = y + (i / PER_ROW) * DY;
+            Widget w = kids[slot[0]];
+            if (w == null) continue;
+            show(w, ids.get(i), bank.count(ids.get(i)), nameOf.apply(ids.get(i)), withdraw);
+            place(w, x, at, ITEM_W, ITEM_H);
+            if (items.get(i) != null) count(box, items.get(i), x, at);
+        }
+        return y + Math.max(1, (i + PER_ROW - 1) / PER_ROW) * DY;
     }
 
     /** Fills a bank slot with an item: the bank's count and withdraw actions, or faded with none when you have none. */

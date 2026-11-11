@@ -21,9 +21,13 @@ public class BankFilterTest
         g.items = StepItems.of(g.now.step, Map.of(AccountState.BANK, Map.of("coins", 100)), x -> null);
         Runs.Switches sw = Runs.Switches.ALL_ON.withRun("Tree run", false).withRun("Fruit tree run", false).withRun("Bird houses", false);
         List<BankFilter.Section> secs = BankFilter.sections(g, sw);
-        assertEquals(2, secs.size());
+        assertEquals(3, secs.size());
         assertEquals("Now: " + g.now.what, secs.get(0).title);
         assertEquals("Herb run", secs.get(1).title);
+        // Teleports have one section of their own, after the runs
+        assertEquals(BankFilter.TELEPORTS, secs.get(2).title);
+        assertEquals(secs.get(2), BankFilter.sectionOf("Ectophial", secs));
+        assertNull(BankFilter.sectionOf("Ectophial", secs.subList(0, 2)));
         assertEquals(secs.get(0), BankFilter.sectionOf("Coins", secs));
         assertEquals(secs.get(1), BankFilter.sectionOf("Ranarr seed", secs));
         assertNull(BankFilter.sectionOf("Lobster", secs));

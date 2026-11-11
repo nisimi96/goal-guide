@@ -45,7 +45,9 @@ public final class BankFilter
         }
     }
 
-    /** The step (when it uses items) or its parts, then each run that is on. */
+    public static final String TELEPORTS = "Teleports", NOT_IN_BANK = "Not in bank";
+
+    /** The step (when it uses items) or its parts, then each run that is on, then the runs' teleports. */
     public static List<Section> sections(Guide g, Runs.Switches sw)
     {
         List<Section> out = new ArrayList<>();
@@ -65,7 +67,14 @@ public final class BankFilter
             for (StepItems.Item i : g.items) names.add(i.name);
             out.add(new Section("Now: " + g.now.what, keys(names), g.items));
         }
-        for (String run : sw.onRuns()) out.add(new Section(run, keys(Runs.items(run)), List.of()));
+        // Each run's own items, then one section of the ways to get around for all of them
+        List<String> travel = new ArrayList<>();
+        for (String run : sw.onRuns())
+        {
+            out.add(new Section(run, keys(Runs.items(run)), List.of()));
+            travel.addAll(Runs.travel(run));
+        }
+        if (!travel.isEmpty()) out.add(new Section(TELEPORTS, keys(travel), List.of()));
         return out;
     }
 

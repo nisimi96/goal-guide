@@ -49,6 +49,7 @@ public final class Runs
 
     private static final Map<String, List<Stop>> STOPS = new LinkedHashMap<>();
     private static final Map<String, List<String>> ITEMS = new LinkedHashMap<>();
+    private static final Map<String, List<String>> TRAVEL = new LinkedHashMap<>();
 
     static
     {
@@ -57,7 +58,7 @@ public final class Runs
             String[] f = line.split("\t");
             String needs = f[3].equals("-") ? null : f[3];
             if (f[0].equals("stop")) STOPS.computeIfAbsent(f[1], k -> new ArrayList<>()).add(new Stop(f[2], needs));
-            else ITEMS.computeIfAbsent(f[1], k -> new ArrayList<>()).add(f[2]);
+            else (f[0].equals("travel") ? TRAVEL : ITEMS).computeIfAbsent(f[1], k -> new ArrayList<>()).add(f[2]);
         }
     }
 
@@ -66,7 +67,11 @@ public final class Runs
 
     public static List<Stop> stops(String run) { return STOPS.getOrDefault(run, List.of()); }
 
+    /** What the run uses: tools, seeds, compost. */
     public static List<String> items(String run) { return ITEMS.getOrDefault(run, List.of()); }
+
+    /** Ways to get to the run's stops: teleports, jewellery, capes. */
+    public static List<String> travel(String run) { return TRAVEL.getOrDefault(run, List.of()); }
 
     /**
      * The runs and stops switched off, per account. Saved as two short texts:

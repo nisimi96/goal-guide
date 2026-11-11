@@ -1,6 +1,7 @@
 # kind	run	name	needs
 # Farming and bird house runs. Stops and what opens them: OSRS Wiki Herb patch, Tree patch, Fruit tree patch, Bird house trapping (read 2026-11-11).
 # Items: OSRS Wiki Seeds and each patch page's Protection and Transportation sections (read 2026-11-11). Spells need only runes, so they are left out.
+# kind: stop, item (what the run uses), travel (a way to get to a stop; the bank shows them together).
 # needs: '-' = open to all, a quest or diary key, or a skill and level.
 stop	Herb run	Falador	-
 stop	Herb run	Port Phasmatys	-
@@ -35,43 +36,43 @@ item	Herb run	Compost	-
 item	Herb run	Supercompost	-
 item	Herb run	Ultracompost	-
 item	Herb run	Bottomless compost bucket	-
-item	Herb run	Explorer's ring 2	-
-item	Herb run	Explorer's ring 3	-
-item	Herb run	Explorer's ring 4	-
-item	Herb run	Ring of the elements	-
-item	Herb run	Draynor manor teleport	-
-item	Herb run	Amulet of glory	-
-item	Herb run	Skills necklace	-
-item	Herb run	Ring of wealth	-
-item	Herb run	Falador teleport	-
-item	Herb run	Ectophial	-
-item	Herb run	Fenkenstrain's castle teleport	-
-item	Herb run	Kharyrll teleport	-
-item	Herb run	Camelot teleport	-
-item	Herb run	Ardougne cloak 2	-
-item	Herb run	Ardougne cloak 3	-
-item	Herb run	Ardougne cloak 4	-
-item	Herb run	Combat bracelet	-
-item	Herb run	Quest point cape	-
-item	Herb run	Quest point cape (t)	-
-item	Herb run	Ardougne teleport	-
-item	Herb run	Xeric's talisman	-
-item	Herb run	Teleport to house	-
-item	Herb run	Hosidius teleport	-
-item	Herb run	Kharedst's memoirs	-
-item	Herb run	Book of the dead	-
-item	Herb run	Basic quetzal whistle	-
-item	Herb run	Enhanced quetzal whistle	-
-item	Herb run	Perfected quetzal whistle	-
-item	Herb run	Hunter cape	-
-item	Herb run	Hunter cape(t)	-
-item	Herb run	Civitas illa fortis teleport	-
-item	Herb run	Trollheim teleport	-
-item	Herb run	Ring of shadows	-
-item	Herb run	Harmony island teleport	-
-item	Herb run	Mos le'harmless teleport	-
-item	Herb run	Farming cape	-
-item	Herb run	Farming cape(t)	-
+travel	Herb run	Explorer's ring 2	-
+travel	Herb run	Explorer's ring 3	-
+travel	Herb run	Explorer's ring 4	-
+travel	Herb run	Ring of the elements	-
+travel	Herb run	Draynor manor teleport	-
+travel	Herb run	Amulet of glory	-
+travel	Herb run	Skills necklace	-
+travel	Herb run	Ring of wealth	-
+travel	Herb run	Falador teleport	-
+travel	Herb run	Ectophial	-
+travel	Herb run	Fenkenstrain's castle teleport	-
+travel	Herb run	Kharyrll teleport	-
+travel	Herb run	Camelot teleport	-
+travel	Herb run	Ardougne cloak 2	-
+travel	Herb run	Ardougne cloak 3	-
+travel	Herb run	Ardougne cloak 4	-
+travel	Herb run	Combat bracelet	-
+travel	Herb run	Quest point cape	-
+travel	Herb run	Quest point cape (t)	-
+travel	Herb run	Ardougne teleport	-
+travel	Herb run	Xeric's talisman	-
+travel	Herb run	Teleport to house	-
+travel	Herb run	Hosidius teleport	-
+travel	Herb run	Kharedst's memoirs	-
+travel	Herb run	Book of the dead	-
+travel	Herb run	Basic quetzal whistle	-
+travel	Herb run	Enhanced quetzal whistle	-
+travel	Herb run	Perfected quetzal whistle	-
+travel	Herb run	Hunter cape	-
+travel	Herb run	Hunter cape(t)	-
+travel	Herb run	Civitas illa fortis teleport	-
+travel	Herb run	Trollheim teleport	-
+travel	Herb run	Ring of shadows	-
+travel	Herb run	Harmony island teleport	-
+travel	Herb run	Mos le'harmless teleport	-
+travel	Herb run	Farming cape	-
+travel	Herb run	Farming cape(t)	-
 stop	Tree run	Lumbridge	-
 stop	Tree run	Varrock	-
 stop	Tree run	Falador	-
@@ -95,24 +96,24 @@ item	Tree run	Compost	-
 item	Tree run	Supercompost	-
 item	Tree run	Ultracompost	-
 item	Tree run	Bottomless compost bucket	-
-item	Tree run	Lumbridge teleport	-
-item	Tree run	Varrock teleport	-
-item	Tree run	Falador teleport	-
-item	Tree run	Achievement diary cape	-
-item	Tree run	Achievement diary cape (t)	-
-item	Tree run	Ring of wealth	-
-item	Tree run	Skills necklace	-
-item	Tree run	Games necklace	-
-item	Tree run	Combat bracelet	-
-item	Tree run	Goblin village sphere	-
-item	Tree run	Taverley teleport	-
-item	Tree run	Camelot teleport	-
-item	Tree run	Slayer ring	-
-item	Tree run	Grand seed pod	-
-item	Tree run	Royal seed pod	-
-item	Tree run	Necklace of passage	-
-item	Tree run	Farming cape	-
-item	Tree run	Farming cape(t)	-
+travel	Tree run	Lumbridge teleport	-
+travel	Tree run	Varrock teleport	-
+travel	Tree run	Falador teleport	-
+travel	Tree run	Achievement diary cape	-
+travel	Tree run	Achievement diary cape (t)	-
+travel	Tree run	Ring of wealth	-
+travel	Tree run	Skills necklace	-
+travel	Tree run	Games necklace	-
+travel	Tree run	Combat bracelet	-
+travel	Tree run	Goblin village sphere	-
+travel	Tree run	Taverley teleport	-
+travel	Tree run	Camelot teleport	-
+travel	Tree run	Slayer ring	-
+travel	Tree run	Grand seed pod	-
+travel	Tree run	Royal seed pod	-
+travel	Tree run	Necklace of passage	-
+travel	Tree run	Farming cape	-
+travel	Tree run	Farming cape(t)	-
 stop	Fruit tree run	Catherby	-
 stop	Fruit tree run	Gnome Stronghold	-
 stop	Fruit tree run	Tree Gnome Village	-
@@ -139,26 +140,26 @@ item	Fruit tree run	Compost	-
 item	Fruit tree run	Supercompost	-
 item	Fruit tree run	Ultracompost	-
 item	Fruit tree run	Bottomless compost bucket	-
-item	Fruit tree run	Achievement diary cape	-
-item	Fruit tree run	Achievement diary cape (t)	-
-item	Fruit tree run	Grand seed pod	-
-item	Fruit tree run	Royal seed pod	-
-item	Fruit tree run	Slayer ring	-
-item	Fruit tree run	Necklace of passage	-
-item	Fruit tree run	Camelot teleport	-
-item	Fruit tree run	Teleport to house	-
-item	Fruit tree run	Brimhaven teleport	-
-item	Fruit tree run	Karamja gloves 3	-
-item	Fruit tree run	Karamja gloves 4	-
-item	Fruit tree run	Ardougne teleport	-
-item	Fruit tree run	Amulet of glory	-
-item	Fruit tree run	Teleport crystal	-
-item	Fruit tree run	Eternal teleport crystal	-
-item	Fruit tree run	Skills necklace	-
-item	Fruit tree run	Farming cape	-
-item	Fruit tree run	Farming cape(t)	-
+travel	Fruit tree run	Achievement diary cape	-
+travel	Fruit tree run	Achievement diary cape (t)	-
+travel	Fruit tree run	Grand seed pod	-
+travel	Fruit tree run	Royal seed pod	-
+travel	Fruit tree run	Slayer ring	-
+travel	Fruit tree run	Necklace of passage	-
+travel	Fruit tree run	Camelot teleport	-
+travel	Fruit tree run	Teleport to house	-
+travel	Fruit tree run	Brimhaven teleport	-
+travel	Fruit tree run	Karamja gloves 3	-
+travel	Fruit tree run	Karamja gloves 4	-
+travel	Fruit tree run	Ardougne teleport	-
+travel	Fruit tree run	Amulet of glory	-
+travel	Fruit tree run	Teleport crystal	-
+travel	Fruit tree run	Eternal teleport crystal	-
+travel	Fruit tree run	Skills necklace	-
+travel	Fruit tree run	Farming cape	-
+travel	Fruit tree run	Farming cape(t)	-
 stop	Bird houses	Fossil Island	BONE_VOYAGE
-item	Bird houses	Digsite pendant	-
+travel	Bird houses	Digsite pendant	-
 item	Bird houses	Bird house	-
 item	Bird houses	Oak bird house	-
 item	Bird houses	Willow bird house	-
