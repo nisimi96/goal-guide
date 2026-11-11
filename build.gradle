@@ -1,0 +1,61 @@
+plugins {
+	id 'java'
+}
+
+repositories {
+	mavenLocal()
+	maven {
+		url = 'https://repo.runelite.net'
+		content {
+			includeGroupByRegex("net\\.runelite.*")
+		}
+	}
+	mavenCentral()
+}
+
+def runeLiteVersion = 'latest.release'
+
+dependencies {
+	compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
+
+	compileOnly 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+	// Item Roots reads the OSRS Wiki item database (sqlite)
+	implementation 'org.xerial:sqlite-jdbc:3.43.0.0'
+
+	testImplementation 'junit:junit:4.12'
+	testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
+	testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
+}
+
+configurations.all {
+	resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+}
+
+group = 'com.goalguide'
+version = '1.0-SNAPSHOT'
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+	// TODO Plugin Hub builds Java 11; the code still uses Java 16+ features (records, Stream.toList)
+	options.release.set(17)
+}
+
+// The jar carries sqlite-jdbc so it works as a sideloaded plugin
+jar {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+	exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+}
+
+tasks.register('run', JavaExec) {
+	group = 'application'
+	description = 'Launch RuneLite with Goal Guide loaded'
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass.set('com.goalguide.GoalGuideRun')
+	jvmArgs = ['-ea']
+	args = ['--developer-mode']
+}

@@ -1,0 +1,16 @@
+package com.goalguide;
+
+import com.goalguide.items.ItemRootsPlugin;
+import com.goalguide.know.GoalGuidePlugin;
+import net.runelite.client.RuneLite;
+import net.runelite.client.externalplugins.ExternalPluginManager;
+
+/** Starts RuneLite with Goal Guide and Item Roots loaded (./gradlew run). */
+public class GoalGuideRun
+{
+	public static void main(String[] args) throws Exception
+	{
+		ExternalPluginManager.loadBuiltin(GoalGuidePlugin.class, ItemRootsPlugin.class);
+		RuneLite.main(args);
+	}
+}

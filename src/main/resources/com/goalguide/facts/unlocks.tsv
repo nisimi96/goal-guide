@@ -1,0 +1,4 @@
+# One-time unlocks the guide suggests as soon as the account meets them.
+# Columns: id, name, skills ("THIEVING 50,AGILITY 50"), quests ("A,B" or -), items (all owned = done, "a;b"), members (y/n),
+#          minutes by a skill's level ("THIEVING 50:48 60:45 70:42 80:23"), why, where, source.
+rogueoutfit	Rogue outfit	THIEVING 50,AGILITY 50	-	rogue mask;rogue top;rogue trousers;rogue gloves;rogue boots	y	THIEVING 50:48 60:45 70:42 80:23	the full set doubles every pickpocket's loot (Master Farmer seeds)	Rogues' Den	OSRS Wiki, Rogues' Den (2026-10-25): 50 Agility + 50 Thieving unboostable; expected safe cracks 13/12/12/11
