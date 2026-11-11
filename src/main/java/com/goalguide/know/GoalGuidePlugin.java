@@ -4,7 +4,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.ScriptID;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
@@ -14,7 +16,9 @@ import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.events.ScriptPreFired;
 import net.runelite.api.events.StatChanged;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -252,6 +256,25 @@ public class GoalGuidePlugin extends Plugin
     {
         if (state == null || e.getSkill() == null) return;
         change(state.putLevel(e.getSkill().name(), client.getRealSkillLevel(e.getSkill()), e.getXp()));
+    }
+
+    /** Quest points change the moment a quest is done: read the account next tick, not up to a minute later. */
+    @Subscribe
+    public void onVarbitChanged(VarbitChanged e)
+    {
+        if (e.getVarpId() == VarPlayerID.QP) readAccountSoon();
+    }
+
+    /** Quest, miniquest and diary messages ("you've completed a quest", "completed all of the easy tasks") also read the account next tick. */
+    @Subscribe
+    public void onChatMessage(ChatMessage e)
+    {
+        if (e.getType() == ChatMessageType.GAMEMESSAGE && e.getMessage().contains("completed")) readAccountSoon();
+    }
+
+    private void readAccountSoon()
+    {
+        accountAt = tick - ACCOUNT_EVERY;
     }
 
     private boolean bankOpen()
