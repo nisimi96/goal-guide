@@ -3,25 +3,26 @@ package com.goalguide.guide;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.IntFunction;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import net.runelite.api.Client;
 import net.runelite.api.FontID;
-import net.runelite.api.ScriptID;
 import net.runelite.api.gameval.InterfaceID;
-import net.runelite.api.gameval.ItemID;
 import net.runelite.api.gameval.SpriteID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetType;
 
 /**
- * While the bank button is on, the bank's items sit under a line and a small title per section. Step items
- * get a have/need count, with a red cross when short; a step item you have nowhere shows faded, and one
- * whose bank picture is already in an earlier section shows again as a copy.
- * Only moves item pictures and adds text; nothing in the bank moves. Client thread.
+ * While the bank button is on, the bank shows a Bank Tags layout: a blank row per section for its line and
+ * title, then the section's items in order. An item a section shares with an earlier one (the steel bar of
+ * each sword) is in the layout again, and Bank Tags draws every copy as the real, clickable bank item.
+ * We add the lines, titles and a have/need count under each step item, red with a cross when short.
+ * Only draws; withdrawing is Bank Tags' own. Client thread.
  */
 final class BankSections
 {
@@ -30,8 +31,64 @@ final class BankSections
     // The bank's item grid
     static final int PER_ROW = 8, DX = 48, DY = 36, X0 = 51, GAP = 5, LINE = 2, TITLE = 15, ITEM_W = 36, ITEM_H = 32;
     static final int TITLE_COLOR = 0xe4d8a2, ENOUGH = 0x7fd17f, SHORT = 0xff6060;
-    // Widget opacity: 0 is solid, 255 is gone
-    static final int SOLID = 0, FADED = 150;
+
+    /** The layout to show, and what sits where in it. */
+    static final class Plan
+    {
+        /** Item id per bank slot, -1 for empty. */
+        final int[] ids;
+        /** Slot of the first cell of each title row, to its section title. */
+        final Map<Integer, String> titles;
+        /** Slot of each step item, to its count. */
+        final Map<Integer, StepItems.Item> counts;
+
+        Plan(int[] ids, Map<Integer, String> titles, Map<Integer, StepItems.Item> counts)
+        {
+            this.ids = ids;
+            this.titles = titles;
+            this.counts = counts;
+        }
+
+        boolean has(int id)
+        {
+            for (int i : ids) if (i == id) return true;
+            return false;
+        }
+    }
+
+    /**
+     * Lays the sections out: each starts on a new row under a blank title row.
+     * @param idOf   a step item to the id to show for it (one you hold of its kind, else its own), 0 when unknown
+     * @param idsOf  a run's item name to the ids to show (each kind you hold, else its own)
+     */
+    static Plan plan(List<BankFilter.Section> sections, ToIntFunction<String> idOf, Function<String, List<Integer>> idsOf)
+    {
+        List<Integer> ids = new ArrayList<>();
+        Map<Integer, String> titles = new LinkedHashMap<>();
+        Map<Integer, StepItems.Item> counts = new HashMap<>();
+        for (BankFilter.Section s : sections)
+        {
+            while (ids.size() % PER_ROW != 0) ids.add(-1);
+            titles.put(ids.size(), s.title);
+            for (int i = 0; i < PER_ROW; i++) ids.add(-1);
+            Set<Integer> here = new HashSet<>();
+            if (!s.items.isEmpty())
+                for (StepItems.Item it : s.items)
+                {
+                    int id = idOf.applyAsInt(it.name);
+                    if (id <= 0 || !here.add(id)) continue;
+                    counts.put(ids.size(), it);
+                    ids.add(id);
+                }
+            else
+                for (String k : s.keys)
+                    for (int id : idsOf.apply(k))
+                        if (here.add(id)) ids.add(id);
+        }
+        int[] out = new int[ids.size()];
+        for (int i = 0; i < out.length; i++) out[i] = ids.get(i);
+        return new Plan(out, titles, counts);
+    }
 
     /** How many children the item box had before ours were added; -1 = none added. */
     private static int before = -1;
@@ -48,85 +105,37 @@ final class BankSections
         box.revalidate();
     }
 
-    /**
-     * Groups the shown items under their sections.
-     * @param nameOf bank item id to its name
-     * @param idOf   item name to a game id, 0 when unknown (for faded missing items)
-     */
-    static void lay(Client client, List<BankFilter.Section> sections, IntFunction<String> nameOf, ToIntFunction<String> idOf, Runnable fixScroll)
+    /** Bank Tags laid the plan out: add the lines, titles and counts. */
+    static void lay(Client client, Plan plan)
     {
         Widget box = client.getWidget(InterfaceID.Bankmain.ITEMS);
         Widget[] kids = box == null ? null : box.getChildren();
-        if (kids == null || sections.isEmpty() || before >= 0) return;
-        Map<BankFilter.Section, List<Widget>> groups = new LinkedHashMap<>();
-        for (BankFilter.Section s : sections) groups.put(s, new ArrayList<>());
-        Map<Widget, String> names = new HashMap<>();
+        if (kids == null || plan.ids.length == 0 || before >= 0) return;
+        // The bank's own tab lines and "Tab 2" titles make way for ours
         for (Widget w : kids)
-        {
-            if (w == null || w.isSelfHidden()) continue;
-            // The bank's own tab lines and "Tab 2" titles make way for ours
-            if (w.getSpriteId() == SpriteID.TRADEBACKING_DARK || w.getType() == WidgetType.TEXT && w.getText() != null && w.getText().startsWith("Tab"))
-            {
+            if (w != null && !w.isSelfHidden() && (w.getSpriteId() == SpriteID.TRADEBACKING_DARK
+                || w.getType() == WidgetType.TEXT && w.getText() != null && w.getText().startsWith("Tab")))
                 w.setHidden(true);
-                continue;
-            }
-            int id = w.getItemId();
-            if (id <= -1 || id == ItemID.BLANKOBJECT) continue;
-            String name = nameOf.apply(id);
-            BankFilter.Section s = BankFilter.sectionOf(name, sections);
-            if (s == null) continue;
-            groups.get(s).add(w);
-            names.put(w, name);
-        }
         before = kids.length;
-        int y = 0;
-        for (Map.Entry<BankFilter.Section, List<Widget>> g : groups.entrySet())
+        for (Map.Entry<Integer, String> t : plan.titles.entrySet())
         {
-            BankFilter.Section s = g.getKey();
+            int y = yOf(kids, t.getKey());
             line(box, y);
-            text(box, s.title, TITLE_COLOR, X0, y + GAP, PER_ROW * DX, TITLE);
-            y += GAP + TITLE;
-            // Same order in every section: the section's items as listed (the thing to get, then its tools and
-            // materials), each by its real bank picture when it's in this section, else a copy; then the rest
-            List<Widget> left = new ArrayList<>(g.getValue());
-            int i = 0;
-            for (StepItems.Item it : s.items)
-            {
-                Widget real = null;
-                for (Widget w : left) if (BankFilter.itemOf(names.get(w), s.items) == it) { real = w; break; }
-                int x = X0 + (i % PER_ROW) * DX, at = y + (i / PER_ROW) * DY;
-                if (real != null)
-                {
-                    left.remove(real);
-                    move(real, x, at);
-                }
-                else
-                {
-                    // One you lack shows faded; one whose picture is in an earlier section or on you shows solid
-                    int id = idOf.applyAsInt(it.name);
-                    if (id <= 0) continue;
-                    picture(box, id, it.name, x, at, BankFilter.isShort(it) ? FADED : SOLID);
-                }
-                count(box, it, x, at);
-                i++;
-            }
-            // Other matches of this section (a second kind of the same item, a run's items): no count
-            for (Widget w : left)
-            {
-                move(w, X0 + (i % PER_ROW) * DX, y + (i / PER_ROW) * DY);
-                i++;
-            }
-            y += Math.max(1, (i + PER_ROW - 1) / PER_ROW) * DY;
+            text(box, t.getValue(), TITLE_COLOR, X0, y + GAP, PER_ROW * DX, TITLE);
         }
-        box.setScrollHeight(Math.max(y, box.getHeight()));
-        fixScroll.run();
+        for (Map.Entry<Integer, StepItems.Item> c : plan.counts.entrySet())
+        {
+            int at = c.getKey();
+            Widget w = at < kids.length ? kids[at] : null;
+            count(box, c.getValue(), w != null ? w.getOriginalX() : X0 + (at % PER_ROW) * DX, yOf(kids, at));
+        }
     }
 
-    /** The bank's scrollbar after our layout. Run after the bank's own script ends. */
-    static void scrollbar(Client client)
+    /** Where the bank put a slot (its widget stays put while hidden), else where the grid would. */
+    private static int yOf(Widget[] kids, int slot)
     {
-        Widget box = client.getWidget(InterfaceID.Bankmain.ITEMS);
-        if (box != null) client.runScript(ScriptID.UPDATE_SCROLLBAR, InterfaceID.Bankmain.SCROLLBAR, InterfaceID.Bankmain.ITEMS, box.getScrollY());
+        Widget w = slot < kids.length ? kids[slot] : null;
+        return w != null ? w.getOriginalY() : (slot / PER_ROW) * DY;
     }
 
     /** "74/225" along the bottom of an item, red with a cross when short. */
@@ -138,25 +147,6 @@ final class BankSections
         Widget c = box.createChild(-1, WidgetType.GRAPHIC);
         c.setSpriteId(SpriteID.Checkbox.CROSSED);
         place(c, x + ITEM_W - 13, y, 13, 13);
-    }
-
-    /** A picture of an item the step needs: faded when you have none, solid when its real one is elsewhere. */
-    private static void picture(Widget box, int id, String name, int x, int y, int opacity)
-    {
-        Widget w = box.createChild(-1, WidgetType.GRAPHIC);
-        w.setItemId(id);
-        w.setItemQuantity(0);
-        w.setItemQuantityMode(0);
-        w.setOpacity(opacity);
-        w.setName("<col=ff9040>" + name + "</col>");
-        place(w, x, y, ITEM_W, ITEM_H);
-    }
-
-    private static void move(Widget w, int x, int y)
-    {
-        w.setOriginalX(x);
-        w.setOriginalY(y);
-        w.revalidate();
     }
 
     private static void line(Widget box, int y)
