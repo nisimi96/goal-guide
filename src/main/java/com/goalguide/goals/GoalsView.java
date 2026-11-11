@@ -134,8 +134,8 @@ public final class GoalsView
             if (gd.now.step != null)
             {
                 List<Guide.Part> parts = new ArrayList<>();
-                for (Planner.Step p : gd.now.step.parts)
-                    parts.add(new Guide.Part(p.verb() + p.what, p.item, StepItems.of(p, st.items(), item -> source(a, item))));
+                for (Planner.Step part : gd.now.step.parts)
+                    parts.add(new Guide.Part(part.verb() + part.what, part.item, StepItems.of(part, st.items(), item -> source(a, item))));
                 gd.parts = parts;
             }
         }
