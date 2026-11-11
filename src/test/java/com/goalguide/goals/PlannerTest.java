@@ -186,4 +186,18 @@ public class PlannerTest
         assertTrue(tithe.how, tithe.hours > 0 && tithe.how.startsWith("Tithe Farm"));
     }
 
+
+    @Test
+    public void aQuestsItemsComeAsOneGroupRightBeforeIt()
+    {
+        Planner.Route r = Planner.plan(QuestData.get(), null, account(60), 0, List.of(Goal.quest("IN_SEARCH_OF_THE_MYREQUE")));
+        int i = 0;
+        while (!"IN_SEARCH_OF_THE_MYREQUE".equals(r.steps.get(i + 1).quest)) i++;
+        Planner.Step group = r.steps.get(i);
+        assertEquals("items for In Search of the Myreque", group.what);
+        assertTrue(group.parts.size() > 1);
+        assertEquals("IN_SEARCH_OF_THE_MYREQUE", r.steps.get(i + 1).quest);
+        // Each item still counts for the hours
+        assertTrue(r.unknown >= group.parts.size() - 1);
+    }
 }
