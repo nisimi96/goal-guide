@@ -143,6 +143,11 @@ public final class GoalsView
                     List<StepItems.Item> its = new ArrayList<>();
                     if (part.item != null) its.add(StepItems.toGet(part.item, amount(part), st.items(), item -> source(a, item)));
                     its.addAll(StepItems.of(part, st.items(), item -> source(a, item)));
+                    // Then what it's made from, and what a missing material is made from
+                    ItemData d = ItemDb.get();
+                    if (part.item != null && d != null)
+                        for (StepItems.Item m : StepItems.madeFrom(ItemTree.trace(d, a, part.item), amount(part), st.items(), item -> source(a, item)))
+                            if (its.stream().noneMatch(i -> ItemData.key(i.name).equals(ItemData.key(m.name)))) its.add(m);
                     parts.add(new Guide.Part(part.verb() + part.what, part.item, its));
                 }
                 gd.parts = parts;
