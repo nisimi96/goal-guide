@@ -119,23 +119,21 @@ final class BankSections
         before = kids.length;
         for (Map.Entry<Integer, String> t : plan.titles.entrySet())
         {
-            int y = yOf(kids, t.getKey());
+            int y = yOf(t.getKey());
             line(box, y);
             text(box, t.getValue(), TITLE_COLOR, X0, y + GAP, PER_ROW * DX, TITLE);
         }
         for (Map.Entry<Integer, StepItems.Item> c : plan.counts.entrySet())
         {
             int at = c.getKey();
-            Widget w = at < kids.length ? kids[at] : null;
-            count(box, c.getValue(), w != null ? w.getOriginalX() : X0 + (at % PER_ROW) * DX, yOf(kids, at));
+            count(box, c.getValue(), X0 + (at % PER_ROW) * DX, yOf(at));
         }
     }
 
-    /** Where the bank put a slot (its widget stays put while hidden), else where the grid would. */
-    private static int yOf(Widget[] kids, int slot)
+    /** Where Bank Tags puts a layout slot (LayoutManager: x = 51 + col * 48, y = row * 36). */
+    private static int yOf(int slot)
     {
-        Widget w = slot < kids.length ? kids[slot] : null;
-        return w != null ? w.getOriginalY() : (slot / PER_ROW) * DY;
+        return (slot / PER_ROW) * DY;
     }
 
     /** "74/225" along the bottom of an item, red with a cross when short. */

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.FontID;
@@ -24,6 +25,7 @@ import com.goalguide.items.ItemData;
 import com.goalguide.items.ItemDb;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.plugins.banktags.BankTagsPlugin;
 import net.runelite.client.plugins.banktags.BankTagsService;
 import net.runelite.client.plugins.banktags.TagManager;
 import net.runelite.client.plugins.banktags.tabs.Layout;
@@ -34,6 +36,7 @@ import net.runelite.client.plugins.banktags.tabs.LayoutManager;
  * every run switched on, as a RuneLite Bank Tags layout with a title per section; off shows the whole bank.
  * The layout is ours alone (tag "goal guide") and goes when the plugin stops. Client thread.
  */
+@Slf4j
 public class BankButton
 {
     static final String TAG = "goal guide";
@@ -46,6 +49,7 @@ public class BankButton
     @Inject private BankTagsService bankTags;
     @Inject private ClientThread clientThread;
     @Inject private LayoutManager layouts;
+    @Inject private BankTagsPlugin bankTagsPlugin;
 
     private Widget button, text;
     private List<BankFilter.Section> sections = List.of();
@@ -128,10 +132,11 @@ public class BankButton
     private void open()
     {
         plan = BankSections.plan(sections, this::idOf, this::idsOf);
-        layouts.saveLayout(new Layout(TAG, plan.ids));
-        // Close first, so a new step lays the bank out again
+        // Close first, so a new step lays the bank out again. The layout goes straight to Bank Tags; reading
+        // it back from config (openBankTag) gave no layout in game, and the items came packed.
         if (isOn()) bankTags.closeBankTag();
-        bankTags.openBankTag(TAG, BankTagsService.OPTION_HIDE_TAG_NAME);
+        bankTagsPlugin.openTag(TAG, new Layout(TAG, plan.ids), BankTagsService.OPTION_HIDE_TAG_NAME);
+        if (bankTags.getActiveLayout() == null) log.debug("Goal Guide bank layout did not open");
     }
 
     private boolean isOn()
