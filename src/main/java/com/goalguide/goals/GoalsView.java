@@ -134,14 +134,30 @@ public final class GoalsView
             if (gd.now.step != null)
             {
                 List<Guide.Part> parts = new ArrayList<>();
-                for (Planner.Step part : gd.now.step.parts)
-                    parts.add(new Guide.Part(part.verb() + part.what, part.item, StepItems.of(part, st.items(), item -> source(a, item))));
+                // A Get step is its own one part, so the item to get shows in the bank too
+                List<Planner.Step> gets = !gd.now.step.parts.isEmpty() ? gd.now.step.parts
+                    : gd.now.step.item != null ? List.of(gd.now.step) : List.of();
+                for (Planner.Step part : gets)
+                {
+                    // The item itself first, so one you have none of still shows (faded, 0/1)
+                    List<StepItems.Item> its = new ArrayList<>();
+                    if (part.item != null) its.add(StepItems.toGet(part.item, amount(part), st.items(), item -> source(a, item)));
+                    its.addAll(StepItems.of(part, st.items(), item -> source(a, item)));
+                    parts.add(new Guide.Part(part.verb() + part.what, part.item, its));
+                }
                 gd.parts = parts;
             }
         }
         Guide.set(gd);
         pn.showGuide(gd);
         pn.showRoute(r, null);
+    }
+
+    /** How many a Get step still needs: "6 x Plank" is 6, "Bucket" is 1. */
+    static int amount(Planner.Step s)
+    {
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("^(\\d+) x ").matcher(s.what);
+        return m.find() ? Integer.parseInt(m.group(1)) : 1;
     }
 
     /** Where to get an item the step is missing: a main's GE price first, then the best way to make or get it. */

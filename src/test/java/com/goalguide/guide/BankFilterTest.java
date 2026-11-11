@@ -38,7 +38,11 @@ public class BankFilterTest
     {
         Guide g = Guide.of(GuideTest.route());
         StepItems.Item axe = StepItems.of(g.now.step, Map.of(), x -> null).get(0);
-        g.parts = List.of(new Guide.Part("Get 6 x Plank", "Plank", List.of(axe)), new Guide.Part("Get Bucket", "Bucket", List.of()));
+        StepItems.Item planks = StepItems.toGet("Plank", 6, Map.of(AccountState.BANK, Map.of("plank", 2)), x -> null);
+        assertEquals("2/8", BankFilter.count(planks));
+        assertTrue(BankFilter.isShort(planks));
+        g.parts = List.of(new Guide.Part("Get 6 x Plank", "Plank", List.of(planks, axe)),
+            new Guide.Part("Get Bucket", "Bucket", List.of(StepItems.toGet("Bucket", 1, Map.of(), x -> null))));
         List<BankFilter.Section> secs = BankFilter.sections(g, Runs.Switches.ALL_ON.withRun("Herb run", false)
             .withRun("Tree run", false).withRun("Fruit tree run", false).withRun("Bird houses", false));
         assertEquals(2, secs.size());

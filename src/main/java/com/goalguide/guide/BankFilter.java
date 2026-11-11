@@ -55,7 +55,6 @@ public final class BankFilter
             for (Guide.Part p : g.parts)
             {
                 List<String> names = new ArrayList<>();
-                if (p.item != null) names.add(p.item);
                 for (StepItems.Item i : p.items) names.add(i.name);
                 out.add(new Section(p.title, keys(names), p.items));
             }
