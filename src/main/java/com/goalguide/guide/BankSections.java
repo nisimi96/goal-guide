@@ -19,7 +19,8 @@ import net.runelite.api.widgets.WidgetType;
 
 /**
  * While the bank button is on, the bank's items sit under a line and a small title per section. Step items
- * get a have/need count, with a red cross when short; a step item you have nowhere shows faded.
+ * get a have/need count, with a red cross when short; a step item you have nowhere shows faded, and one
+ * whose bank picture is already in an earlier section shows again as a copy.
  * Only moves item pictures and adds text; nothing in the bank moves. Client thread.
  */
 final class BankSections
@@ -29,6 +30,8 @@ final class BankSections
     // The bank's item grid
     static final int PER_ROW = 8, DX = 48, DY = 36, X0 = 51, GAP = 5, LINE = 2, TITLE = 15, ITEM_W = 36, ITEM_H = 32;
     static final int TITLE_COLOR = 0xe4d8a2, ENOUGH = 0x7fd17f, SHORT = 0xff6060;
+    // Widget opacity: 0 is solid, 255 is gone
+    static final int SOLID = 0, FADED = 150;
 
     /** How many children the item box had before ours were added; -1 = none added. */
     private static int before = -1;
@@ -99,12 +102,14 @@ final class BankSections
                 }
                 i++;
             }
+            // Items with no bank picture here: one you lack (faded), or one whose picture sits in an earlier
+            // section or on you (a copy, so every section shows all it needs: the bar for each sword)
             for (StepItems.Item it : s.items)
             {
-                int id = seen.contains(it) || !BankFilter.isShort(it) ? 0 : idOf.applyAsInt(it.name);
+                int id = seen.contains(it) ? 0 : idOf.applyAsInt(it.name);
                 if (id <= 0) continue;
                 int x = X0 + (i % PER_ROW) * DX, at = y + (i / PER_ROW) * DY;
-                faded(box, id, it.name, x, at);
+                picture(box, id, it.name, x, at, BankFilter.isShort(it) ? FADED : SOLID);
                 count(box, it, x, at);
                 i++;
             }
@@ -132,14 +137,14 @@ final class BankSections
         place(c, x + ITEM_W - 13, y, 13, 13);
     }
 
-    /** A faded picture of an item the step needs and you have nowhere. */
-    private static void faded(Widget box, int id, String name, int x, int y)
+    /** A picture of an item the step needs: faded when you have none, solid when its real one is elsewhere. */
+    private static void picture(Widget box, int id, String name, int x, int y, int opacity)
     {
         Widget w = box.createChild(-1, WidgetType.GRAPHIC);
         w.setItemId(id);
         w.setItemQuantity(0);
         w.setItemQuantityMode(0);
-        w.setOpacity(150);
+        w.setOpacity(opacity);
         w.setName("<col=ff9040>" + name + "</col>");
         place(w, x, y, ITEM_W, ITEM_H);
     }
