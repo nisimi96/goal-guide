@@ -666,6 +666,8 @@ public final class Planner
     /** The item tree's way, not counting what is held (a GET step is for what is still missing). */
     private static String itemWay(ItemData items, ItemTree.Account a, String item)
     {
+        String quest = QuestPlan.questWay(item);
+        if (quest != null) return quest;
         List<String> names = items == null ? List.of() : items.matches(item);
         if (names.isEmpty()) return "no guide data for this item yet";
         // "a or b": the cheapest way over every item the text can mean

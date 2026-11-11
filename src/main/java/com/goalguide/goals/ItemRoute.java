@@ -14,6 +14,7 @@ import com.goalguide.facts.Method;
 import com.goalguide.facts.MethodTables;
 import com.goalguide.items.ItemData;
 import com.goalguide.items.ItemTree;
+import com.goalguide.quests.QuestPlan;
 
 /** How to get an item, step by step, as card html. Pure. */
 public final class ItemRoute
@@ -25,7 +26,9 @@ public final class ItemRoute
         StringBuilder b = new StringBuilder();
         b.append(Text.color(Text.GREY, "Planned for: " + planFor)).append("<br>");
         b.append(skillWays(a, n.item));
-        if (n.best == null) return b.append("No way to get this one in the wiki data.").toString();
+        String quest = QuestPlan.questWay(n.item);
+        if (quest != null) b.append(esc(quest)).append(n.best == null ? "" : ". Lost it? Then:").append("<br>");
+        if (n.best == null) return quest != null ? b.toString() : b.append("No way to get this one in the wiki data.").toString();
 
         List<ItemTree.Step> steps = ItemTree.steps(d, a, n);
         Set<String> missing = new LinkedHashSet<>();
