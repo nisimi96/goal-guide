@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * USER 2026-11-11 (quest lengths for the "I have 1 hour" plan): how long a quest takes, from the wiki's length column
+ * (quest lengths for the "I have 1 hour" plan): how long a quest takes, from the wiki's length column
  * (Quests/List, read 2026-11-11). Very Short 15 min, Short 30 min, Medium 1 hour, Long 2 hours, Very Long 4 hours.
  * Miniquests and the newest Sailing quests are not in the table: unknown (-1). Also the quest points each gives.
  */

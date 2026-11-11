@@ -12,7 +12,7 @@ import com.goalguide.items.ItemData;
 import com.goalguide.know.AccountState;
 
 /**
- * The item list of a step, like Quest Helper's (USER 2026-11-11): each item the step uses, green when carried
+ * The item list of a step, like Quest Helper's each item the step uses, green when carried
  * (inventory or worn), yellow when it is in the bank or another storage, red when missing, with where to get it.
  * A tool named by kind ("pickaxe", "axe") counts any item of that kind. Pure.
  */
@@ -102,10 +102,10 @@ public final class StepItems
                     if (on) carried += it.getValue();
                     else where.add(st.getKey());
                 }
-            // an item used up is "carried" with some on you; a tool or quest item needs the full count
+            // An item used up is "carried" with some on you; a tool or quest item needs the full count
             int need = u.perHour ? 1 : u.amount;
             Has has = carried >= need ? Has.CARRIED : total >= need ? Has.STORED : Has.MISSING;
-            // USER 2026-11-11: a quest already started may have used it up; not a missing item to fetch again
+            // A quest already started may have used it up; not a missing item to fetch again
             if (has == Has.MISSING && s.started && !u.perHour) has = Has.USED;
             out.add(new Item(u.item, u.amount, u.perHour, has, carried, total, new ArrayList<>(where), new ArrayList<>(matched),
                 has == Has.MISSING && from != null ? from.apply(u.item) : null));

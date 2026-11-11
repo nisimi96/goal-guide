@@ -4,7 +4,7 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-/** USER 2026-11-11: quest item text must find the item data's drops and shops ("no guide data" was a name miss). */
+/** Quest item text must find the item data's drops and shops ("no guide data" was a name miss). */
 public class ItemNameMatchTest
 {
     private static ItemData data(String... items)

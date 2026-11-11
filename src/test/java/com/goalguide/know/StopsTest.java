@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/** USER 2026-11-11 run box: each patch from Time Tracking, and when its state began. */
+/** Run box: each patch from Time Tracking, and when its state began. */
 public class StopsTest
 {
     @Test
@@ -19,7 +19,7 @@ public class StopsTest
         assertEquals(AccountState.Timer.DISEASED, Timers.stop("DISEASED", 0, 1).state);
         assertEquals(AccountState.Timer.DEAD, Timers.stop("DEAD", 0, 1).state);
         assertEquals(AccountState.Timer.UNKNOWN, Timers.stop(null, 0, 1).state);
-        // two patches at one stop: the one that needs the player
+        // Two patches at one stop: the one that needs the player
         AccountState.Timer grow = Timers.stop("GROWING", 99, 1), dead = Timers.stop("DEAD", 0, 1);
         assertEquals(dead, Timers.worse(grow, dead));
         assertEquals("Hosidius", Timers.STOP_NAMES.get("Kourend"));
@@ -40,12 +40,12 @@ public class StopsTest
         m3.put("Falador", new AccountState.Timer(AccountState.Timer.GROWING, 99, 9000));
         assertTrue(s.putStops(AccountState.HERBS, m3));
         assertEquals(9000, s.stops(AccountState.HERBS).get("Falador").since);
-        // saved and read back
+        // Saved and read back
         AccountState back = Know.fromJson(Know.toJson(s));
         assertEquals(9000, back.stops(AccountState.HERBS).get("Falador").since);
     }
 
-    /** USER 2026-11-11: bank placeholders are not counted as items held. */
+    /** Bank placeholders are not counted as items held. */
     @org.junit.Test
     public void bankPlaceholdersAreNotItems()
     {

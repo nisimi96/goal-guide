@@ -16,7 +16,7 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetType;
 
 /**
- * USER 2026-11-11 "put a line between and give small text to tell which one is the section for": while the guide's
+ * "put a line between and give small text to tell which one is the section for": while the guide's
  * bank filter is on, the bank's items are grouped under a line and a small title per section (the step, then each
  * run), like Quest Helper's bank tab. Only moves the item pictures; nothing is withdrawn or moved in the bank.
  * Client thread.
@@ -25,7 +25,7 @@ public final class BankSections
 {
     private BankSections() { }
 
-    // the bank's item grid, as Quest Helper lays its tab out
+    // The bank's item grid, as Quest Helper lays its tab out
     static final int PER_ROW = 8, DX = 48, DY = 36, X0 = 51, GAP = 5, LINE = 2, TEXT = 15;
     static final int TITLE_COLOR = 0xe4d8a2;
 
@@ -57,7 +57,7 @@ public final class BankSections
         for (Widget w : kids)
         {
             if (w == null || w.isSelfHidden()) continue;
-            // the bank's own tab lines and "Tab 2" titles: hidden, our titles take their place
+            // The bank's own tab lines and "Tab 2" titles: hidden, our titles take their place
             if (w.getSpriteId() == SpriteID.TRADEBACKING_DARK || (w.getType() == WidgetType.TEXT && w.getText() != null && w.getText().startsWith("Tab")))
             {
                 w.setHidden(true);
@@ -88,7 +88,7 @@ public final class BankSections
                 w.setOriginalY(y + (i / PER_ROW) * DY);
                 w.revalidate();
             }
-            // USER 2026-11-11: what the step needs and the account has nowhere, faded with a red cross
+            // What the step needs and the account has nowhere, faded with a red cross
             int i = items.size();
             if (isStep)
                 for (Map.Entry<Integer, String[]> m : gone.entrySet())
@@ -100,7 +100,7 @@ public final class BankSections
         }
         box.setScrollHeight(Math.max(y, box.getHeight()));
         int scroll = box.getScrollY();
-        // the script engine is busy now: the scrollbar is fixed after
+        // The script engine is busy now: the scrollbar is fixed after
         later.accept(() -> client.runScript(ScriptID.UPDATE_SCROLLBAR, InterfaceID.Bankmain.SCROLLBAR, InterfaceID.Bankmain.ITEMS, scroll));
     }
 

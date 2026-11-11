@@ -32,7 +32,7 @@ public final class ItemTree
     {
         /** Upper-case skill name ("MAGIC") -> level. Missing = 1. */
         public Map<String, Integer> skills = new HashMap<>();
-        /** net.runelite.api.Quest names. */
+        /** Net.runelite.api.Quest names. */
         public Set<String> questsDone = new HashSet<>();
         /** Quests started but not finished (a diary that only needs a quest started counts these). */
         public Set<String> questsStarted = new HashSet<>();
@@ -101,7 +101,7 @@ public final class ItemTree
         QUEST_GATES.put("Wrath Altar", "DRAGON_SLAYER_II");
         QUEST_GATES.put("Plank Make", "DREAM_MENTOR");
         QUEST_GATES.put("Rune Essence", "RUNE_MYSTERIES");
-        // places: a spawn, shop or source there needs the quest that opens the place
+        // Places: a spawn, shop or source there needs the quest that opens the place
         QUEST_GATES.put("Prifddinas", "SONG_OF_THE_ELVES");
         QUEST_GATES.put("Zanaris", "LOST_CITY");
         QUEST_GATES.put("Darkmeyer", "SINS_OF_THE_FATHER");
@@ -226,7 +226,7 @@ public final class ItemTree
             w.say = "Pick it up off the ground: " + where;
             gates(w, where);
             if (s.members && !account.members) w.missing.add("members");
-            // a lone spawn is slow; many spawns close together (snape grass on Hobgoblin Peninsula) are a real way
+            // A lone spawn is slow; many spawns close together (snape grass on Hobgoblin Peninsula) are a real way
             w.cost = Math.max(40, 400.0 / data.spawns.get(k).size());
             n.ways.add(w);
         }
@@ -243,7 +243,7 @@ public final class ItemTree
             String skill = cap(d.type);
             String seed = "farming".equals(d.type) ? seedFor(d.source) : null;
             Way w = new Way(seed != null ? Kind.RECIPE : Kind.GATHER, skill.toLowerCase(Locale.ROOT) + " " + d.sourceName(), null);
-            // a crop needs its seed: about 6 crops per seed (our estimate; herbs and allotments vary)
+            // A crop needs its seed: about 6 crops per seed (our estimate; herbs and allotments vary)
             if (seed != null) w.materials.add(new Object[]{seed, 1 / 6.0});
             w.say = gatherSay(d);
             if (d.firstLevel() > 0) need(w, skill, d.firstLevel());
@@ -260,13 +260,13 @@ public final class ItemTree
             gates(w, d.source);
             if (!reward)
             {
-                // our rough rule: you want a combat level near 80% of the monster's to farm it
+                // Our rough rule: you want a combat level near 80% of the monster's to farm it
                 int want = Math.max(3, (int) Math.round(monsterLevel(d) * 0.8));
                 w.skills.put("COMBAT", want);
                 if (account.combat() < want) w.missing.add("Combat " + want);
             }
-            // a reward (a chest, a crate, a minigame shop) is rarely on tap, so it only wins when nothing repeatable does
-            // and an iron makes what it can: a kill only wins when no skill route exists
+            // A reward (a chest, a crate, a minigame shop) is rarely on tap, so it only wins when nothing repeatable does
+            // And an iron makes what it can: a kill only wins when no skill route exists
             w.cost = (reward ? 400 : 300 + monsterLevel(d)) + 5 / d.chance();
             n.ways.add(w);
         }
@@ -274,9 +274,9 @@ public final class ItemTree
         for (Shop s : data.shops.getOrDefault(k, List.of())) if (!"0".equals(s.stock)) stocked.add(s);
         for (Shop s : top(stocked, 3, Comparator.comparingInt(s -> s.price < 0 ? Integer.MAX_VALUE : s.price)))
         {
-            // a minigame's reward shop (Nightmare Zone, Last Man Standing) takes its own points, whatever the data says
+            // A minigame's reward shop (Nightmare Zone, Last Man Standing) takes its own points, whatever the data says
             boolean coins = "Coins".equalsIgnoreCase(s.currency) && !s.shop.toLowerCase(Locale.ROOT).contains("reward");
-            // a shop with its own currency and no price is an in-activity supply shop (Theatre of Blood, Fractured
+            // A shop with its own currency and no price is an in-activity supply shop (Theatre of Blood, Fractured
             // Archive): its points only exist inside that activity, so it is no way to get the item
             if (!coins && s.price < 0) continue;
             String price = s.price < 0 ? "" : " for " + String.format("%,d", s.price) + " " + (coins ? "gp" : s.currency);
@@ -284,7 +284,7 @@ public final class ItemTree
             w.say = "Buy it at " + trimDot(s.shop) + price;
             gates(w, s.location + " " + s.shop);
             if (s.members && !account.members) w.missing.add("members");
-            // buying is quick but shops hold little stock; an unknown price counts as 500 gp
+            // Buying is quick but shops hold little stock; an unknown price counts as 500 gp
             w.cost = coins ? 12 + (s.price < 0 ? 500 : s.price) / 50.0 : 150;
             n.ways.add(w);
         }
@@ -302,7 +302,7 @@ public final class ItemTree
             w.cost = 15;
             n.ways.add(w);
         }
-        // cost the recipes from their materials, then pick
+        // Cost the recipes from their materials, then pick
         for (Way w : n.ways)
         {
             if (w.kind != Kind.RECIPE) continue;
@@ -316,7 +316,7 @@ public final class ItemTree
         for (Way w : n.ways) w.cost += penalty(w);
         for (Way w : n.ways) if (n.best == null || w.cost < n.best.cost) n.best = w;
         if (n.best != null && n.best.cost >= NO_WAY) n.best = null;
-        // keep children only under the picked recipe; the others stay as one-line plan Bs
+        // Keep children only under the picked recipe; the others stay as one-line plan Bs
         for (Way w : n.ways) if (w != n.best) w.children.clear();
         stack.remove(k);
         memo.put(k, n);

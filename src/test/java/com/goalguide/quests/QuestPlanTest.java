@@ -44,7 +44,7 @@ public class QuestPlanTest
         assertNotEquals("ready", QuestPlan.status(QuestData.get(), null, a, 0, "PRIEST_IN_PERIL"));
         a.owned.put("bucket", 1);
         a.owned.put("rune or pure essence", 50);
-        // with no item database the label is the name; the plan only needs the counts
+        // With no item database the label is the name; the plan only needs the counts
         assertEquals("ready", QuestPlan.status(QuestData.get(), null, a, 0, "PRIEST_IN_PERIL"));
         a.questsDone.add("PRIEST_IN_PERIL");
         assertEquals("done", QuestPlan.status(QuestData.get(), null, a, 0, "PRIEST_IN_PERIL"));
@@ -89,15 +89,15 @@ public class QuestPlanTest
         assertFalse(st.train.containsKey("Agility 40"));
         assertEquals("Agility potion", st.boosts.get("Agility 40").item);
 
-        a.skills.put("HERBLORE", 1); // an iron who can't brew it trains instead
+        a.skills.put("HERBLORE", 1); // An iron who can't brew it trains instead
         st = last(QuestPlan.plan(QuestData.get(), null, a, 0, "MORYTANIA_MEDIUM_DIARY"));
         assertTrue(st.train.containsKey("Agility 40"));
-        a.owned.put("agility potion(3)", 1); // unless one is in the bank
+        a.owned.put("agility potion(3)", 1); // Unless one is in the bank
         st = last(QuestPlan.plan(QuestData.get(), null, a, 0, "MORYTANIA_MEDIUM_DIARY"));
         assertEquals("Agility potion", st.boosts.get("Agility 40").item);
 
         a.owned.clear();
-        a.iron = false; // a main buys a summer pie for the 4-level gap the potion can't cover
+        a.iron = false; // A main buys a summer pie for the 4-level gap the potion can't cover
         a.skills.put("AGILITY", 36);
         st = last(QuestPlan.plan(QuestData.get(), null, a, 0, "MORYTANIA_MEDIUM_DIARY"));
         assertEquals("Summer pie", st.boosts.get("Agility 40").item);
@@ -148,7 +148,7 @@ public class QuestPlanTest
             assertTrue(QuestData.get().skillNeed(d.get(i - 1), "AGILITY") <= QuestData.get().skillNeed(d.get(i), "AGILITY"));
         a.questsDone.add(d.get(0));
         assertNotEquals(d.get(0), GoalRoute.diariesNeeding(QuestData.get(), a, "AGILITY").get(0));
-        a.skills.put("AGILITY", 40); // only tiers Agility still holds back
+        a.skills.put("AGILITY", 40); // Only tiers Agility still holds back
         for (String k : GoalRoute.diariesNeeding(QuestData.get(), a, "AGILITY")) assertTrue(k, QuestData.get().skillNeed(k, "AGILITY") > 40);
         assertFalse(GoalRoute.diariesNeeding(QuestData.get(), a, "AGILITY").contains("MORYTANIA_MEDIUM_DIARY"));
         String html = GoalRoute.html(QuestData.get(), null, ItemTree.Account.fresh(), 0, List.of("PRIEST_IN_PERIL", "MORYTANIA_MEDIUM_DIARY"), 10);

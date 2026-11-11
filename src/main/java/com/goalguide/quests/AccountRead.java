@@ -18,7 +18,7 @@ public final class AccountRead
             if (qs == QuestState.FINISHED) a.questsDone.add(q.name());
             else if (qs == QuestState.IN_PROGRESS) a.questsStarted.add(q.name());
         }
-        // a diary tier is done when its reward varbit reads 1 (names from Quest Helper's QuestVarbits)
+        // A diary tier is done when its reward varbit reads 1 (names from Quest Helper's QuestVarbits)
         QuestData qd = QuestData.get();
         for (String diary : qd.diaries())
         {

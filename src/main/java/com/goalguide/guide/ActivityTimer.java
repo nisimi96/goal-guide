@@ -5,7 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * USER 2026-11-11: a timer for the activity you are on. Set a length per activity in the panel, Start counts down
+ * a timer for the activity you are on. Set a length per activity in the panel, Start counts down
  * (panel and on-screen box), a notification when time is up, then "Next activity" moves on and starts the next
  * one's timer; "Same again" restarts it, "Stop here" ends it. Times are passed in, so it is pure.
  */

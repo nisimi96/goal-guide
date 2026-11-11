@@ -125,7 +125,7 @@ public final class Know
     {
         AccountState s = gson.fromJson(json, AccountState.class);
         if (s == null) return null;
-        // a field added later reads as null from an older file
+        // A field added later reads as null from an older file
         AccountState blank = new AccountState();
         if (s.levels == null) s.levels = blank.levels;
         if (s.xp == null) s.xp = blank.xp;

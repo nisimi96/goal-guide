@@ -11,7 +11,7 @@ import com.goalguide.items.ItemData;
 import com.goalguide.items.ItemTree;
 
 /**
- * USER 2026-11-11 "I rather get it myself": a small second box on the game screen with the route to one item, opened
+ * "I rather get it myself": a small second box on the game screen with the route to one item, opened
  * from the guide box's right-click menu ("Get" on a missing item) or a step card's button. The route is the Item Roots
  * plan for this account, in doing order (raw things first). Shown until closed from its own right-click menu.
  */
@@ -81,7 +81,7 @@ public final class GetBox
         ItemTree.Node n = ItemTree.trace(d, a, name);
         if (n.best == null) return List.of(new Line("No way this account can get it yet.", GuideOverlay.BAD));
         List<ItemTree.Step> steps = ItemTree.steps(d, a, n);
-        // a missing level: one line, at the highest the plan needs
+        // A missing level: one line, at the highest the plan needs
         Map<String, Integer> train = new LinkedHashMap<>();
         List<String> quests = new ArrayList<>();
         for (ItemTree.Step st : steps)
@@ -101,7 +101,7 @@ public final class GetBox
             if (out.size() >= MAX) { out.add(new Line("+ more in the panel's Items tab", GuideOverlay.DIM)); break; }
             ItemTree.Step st = real.get(i);
             String how = st.way.say == null ? st.way.label : st.way.say;
-            // the last step makes the item itself
+            // The last step makes the item itself
             out.add(new Line((i + 1) + ". " + qty(st.qty) + st.item + ": " + how, i == real.size() - 1 ? GuideOverlay.NOW : Color.WHITE));
         }
         return out;

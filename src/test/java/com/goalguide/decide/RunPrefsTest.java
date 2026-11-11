@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-/** USER 2026-11-11 Runs tab: runs and stops switched off per account; a run needs 3 stops open and on. */
+/** Runs tab: runs and stops switched off per account; a run needs 3 stops open and on. */
 public class RunPrefsTest
 {
     static final long NOW = 1_800_000_000L;
@@ -37,7 +37,7 @@ public class RunPrefsTest
         assertEquals("Herb run (Falador, Catherby, Ardougne, Civitas illa Fortis)", d.now().what);
         assertEquals(AccountState.HERBS, d.now().timer);
         assertEquals(8, d.now().minutes);
-        // the old rule without the tab: wait for travel times
+        // The old rule without the tab: wait for travel times
         assertTrue(Decide.decide(a, grownHerbs(), Map.of(), 50, new Planner.Route(), List.of(), NOW, 60).guards.toString().contains("travel not checked yet"));
     }
 

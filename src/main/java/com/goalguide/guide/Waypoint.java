@@ -12,7 +12,7 @@ import net.runelite.client.ui.overlay.worldmap.WorldMapPointManager;
 import net.runelite.client.util.ImageUtil;
 
 /**
- * USER 2026-11-11 "arrow / path to the spot": where to go next (a run's next stop), shown as the game's hint arrow
+ * "arrow / path to the spot": where to go next (a run's next stop), shown as the game's hint arrow
  * and a pin on the world map, and handed to the Shortest Path plugin from the guide box's menu when the player has it.
  * The target is set off the client thread; {@link #tick} applies it on the client thread.
  */
@@ -43,7 +43,7 @@ public final class Waypoint
         if (Objects.equals(t, shown)) return;
         clear(client, map);
         if (t == null) return;
-        // another plugin's arrow (Quest Helper mid quest) stays: the pin still shows the way
+        // Another plugin's arrow (Quest Helper mid quest) stays: the pin still shows the way
         if (!client.hasHintArrow()) client.setHintArrow(t);
         pin = WorldMapPoint.builder().worldPoint(t).image(icon()).name(label == null ? "Goal Guide" : label)
             .tooltip(label == null ? "Goal Guide" : label).snapToEdge(true).jumpOnClick(true).build();

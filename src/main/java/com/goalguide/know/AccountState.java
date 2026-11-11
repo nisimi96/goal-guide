@@ -20,12 +20,12 @@ import com.goalguide.items.ItemTree;
  */
 public final class AccountState
 {
-    // storage names, in the order the panel lists them
+    // Storage names, in the order the panel lists them
     public static final String BANK = "bank", INVENTORY = "inventory", WORN = "worn", SEED_VAULT = "seed vault",
         POTION_STORAGE = "potion storage", RUNE_POUCH = "rune pouch", LOOTING_BAG = "looting bag", SEED_BOX = "seed box",
         TACKLE_BOX = "tackle box", FORESTRY_KIT = "forestry kit", HUNTSMANS_KIT = "huntsman's kit", QUIVER = "dizana's quiver",
         POH_COSTUMES = "POH costume room",
-        /** USER 2026-11-11: the follower walking after you (a cat counts for cat quests), by its name. */
+        /** The follower walking after you (a cat counts for cat quests), by its name. */
         FOLLOWER = "follower";
     public static final List<String> STORAGES = List.of(BANK, INVENTORY, WORN, SEED_VAULT, POTION_STORAGE, RUNE_POUCH,
         LOOTING_BAG, SEED_BOX, TACKLE_BOX, FORESTRY_KIT, HUNTSMANS_KIT, QUIVER, POH_COSTUMES, FOLLOWER);
@@ -33,7 +33,7 @@ public final class AccountState
     /** Farming level to enter the Farming Guild, where the seed vault is (boosts work too). */
     public static final int SEED_VAULT_FARMING = 45;
 
-    // timer names
+    // Timer names
     public static final String HERBS = "herb patches", BIRDS = "bird houses";
 
     public int version = 1;
@@ -48,7 +48,7 @@ public final class AccountState
     /** Upper-case skill name ("MAGIC") -> real level. */
     public Map<String, Integer> levels = new LinkedHashMap<>();
     public Map<String, Integer> xp = new LinkedHashMap<>();
-    /** net.runelite.api.Quest names, plus diary tiers done ("ARDOUGNE_EASY_DIARY"), as ItemTree.Account keeps them. */
+    /** Net.runelite.api.Quest names, plus diary tiers done ("ARDOUGNE_EASY_DIARY"), as ItemTree.Account keeps them. */
     public Set<String> questsDone = new TreeSet<>();
     public Set<String> questsStarted = new TreeSet<>();
     public int questPoints;
@@ -64,7 +64,7 @@ public final class AccountState
     /** Epoch millis of the travel check, 0 = never. */
     public long travelAt;
 
-    // ---- what the account can do (USER 2026-10-25: "think straight about what the account can do and what it cannot")
+    // ---- what the account can do "think straight about what the account can do and what it cannot")
     /** House city ("Rimmington"), "none" without a house, null = not read yet. */
     public String house;
     /** What the own house is known to have ("pool", "jewellery box:..."), set by another plugin when one knows it. */
@@ -374,7 +374,7 @@ public final class AccountState
             Storage s = storages.get(name);
             if (s == null)
             {
-                // the seed vault is in the Farming Guild: 45 Farming to get in (wiki), so below that it is not asked for
+                // The seed vault is in the Farming Guild: 45 Farming to get in (wiki), so below that it is not asked for
                 if (BANK.equals(name) || SEED_VAULT.equals(name) && (levels.isEmpty() || level("FARMING") >= SEED_VAULT_FARMING))
                     out.add(name + ": not seen yet, open it once");
                 continue;

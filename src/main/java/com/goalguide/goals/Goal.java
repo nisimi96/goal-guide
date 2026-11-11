@@ -94,7 +94,7 @@ public final class Goal
         String t = text.trim().replace(",", "");
         if (t.isEmpty()) return null;
         String[] w = t.split("\\s+");
-        // a level: skill + number, either order
+        // A level: skill + number, either order
         if (w.length == 2)
         {
             Skill s = skill(w[0]);
@@ -104,7 +104,7 @@ public final class Goal
         }
         String q = questKey.apply(t);
         if (q != null) return quest(q);
-        // a stock: "1000 raw karambwan" or "raw karambwan x1000"
+        // A stock: "1000 raw karambwan" or "raw karambwan x1000"
         if (w.length >= 2 && w[0].matches("\\d+")) return stock(t.substring(w[0].length()).trim(), Integer.parseInt(w[0]));
         java.util.regex.Matcher m = java.util.regex.Pattern.compile("^(.+?)\\s*x\\s*(\\d+)$").matcher(t);
         if (m.find()) return stock(m.group(1), Integer.parseInt(m.group(2)));

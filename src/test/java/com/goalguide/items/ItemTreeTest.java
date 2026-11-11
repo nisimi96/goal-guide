@@ -35,7 +35,7 @@ public class ItemTreeTest
         d.add(new Drop("Steel bar", "Big boss", "1/5,000", "500", "combat", 1, 1));
         d.add(new Drop("Steel bar", "Supply crate", "1/2", "", "reward", 1, 1));
         d.add(new Spawn("Iron ore", "a rock pile", false));
-        // a loop: A from B, B from A
+        // A loop: A from B, B from A
         Recipe a = new Recipe("Thing A", 1, null, null, null, true);
         a.materials.add(new String[]{"Thing B", "1"});
         d.add(a);
@@ -73,7 +73,7 @@ public class ItemTreeTest
     @Test public void lowLevelSaysWhatToTrain()
     {
         Node n = ItemTree.trace(small(), skilled(10), "Steel bar");
-        // the crate (a reward) is open but costly; the recipe needs Smithing 30: either way the gap is reported
+        // The crate (a reward) is open but costly; the recipe needs Smithing 30: either way the gap is reported
         assertTrue(ItemTree.lines(n, 3).toString(), ItemTree.lines(n, 3).toString().contains("Smithing 30"));
     }
 
@@ -121,7 +121,7 @@ public class ItemTreeTest
         assertTrue(ItemTree.roots(steel).toString(), ItemTree.roots(steel).keySet().stream().anyMatch(k -> k.contains("Coal rocks")));
         Node prayer = ItemTree.trace(d, a, "Prayer potion(4)");
         assertEquals(Kind.RECIPE, prayer.best.kind);
-        // user 2026-10-23: a new iron makes prayer potions (farm, pick up, mix, train on the way), never farms a 1/7 drop
+        // A new iron makes prayer potions (farm, pick up, mix, train on the way), never farms a 1/7 drop
         Node fresh = ItemTree.trace(d, Account.fresh(), "Prayer potion(4)");
         assertEquals(Kind.RECIPE, fresh.best.kind);
         assertEquals(Kind.RECIPE, ItemTree.trace(d, Account.fresh(), "Steel bar").best.kind);

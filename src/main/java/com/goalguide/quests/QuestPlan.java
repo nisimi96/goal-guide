@@ -40,7 +40,7 @@ public final class QuestPlan
         /** Items still missing: name -> {need, have}. */
         public final Map<String, int[]> missingItems = new LinkedHashMap<>();
         /**
-         * USER 2026-11-11: items of a quest already started that are not held: likely used up in the quest, so no
+         * items of a quest already started that are not held: likely used up in the quest, so no
          * Get step brings them back (Quest Helper shows what is left). A later quest that needs them gets its own.
          */
         public final List<String> usedItems = new ArrayList<>();
@@ -48,7 +48,7 @@ public final class QuestPlan
         public final List<String> haveItems = new ArrayList<>();
         /** Combat level / quest points short: "Combat 40". */
         public final List<String> other = new ArrayList<>();
-        /** USER 2026-11-11 "QP and combat as steps": the combat level / quest points it needs, 0 when met now. */
+        /** "QP and combat as steps": the combat level / quest points it needs, 0 when met now. */
         public int combatNeed, qpNeed;
 
         Step(String quest) { this.quest = quest; }
@@ -80,7 +80,7 @@ public final class QuestPlan
         COLLECTIONS.put("WATERING_CANS", "Watering can(8)");
         COLLECTIONS.put("ANTIPOISONS", "Antipoison(4)");
         COLLECTIONS.put("RESTORE_POTIONS", "Restore potion(4)");
-        // any cat or kitten, in the bag or following you (ItemData.sameKind)
+        // Any cat or kitten, in the bag or following you (ItemData.sameKind)
         COLLECTIONS.put("CATS", "Cat");
         COLLECTIONS.put("HUNTING_CATS", "Hunting cat");
     }
@@ -211,7 +211,7 @@ public final class QuestPlan
                     break;
                 case "item":
                 {
-                    // no one item ("Combat equipment"): a reminder, never a Get step
+                    // No one item ("Combat equipment"): a reminder, never a Get step
                     if (NO_ITEM.equals(n.note)) { st.also.add(n.what); break; }
                     String name = itemName(n, items);
                     int need = Math.max(1, n.amount);

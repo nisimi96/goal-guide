@@ -9,7 +9,7 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 
-/** USER 2026-11-11: the small "Get it myself" box (see GetBox). Right-click it to close. */
+/** The small "Get it myself" box (see GetBox). Right-click it to close. */
 public final class GetOverlay extends OverlayPanel
 {
     private final BooleanSupplier shown;

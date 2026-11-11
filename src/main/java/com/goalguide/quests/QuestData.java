@@ -24,12 +24,12 @@ public final class QuestData
 {
     public static final class Need
     {
-        /** quest, skill, combat, qp, item, varbit (diaries: the done flag). */
+        /** Quest, skill, combat, qp, item, varbit (diaries: the done flag). */
         public final String kind;
         /** Quest name (net.runelite.api.Quest), Skill name, or item display name. */
         public final String what;
         public final int amount;
-        /** quest: FINISHED or IN_PROGRESS; skill: "boostable"; item: the ItemID constant or ItemCollections.X. */
+        /** Quest: FINISHED or IN_PROGRESS; skill: "boostable"; item: the ItemID constant or ItemCollections.X. */
         public final String note;
 
         Need(String kind, String what, int amount, String note)

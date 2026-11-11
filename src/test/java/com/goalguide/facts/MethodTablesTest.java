@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/** The roots test: every need of every method table ends at a root (USER 2026-10-23 trace-to-the-roots rule). */
+/** The roots test: every need of every method table ends at a root trace-to-the-roots rule). */
 public class MethodTablesTest
 {
     /** Needs that come from a skill whose table is not built yet. Adding one here is a choice, not an accident. */
@@ -36,7 +36,7 @@ public class MethodTablesTest
         assertEquals(15, MethodTables.forSkill("thieving").size());
         assertEquals(19, MethodTables.forSkill("herblore").size());
         assertEquals(5, MethodTables.forSkill("farming").size());
-        // every skill but Sailing has a table (2026-11-11)
+        // Every skill but Sailing has a table (2026-11-11)
         for (Skill s : Skill.values())
             if (s != Skill.SAILING) assertFalse(s.name(), MethodTables.forSkill(s.name()).isEmpty());
         Set<String> ids = new HashSet<>();
@@ -105,7 +105,7 @@ public class MethodTablesTest
         assertEquals(List.of("quest Tai Bwo Wannai Trio"), ways.get(0).missing(a));
         a.questsDone.add("TAI_BWO_WANNAI_TRIO");
         assertTrue(ways.get(0).missing(a).isEmpty());
-        // lobsters: the one way, ready at 70
+        // Lobsters: the one way, ready at 70
         assertFalse(MethodTables.waysToMake("raw lobster", a).isEmpty());
     }
 
@@ -128,7 +128,7 @@ public class MethodTablesTest
         assertTrue(html, html.contains("90 an hour at 76"));
         assertTrue(html, html.contains("needs Fishing 76"));
         assertEquals("", com.goalguide.items.ItemRootsPlugin.tableWays(a, "Abyssal whip"));
-        // dragon bones come from the Prayer table now
+        // Dragon bones come from the Prayer table now
         assertTrue(com.goalguide.items.ItemRootsPlugin.tableWays(a, "Dragon bones").contains("blue dragons"));
     }
 
@@ -139,7 +139,7 @@ public class MethodTablesTest
         assertEquals(Set.of("main", "iron"), MethodTables.modes("main, iron"));
         Method plunder = MethodTables.byId("plunder");
         assertTrue(plunder.forMode("iron"));
-        // the UIM guide says Pyramid Plunder is not for UIM
+        // The UIM guide says Pyramid Plunder is not for UIM
         assertFalse(plunder.forMode("uim"));
         ItemTree.Account a = ItemTree.Account.fresh();
         a.skills.put("THIEVING", 80);
@@ -161,7 +161,7 @@ public class MethodTablesTest
     @Test
     public void herbsTraceBackToMasterFarmers()
     {
-        // ranarr for prayer potions <- herb runs <- herb seeds <- Master Farmers: the iron loop in the data
+        // Ranarr for prayer potions <- herb runs <- herb seeds <- Master Farmers: the iron loop in the data
         assertEquals("herbrun", MethodTables.roots().get("ranarr weed").detail);
         assertEquals("masterfarmer", MethodTables.roots().get("herb seeds").detail);
         assertEquals(0, MethodTables.byId("herbrun").givesAt("ranarr weed", 31));

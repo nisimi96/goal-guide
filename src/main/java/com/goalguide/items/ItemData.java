@@ -21,7 +21,7 @@ public final class ItemData
         public final boolean members;
         /** {name, qty}. */
         public final List<String[]> materials = new ArrayList<>();
-        /** skill name ("Magic") -> level. */
+        /** Skill name ("Magic") -> level. */
         public final Map<String, Integer> skills = new HashMap<>();
 
         public Recipe(String output, int outputQty, String facility, String tools, String subtext, boolean members)
@@ -69,7 +69,7 @@ public final class ItemData
 
     public static final class Drop
     {
-        /** source as the wiki writes it, "Bandit#Level 22"; type: combat, reward, mining, fishing, thieving, ... */
+        /** Source as the wiki writes it, "Bandit#Level 22"; type: combat, reward, mining, fishing, thieving, ... */
         public final String item, source, rarity, level, type;
         public final int qtyLow, qtyHigh;
 
@@ -112,7 +112,7 @@ public final class ItemData
             }
             String s = source.toLowerCase(Locale.ROOT);
             for (String c : CONTAINERS) if (s.contains(c)) return false;
-            // implings fly about at random: a lucky catch, not something to plan stock on
+            // Implings fly about at random: a lucky catch, not something to plan stock on
             if (s.contains("impling")) return false;
             return true;
         }
@@ -158,7 +158,7 @@ public final class ItemData
 
     public static String key(String name)
     {
-        // doses fold together: "Super restore(4)" and the recipe's "Super restore" are one thing
+        // Doses fold together: "Super restore(4)" and the recipe's "Super restore" are one thing
         return name == null ? "" : name.trim().toLowerCase(Locale.ROOT).replaceAll("\\s*\\(\\d\\)$", "");
     }
 

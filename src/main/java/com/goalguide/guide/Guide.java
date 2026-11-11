@@ -52,7 +52,7 @@ public final class Guide
         this.skipped = skipped;
     }
 
-    /** The activity timer (USER 2026-11-11), one for the client. */
+    /** The activity timer one for the client. */
     public static final ActivityTimer TIMER = new ActivityTimer();
     private static RunOverlay runOverlay;
     private static GetOverlay getOverlay;
@@ -108,7 +108,7 @@ public final class Guide
         Line now = left.isEmpty() ? null : line(left.get(0));
         Line next = left.size() < 2 ? null : line(left.get(1));
         List<String> rec = new ArrayList<>();
-        // a timed run going to waste or ready beats everything (Decide ranks them first)
+        // A timed run going to waste or ready beats everything (Decide ranks them first)
         Decide.Pick p = d == null ? null : d.now();
         boolean run = p != null && (p.rank == Decide.Rank.WASTE || p.rank == Decide.Rank.READY);
         if (run) rec.add(p.say());

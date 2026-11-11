@@ -9,9 +9,9 @@ import com.goalguide.decide.RunPrefs;
 import com.goalguide.know.AccountState;
 
 /**
- * USER 2026-11-11 "but if i want do herb run mid quest?": what each run takes from the bank, for the bank button.
+ * "but if i want do herb run mid quest?": what each run takes from the bank, for the bank button.
  * Item names checked on the wiki 2026-11-11 (Herb patch, Tree patch, Fruit tree patch, Bird house trapping, Seeds).
- * USER 2026-11-11 "run teleports": each run also lists the teleport items that reach its patches (the patch pages'
+ * "run teleports": each run also lists the teleport items that reach its patches (the patch pages'
  * Transportation sections, read 2026-11-11), so whichever the account owns shows up. Spells need only runes: left out. Pure.
  */
 public final class RunItems
@@ -22,7 +22,7 @@ public final class RunItems
 
     static final Map<String, List<String>> RUNS = new LinkedHashMap<>();
 
-    // charge doses ("(4)") are matched by the item's base name; tiers are listed one by one
+    // Charge doses ("(4)") are matched by the item's base name; tiers are listed one by one
     static final List<String> HERB_TELES = List.of(
         // Falador
         "Explorer's ring 2", "Explorer's ring 3", "Explorer's ring 4", "Ring of the elements", "Draynor manor teleport",
@@ -64,7 +64,7 @@ public final class RunItems
         herbs.addAll(HERB_TELES);
         RUNS.put(AccountState.HERBS, herbs);
 
-        // saplings, and what the gardener takes to look after each (the patch's Protection column)
+        // Saplings, and what the gardener takes to look after each (the patch's Protection column)
         List<String> trees = new ArrayList<>(List.of("Spade", "Rake", "Coins",
             "Oak sapling", "Willow sapling", "Maple sapling", "Yew sapling", "Magic sapling",
             "Tomatoes(5)", "Apples(5)", "Oranges(5)", "Cactus spine", "Coconut"));
@@ -80,7 +80,7 @@ public final class RunItems
         fruit.addAll(FRUIT_TELES);
         RUNS.put("fruit tree patches", fruit);
 
-        // ready-made houses, or logs + clockwork + hammer + chisel; 10 low-level hop seeds fill one
+        // Ready-made houses, or logs + clockwork + hammer + chisel; 10 low-level hop seeds fill one
         RUNS.put(AccountState.BIRDS, List.of("Digsite pendant", "Bird house", "Oak bird house", "Willow bird house", "Teak bird house",
             "Maple bird house", "Mahogany bird house", "Yew bird house", "Magic bird house", "Redwood bird house",
             "Clockwork", "Hammer", "Chisel", "Logs", "Oak logs", "Willow logs", "Teak logs", "Maple logs", "Mahogany logs",

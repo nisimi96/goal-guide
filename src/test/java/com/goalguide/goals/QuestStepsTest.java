@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/** USER 2026-11-11: quest lengths, closest goal by hours, QP and combat as steps, daily shop runs. */
+/** Quest lengths, closest goal by hours, QP and combat as steps, daily shop runs. */
 public class QuestStepsTest
 {
     @Test
@@ -29,11 +29,11 @@ public class QuestStepsTest
         assertEquals(0, QuestLength.qp("BARBARIAN_TRAINING"));
         assertEquals(1, QuestLength.hours("RECIPE_FOR_DISASTER__PIRATE_PETE"), 1e-9);
         assertEquals(-1, QuestLength.hours("NOT_A_QUEST"), 1e-9);
-        // every quest RuneLite knows has a length now
+        // Every quest RuneLite knows has a length now
         for (net.runelite.api.Quest q : net.runelite.api.Quest.values()) assertTrue(q.name(), QuestLength.hours(q.name()) > 0);
         assertEquals(5, QuestLength.qp("GOBLIN_DIPLOMACY"));
         assertEquals(10, QuestLength.qp("RECIPE_FOR_DISASTER"));
-        // every quest the requirements table names has a length, but miniquests and the newest Sailing quests
+        // Every quest the requirements table names has a length, but miniquests and the newest Sailing quests
         int known = 0, all = 0;
         for (String q : QuestData.get().byQuest.keySet())
         {
@@ -56,7 +56,7 @@ public class QuestStepsTest
         Planner.Step t = new Planner.Step(Planner.Kind.TRAIN, "Hunter 9 to 52", "", 1, false);
         t.skill = "HUNTER";
         assertTrue(StepDetail.wikiPage(t), StepDetail.wikiPage(t).contains("search=Hunter+training"));
-        // the item list links each item
+        // The item list links each item
         String h = StepDetail.html(g, com.goalguide.items.ItemTree.Account.fresh(), java.util.Map.of(), i -> null, null, "you");
         assertTrue(h, h.contains("WIKI") && h.contains("href="));
     }
@@ -85,7 +85,7 @@ public class QuestStepsTest
         int got = 0;
         for (String q : qs) got += QuestLength.qp(q);
         assertTrue(qs + "", got >= 6);
-        // a fresh account: quick ones with no needs, like Romeo & Juliet (5 QP, 30 min) or Goblin Diplomacy
+        // A fresh account: quick ones with no needs, like Romeo & Juliet (5 QP, 30 min) or Goblin Diplomacy
         assertTrue(qs + "", qs.size() <= 3);
     }
 
@@ -102,7 +102,7 @@ public class QuestStepsTest
         for (Dailies.Daily d : Dailies.open(a)) say.put(d.key, d.say(a));
         assertEquals("Zaff: 15 battlestaves at 7,000 gp (Varrock)", say.get("zaff"));
         assertTrue(say.get("cromperty").startsWith("Wizard Cromperty: 100 "));
-        // ticked today, cleared the next day (00:00 UTC)
+        // Ticked today, cleared the next day (00:00 UTC)
         long day = 1_700_000_000_000L;
         String saved = Dailies.tick("", day, "zaff", true);
         assertEquals(Set.of("zaff"), Dailies.doneToday(saved, day));

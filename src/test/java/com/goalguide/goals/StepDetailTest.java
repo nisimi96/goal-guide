@@ -13,7 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/** USER 2026-11-11: each route step opens into titled sections; the bank button offers the runs too. */
+/** Each route step opens into titled sections; the bank button offers the runs too. */
 public class StepDetailTest
 {
     @Test
@@ -46,7 +46,7 @@ public class StepDetailTest
         String g = StepDetail.html(get, a, Map.of(), x -> null, null, "you");
         assertTrue(g, g.contains("HOW"));
 
-        // the panel's card title: + closed, the step's own words
+        // The panel's card title: + closed, the step's own words
         assertTrue(GoalsView.Panel.cardTitle(1, quest, false).contains("1. "));
     }
 

@@ -8,7 +8,7 @@ import com.goalguide.items.ItemTree;
 
 /**
  * How far each herb, tree and fruit tree patch and the bird houses are for this account, from a route planner: the teleports it owns or has
- * unlocked, carried or in the bank (a run is packed at the bank). USER 2026-10-25: "why would you spend 10 min
+ * unlocked, carried or in the bank (a run is packed at the bank). "why would you spend 10 min
  * walking when its not worth it": a patch only counts when it is quick to reach.
  *
  * Patch tiles: each sits inside the herb patch region RuneLite's Time Tracking (FarmingWorld) lists for it, checked
@@ -75,7 +75,7 @@ public final class PatchTravel
         RUNS.put(com.goalguide.know.AccountState.BIRDS, BIRD_HOUSES);
     }
 
-    /** Quick stops a run needs to be worth it: USER 2026-10-25 "3 patches", the bird houses are one stop. */
+    /** Quick stops a run needs to be worth it: "3 patches", the bird houses are one stop. */
     public static int minStops(String timer)
     {
         return RUNS.get(timer) == BIRD_HOUSES ? 1 : 3;
@@ -105,7 +105,7 @@ public final class PatchTravel
         return name + " " + (s < 90 ? s + " s" : Math.round(s / 60.0) + " min");
     }
 
-    // ---- unlocks: USER 2026-10-25 "each patch have unlocks and levels ... it can also plan to train to unlock better routes"
+    // ---- unlocks: "each patch have unlocks and levels ... it can also plan to train to unlock better routes"
 
     /**
      * A quest, diary or level that would put a patch within {@link #QUICK_TICKS}: {@code needs} are goal texts the
@@ -120,7 +120,7 @@ public final class PatchTravel
         List<String> needs;
     }
 
-    /** Two minutes, in ticks: USER 2026-10-25. */
+    /** Two minutes, in ticks: */
     public static final int QUICK_TICKS = 200;
 
     /** What the goal box takes for a quest or diary key: "My Arm's Big Adventure", "Morytania elite". */

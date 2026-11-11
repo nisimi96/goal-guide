@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * USER 2026-11-11: several goals plan as one list. A quest two goals share goes first, a goal that is close is reached
+ * several goals plan as one list. A quest two goals share goes first, a goal that is close is reached
  * early, a skill is trained only to what the next quest needs and the rest is filler; the guide shows Now, Next and the
  * filler.
  */

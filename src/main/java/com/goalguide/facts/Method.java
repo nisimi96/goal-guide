@@ -23,7 +23,7 @@ public final class Method
     public final int level;
     /** {level, xp per hour} rows, rising by level; the rate at a level is the last row at or below it. */
     public final int[][] xp;
-    /** net.runelite.api.Quest names, all needed. */
+    /** Net.runelite.api.Quest names, all needed. */
     public final List<String> quests;
     /** Other skills needed, upper-case name -> level. */
     public final Map<String, Integer> skills;

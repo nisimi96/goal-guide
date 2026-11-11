@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/** USER 2026-11-11: a main's Get steps show the Grand Exchange first; an iron's never do. Train steps list their tools. */
+/** A main's Get steps show the Grand Exchange first; an iron's never do. Train steps list their tools. */
 public class PricesTest
 {
     static final QuestData DATA = QuestData.parse(List.of("SOME_QUEST\titem\tIron bar\t5\t"));

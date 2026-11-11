@@ -27,7 +27,7 @@ public final class MethodTables
     static final List<String> TSV_SKILLS = List.of("AGILITY", "FISHING", "THIEVING", "HERBLORE", "FARMING",
         "ATTACK", "STRENGTH", "DEFENCE", "HITPOINTS", "RANGED", "PRAYER", "MAGIC", "SLAYER",
         "COOKING", "WOODCUTTING", "FLETCHING", "FIREMAKING", "CRAFTING", "SMITHING", "MINING", "HUNTER", "CONSTRUCTION", "RUNECRAFT",
-        // USER 2026-11-11 "a Sailing table": wiki Sailing training, read 2026-11-11
+        // "a Sailing table": wiki Sailing training, read 2026-11-11
         "SAILING");
 
     public enum RootKind
@@ -84,7 +84,7 @@ public final class MethodTables
     private static volatile Map<String, int[]> spots;
 
     /**
-     * USER 2026-11-11 "arrow to the spot": where a method is done, {x, y, plane} from the wiki's maps (spots.tsv,
+     * "arrow to the spot": where a method is done, {x, y, plane} from the wiki's maps (spots.tsv,
      * skill + method id), null when not known.
      */
     public static int[] spot(String skill, String id)

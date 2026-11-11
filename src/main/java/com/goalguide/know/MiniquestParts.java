@@ -7,7 +7,7 @@ import net.runelite.api.Client;
 import net.runelite.api.gameval.VarbitID;
 
 /**
- * Miniquests read by part, not as one done-or-not (USER 2026-10-25 via the farm runs thread). Barbarian Training keeps
+ * Miniquests read by part, not as one done-or-not via the farm runs thread). Barbarian Training keeps
  * each part in its own varbit: 1 = tasked, 2 = did it, 3 = finished (Quest Helper). A part counts as started at 1 and
  * done at 2, so a method checks its own part ("BARBARIAN_FISHING"), not the whole miniquest.
  */

@@ -7,7 +7,7 @@ import java.util.Set;
 import com.goalguide.items.ItemTree;
 
 /**
- * USER 2026-11-11 (Runs tab): each run (herb, tree, fruit tree, bird houses) and each stop of it is switched on or
+ * (Runs tab): each run (herb, tree, fruit tree, bird houses) and each stop of it is switched on or
  * off per account. A switched-off run is never offered; a switched-off stop is never counted or shown.
  *
  * Saved as two short texts: the runs that are off ("tree patches;bird houses") and the stops that are off

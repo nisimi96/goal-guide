@@ -29,7 +29,7 @@ public class GuideIsBotFreeTest
         "timetracking",
         // RuneLite's own Bank Tags plugin: the bank button shows the step's items as a tag
         "banktags",
-        // the plugin framework itself
+        // The plugin framework itself
         "Plugin", "PluginDescriptor", "PluginDependency", "PluginManager", "PluginInstantiationException", "PluginType", "PluginPanel");
 
     private static final Pattern REF = Pattern.compile("net\\.runelite\\.client\\.plugins\\.([A-Za-z0-9_]+)");
@@ -59,7 +59,7 @@ public class GuideIsBotFreeTest
         assertTrue("guide code may only use RuneLite's own plugins: " + bad, bad.isEmpty());
     }
 
-    /** Words that name bots or other projects. Config key "ironloop" is a key, not a word. */
+    /** Words that name bots or other projects. */
     static final Pattern WORDS = Pattern.compile("\\b((?i:bots?|Traveler|SmartWalker|runners?|aio|aio-runs|run log|RunLog|dry run|your turn|auto loop"
         + "|Iron Loop|Microbot|yuval|humaninput|loadout|BotSession)|AIOs?|Aio[A-Z]\\w*|Auto [A-Z][a-z]+)\\b");
 

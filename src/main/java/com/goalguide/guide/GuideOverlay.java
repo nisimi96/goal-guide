@@ -13,8 +13,8 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 
 /**
- * The guide on the game screen (USER 2026-11-11, like Quest Helper's box), in sections with a title each
- * (USER 2026-11-11 "divide it into sections"): Now (the step, how, timer, items), Next, Timed run, Between steps.
+ * The guide on the game screen like Quest Helper's box), in sections with a title each
+ * "divide it into sections"): Now (the step, how, timer, items), Next, Timed run, Between steps.
  * Off with the sidebar's "Show on screen" box.
  */
 public final class GuideOverlay extends OverlayPanel
@@ -27,7 +27,7 @@ public final class GuideOverlay extends OverlayPanel
     {
         this.shown = shown;
         setPosition(OverlayPosition.TOP_LEFT);
-        // USER 2026-11-11: a path to the arrow's spot, drawn by the Shortest Path plugin (Plugin Hub) when it is on
+        // A path to the arrow's spot, drawn by the Shortest Path plugin (Plugin Hub) when it is on
         addMenuEntry(net.runelite.api.MenuAction.RUNELITE_OVERLAY, "Path to spot", "Shortest Path", e -> Waypoint.path());
     }
 
@@ -43,14 +43,14 @@ public final class GuideOverlay extends OverlayPanel
             section("Do now", null);
             line(gd.now.what, NOW);
             timer();
-            // the step's notes, one per line ("boost Crafting 40 with mushroom pie", ...)
+            // The step's notes, one per line ("boost Crafting 40 with mushroom pie", ...)
             if (!gd.now.how.isEmpty())
                 for (String part : gd.now.how.split(", (?=[a-z])")) line("• " + part, DIM);
             List<StepItems.Item> its = new ArrayList<>();
             int carried = 0;
             for (StepItems.Item i : gd.items)
             {
-                if (i.has == StepItems.Has.USED) continue;   // maybe used in the quest already: not worth the room
+                if (i.has == StepItems.Has.USED) continue;   // Maybe used in the quest already: not worth the room
                 its.add(i);
                 if (i.has == StepItems.Has.CARRIED) carried++;
             }
@@ -87,7 +87,7 @@ public final class GuideOverlay extends OverlayPanel
     private List<String> offered = List.of();
 
     /**
-     * USER 2026-11-11 "click get ... a new small overlay box with the route for this item": a right-click "Get" line
+     * "click get ... a new small overlay box with the route for this item": a right-click "Get" line
      * for each missing item (and one in the bank, for someone who'd rather make it). Client thread.
      */
     private void getEntries(List<StepItems.Item> its)
@@ -103,7 +103,7 @@ public final class GuideOverlay extends OverlayPanel
 
     private String wikiShown;
 
-    /** USER 2026-11-11 wiki links: a right-click "Wiki" line for the step shown under Do now. Client thread. */
+    /** Wiki links: a right-click "Wiki" line for the step shown under Do now. Client thread. */
     private void wikiEntry(com.goalguide.goals.Planner.Step s)
     {
         String url = s == null ? null : com.goalguide.goals.StepDetail.wikiPage(s);
@@ -118,7 +118,7 @@ public final class GuideOverlay extends OverlayPanel
         return Character.toUpperCase(s.charAt(0)) + s.substring(1);
     }
 
-    /** USER 2026-11-11: a thin line, then the section's name small on the left (and a note on the right). */
+    /** A thin line, then the section's name small on the left (and a note on the right). */
     private void section(String label, String right)
     {
         panelComponent.getChildren().add(new Rule());

@@ -63,7 +63,7 @@ public class PlannerTest
         ItemTree.Account a = account(40);
         a.owned.put("raw karambwan", 420);
         Planner.Route r = Planner.plan(QuestData.get(), null, a, 50, List.of(Goal.stock("raw karambwan", 1000)));
-        // the karambwan method needs Tai Bwo Wannai Trio: it is in the route, as the player's turn
+        // The karambwan method needs Tai Bwo Wannai Trio: it is in the route, as the player's turn
         boolean trio = false;
         for (Planner.Step s : of(r, Planner.Kind.QUEST)) trio |= s.what.equals("Tai Bwo Wannai Trio") && s.you;
         assertTrue(r.steps.toString(), trio);
@@ -73,7 +73,7 @@ public class PlannerTest
         assertEquals("Fishing 40 to 65", fish.what);
         assertTrue(fish.toString(), fish.hours > 3 && fish.hours < 80);
         Planner.Step stock = of(r, Planner.Kind.STOCK).get(0);
-        // what the bank holds counts first: 580 more, at 580 an hour at 65
+        // What the bank holds counts first: 580 more, at 580 an hour at 65
         assertTrue(stock.what, stock.what.startsWith("580 raw karambwan"));
         assertEquals(1.0, stock.hours, 0.01);
         assertTrue(r.hours > fish.hours);
@@ -114,7 +114,7 @@ public class PlannerTest
         ItemTree.Account a = account(80);
         a.skills.put("SLAYER", 40);
         Planner.Route r = Planner.plan(QuestData.get(), null, a, 50, List.of(Goal.level("SLAYER", 50)));
-        // the wiki gives no xp per hour for Slayer masters: the step names them instead of "no method"
+        // The wiki gives no xp per hour for Slayer masters: the step names them instead of "no method"
         assertTrue(r.steps.get(0).how, r.steps.get(0).how.contains("no rate on the wiki"));
         assertTrue(r.steps.get(0).how, r.steps.get(0).how.contains("Slayer master"));
     }
@@ -148,7 +148,7 @@ public class PlannerTest
         Planner.Route r = Planner.plan(QuestData.get(), null, a, 20, List.of(Goal.stock("raw karambwan", 1000)));
         for (Planner.Step s : r.steps)
         {
-            // the karambwan for the quest comes in the quest, not from the karambwan method that needs the quest
+            // The karambwan for the quest comes in the quest, not from the karambwan method that needs the quest
             if (s.kind == Planner.Kind.GET && s.what.startsWith("Raw karambwan")) assertEquals("you get it during the quest", s.how);
             if (s.kind == Planner.Kind.GET && s.what.startsWith("Coins")) assertEquals("any money maker", s.how);
         }
@@ -168,7 +168,7 @@ public class PlannerTest
         a.questsDone.add("THE_FEUD");
         Planner.Training feud = Planner.hours(a, "THIEVING", 42, 75);
         assertTrue(feud.how, feud.hours <= plain.hours);
-        // a free-to-play account has only men and women to steal from
+        // A free-to-play account has only men and women to steal from
         a.members = false;
         Planner.Training f2p = Planner.hours(a, "THIEVING", 42, 43);
         assertTrue(f2p.how, f2p.how.startsWith("Pickpocketing men"));

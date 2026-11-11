@@ -8,7 +8,7 @@ import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.LinkBrowser;
 
 /**
- * USER 2026-11-11 "each step / item / quest should also get its wiki link": card text whose links open in the
+ * "each step / item / quest should also get its wiki link": card text whose links open in the
  * browser (a JLabel can't click links). Fixed width, wraps like the old labels, RuneScape small font.
  */
 final class LinkText extends JEditorPane

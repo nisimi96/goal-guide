@@ -69,10 +69,10 @@ public class DecideTest
         assertTrue(now.say(), now.say().contains("herb patches are grown (2 h ago)"));
         // 67 + 100 + 167 ticks = 3.3 min of travel, plus a minute a patch
         assertEquals(7, now.minutes);
-        // the bird houses are ready in 20 min: ranked second, not "now"
+        // The bird houses are ready in 20 min: ranked second, not "now"
         assertEquals(Decide.Rank.READY, d.picks.get(1).rank);
         assertTrue(d.picks.get(1).why, d.picks.get(1).why.contains("ready in 20 min"));
-        // the sitting: herbs, karambwan until the birds, birds, karambwan again
+        // The sitting: herbs, karambwan until the birds, birds, karambwan again
         assertTrue(d.sitting.toString(), d.sitting.get(0).pick.what.startsWith("Herb run"));
         assertTrue(d.sitting.toString(), d.sitting.get(1).pick.what.startsWith("Stock 1,000 raw karambwan"));
         assertEquals(d.sitting.toString(), 7, d.sitting.get(1).start);
@@ -97,7 +97,7 @@ public class DecideTest
         assertEquals(Decide.Rank.STOCK, d.picks.get(1).rank);
         assertEquals(Decide.Rank.FOCUS, d.picks.get(2).rank);
         assertTrue(d.picks.get(2).what, d.picks.get(2).what.startsWith("Train Fishing 80 to 85"));
-        // each step once
+        // Each step once
         assertEquals(d.picks.toString(), 3, d.picks.size());
     }
 
@@ -110,7 +110,7 @@ public class DecideTest
         boolean quest = false;
         for (Decide.Pick p : d.picks) quest |= p.why.contains("needs quest Tai Bwo Wannai Trio first");
         assertTrue(d.picks.toString(), quest);
-        // player turns are not bot blocks in the sitting
+        // Player turns are not bot blocks in the sitting
         for (Decide.Block b : d.sitting) assertFalse(b.toString(), b.pick.you);
     }
 
@@ -149,10 +149,10 @@ public class DecideTest
         t.put("tree patches", new AccountState.Timer(AccountState.Timer.EMPTY, -1, NOW * 1000));
         t.put("allotment patches", new AccountState.Timer(AccountState.Timer.EMPTY, -1, NOW * 1000));
         t.put("fruit tree patches", new AccountState.Timer(AccountState.Timer.UNKNOWN, -1, NOW * 1000));
-        // no seeds, low Farming: nothing is waste (the screenshot of 2026-10-25 said "herb run" here)
+        // No seeds, low Farming: nothing is waste (the screenshot of 2026-10-25 said "herb run" here)
         ItemTree.Account a = account(70);
         assertNull(decide(a, t, 50, List.of(), 30).now());
-        // a guam seed at Farming 9: the herb run is waste; a ranarr seed at Farming 20 is not
+        // A guam seed at Farming 9: the herb run is waste; a ranarr seed at Farming 20 is not
         a.skills.put("FARMING", 20);
         a.owned.put("ranarr seed", 5);
         assertNull(decide(a, t, 50, List.of(), 30).now());
@@ -160,12 +160,12 @@ public class DecideTest
         Decide.Decision d = decide(a, t, 50, List.of(), 30);
         assertTrue(d.now().what, d.now().what.startsWith("Herb run"));
         assertTrue(d.now().why, d.now().why.contains("are empty"));
-        // bird houses: Hunter 5 and a bait seed (the guam seed counts)
+        // Bird houses: Hunter 5 and a bait seed (the guam seed counts)
         a.skills.put("HUNTER", 5);
         d = decide(a, t, 50, List.of(), 30);
         assertEquals(d.picks.toString(), 2, d.picks.size());
         assertTrue(d.picks.get(0).why, d.picks.get(0).why.contains("have no seeds"));
-        // trees: an oak sapling at 15
+        // Trees: an oak sapling at 15
         a.owned.put("oak sapling", 1);
         assertEquals(3, decide(a, t, 50, List.of(), 30).picks.size());
     }
@@ -178,7 +178,7 @@ public class DecideTest
         assertTrue(decide(account(70), t, 50, List.of(), 30).now().what.startsWith("Herb run"));
     }
 
-    /** USER 2026-10-25: no herb run when the patches are a long walk away. */
+    /** No herb run when the patches are a long walk away. */
     @Test
     public void herbRunOnlyWhenThePatchesAreQuick()
     {
@@ -192,11 +192,11 @@ public class DecideTest
         Decide.Decision d = decide(account(70), t, Map.of(AccountState.HERBS, slow), 50, List.of(), 30);
         assertNull(d.picks.toString(), d.now());
         assertTrue(d.guards.toString(), d.guards.get(0).contains("only 1 patch is within 2 min (Falador). It needs 3"));
-        // not checked yet: no run, and it says why
+        // Not checked yet: no run, and it says why
         d = decide(account(70), t, Map.of(), 50, List.of(), 30);
         assertNull(d.now());
         assertTrue(d.guards.toString(), d.guards.get(0).contains("not checked yet"));
-        // bird houses: one stop, Fossil Island far away
+        // Bird houses: one stop, Fossil Island far away
         t.clear();
         t.put(AccountState.BIRDS, new AccountState.Timer(AccountState.Timer.READY, 0, NOW * 1000));
         d = decide(account(70), t, Map.of(AccountState.BIRDS, Map.of("Fossil Island", 400)), 50, List.of(), 30);
@@ -208,7 +208,7 @@ public class DecideTest
         assertEquals(6, d.now().minutes);
     }
 
-    /** USER 2026-10-25: the rogue outfit is a task the moment Thieving and Agility are 50. */
+    /** The rogue outfit is a task the moment Thieving and Agility are 50. */
     @Test
     public void rogueOutfitOnceTheLevelsAreMet()
     {
@@ -223,13 +223,13 @@ public class DecideTest
         assertEquals("Get the Rogue outfit (Rogues' Den)", p.what);
         assertTrue(p.why, p.why.contains("you have Thieving 50, Agility 50 and the full set doubles every pickpocket's loot"));
         assertEquals(48, p.minutes);
-        // part of it owned: says what is left; all of it: done
+        // Part of it owned: says what is left; all of it: done
         a.owned.put("rogue mask", 1);
         a.owned.put("rogue top", 1);
         assertTrue(decide(a, Map.of(), 50, List.of(), 60).now().why.contains("still missing rogue trousers, rogue gloves, rogue boots"));
         for (String s : new String[]{"rogue trousers", "rogue gloves", "rogue boots"}) a.owned.put(s, 1);
         assertNull(decide(a, Map.of(), 50, List.of(), 60).now());
-        // free to play accounts can't
+        // Free to play accounts can't
         a.owned.clear();
         a.members = false;
         assertNull(decide(a, Map.of(), 50, List.of(), 60).now());

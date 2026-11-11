@@ -14,7 +14,7 @@ import net.runelite.client.plugins.banktags.BankTagsService;
 import net.runelite.client.plugins.banktags.TagManager;
 
 /**
- * The bank button (USER 2026-11-11, like Quest Helper's): shows only what the Now step uses, through RuneLite's own
+ * The bank button like Quest Helper's): shows only what the Now step uses, through RuneLite's own
  * Bank Tags plugin (a tag named "goal guide" that holds the step's items). Needs Bank Tags on. It only filters
  * what the bank shows; it never withdraws or moves anything.
  */
@@ -23,7 +23,7 @@ public final class BankFilter
     private BankFilter() { }
 
     public static final String TAG = "goal guide";
-    /** USER 2026-11-11 the toggle: the step's items and every run switched on in the panel, together. */
+    /** The toggle: the step's items and every run switched on in the panel, together. */
     public static final String BOTH = "the step and your runs";
 
     private static volatile Set<Integer> ids = Set.of();
@@ -33,11 +33,11 @@ public final class BankFilter
     private static volatile java.util.function.IntFunction<String> nameOf;
     /** The activity the filter is for ("Train Fishing 40 to 65"). */
     private static volatile String label;
-    /** USER 2026-11-11 "herb run mid quest": each run that is on -> its item names (keys), offered beside the step. */
+    /** "herb run mid quest": each run that is on -> its item names (keys), offered beside the step. */
     private static volatile Map<String, Set<String>> runs = Map.of();
     /** The run the run box follows now: the button's first choice. */
     private static volatile String preferRun;
-    /** USER 2026-11-11: the step's items the account has nowhere: game id -> {name, where to get it}, shown faded in the bank. */
+    /** The step's items the account has nowhere: game id -> {name, where to get it}, shown faded in the bank. */
     private static volatile Map<Integer, String[]> missing = Map.of();
     /** The choice the bank shows now (the step's label or a run's). */
     private static volatile String showing;
@@ -119,7 +119,7 @@ public final class BankFilter
     }
 
     /**
-     * USER 2026-11-11 "put a line between": the sections the bank shows, in order. The toggle shows the step's
+     * "put a line between": the sections the bank shows, in order. The toggle shows the step's
      * section, then one per run that is on; one choice alone is one section.
      */
     public static List<String> sections()
@@ -194,7 +194,7 @@ public final class BankFilter
         TagManager tags = tagManager(p);
         if (tags == null) return "Bank Tags is not ready yet.";
         tags.registerTag(TAG, BankFilter::shows);
-        // open again from scratch, so a switch from the step to a run lays the bank out anew
+        // Open again from scratch, so a switch from the step to a run lays the bank out anew
         if (TAG.equals(((BankTagsService) p).getActiveTag())) ((BankTagsService) p).closeBankTag();
         ((BankTagsService) p).openBankTag(TAG, BankTagsService.OPTION_NO_LAYOUT);
         return null;
@@ -203,7 +203,7 @@ public final class BankFilter
     /** Which choice {@link #shows} answers for (open sets it). */
     static void showing(String choice) { showing = choice; }
 
-    /** USER 2026-11-11 the toggle: on shows the step and the runs that are on, off shows the whole bank. Client thread. */
+    /** The toggle: on shows the step and the runs that are on, off shows the whole bank. Client thread. */
     public static String toggle(PluginManager plugins)
     {
         if (isOn(plugins)) { close(plugins); return null; }

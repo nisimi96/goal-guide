@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * USER 2026-11-11 "Plugin Hub suggestions per activity": RuneLite plugins that help with a step, shown on its card.
+ * "Plugin Hub suggestions per activity": RuneLite plugins that help with a step, shown on its card.
  * Mostly RuneLite's own (built in, maybe switched off), plus a few well-known Plugin Hub ones (marked "Plugin Hub").
  * Matched by skill and by words in the method's name. Pure.
  */

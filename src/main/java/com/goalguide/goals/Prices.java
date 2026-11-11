@@ -3,7 +3,7 @@ package com.goalguide.goals;
 import java.util.function.ToIntFunction;
 
 /**
- * Grand Exchange prices for main accounts (USER 2026-11-11: a main buys first, makes second). The plugin sets the
+ * Grand Exchange prices for main accounts a main buys first, makes second). The plugin sets the
  * lookup from RuneLite's own item prices; without it nothing is priced and the planner shows the ways to make.
  */
 public final class Prices

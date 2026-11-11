@@ -59,7 +59,7 @@ public class ItemRootsPlugin extends Plugin
         panel.show("<i>" + ItemDb.status() + "</i>");
         ItemDb.load(d -> panel.show("<i>" + ItemDb.status() + "</i>"));
         Know.listen(knowChanged);
-        // timers count down while nothing changes, so the box refreshes on its own too
+        // Timers count down while nothing changes, so the box refreshes on its own too
         knowTimer = new javax.swing.Timer(30_000, e -> showKnow());
         knowTimer.start();
         showKnow();
@@ -104,7 +104,7 @@ public class ItemRootsPlugin extends Plugin
         {
             boolean in = client.getGameState() == GameState.LOGGED_IN;
             boolean mine = MINE.equals(planFor);
-            // my account comes from Know: every storage as last seen, and it still works logged out
+            // My account comes from Know: every storage as last seen, and it still works logged out
             AccountState st = mine ? Know.state() : null;
             ItemTree.Account a = FRESH.equals(planFor) ? ItemTree.Account.fresh() : MAXED.equals(planFor) ? ItemTree.Account.maxed()
                 : st != null ? st.toAccount() : new ItemTree.Account();
@@ -158,7 +158,7 @@ public class ItemRootsPlugin extends Plugin
             : "<font color='#f0c070'>Train first: " + esc(String.join(", ", highest(missing))) + "</font>").append("<br><br>");
 
         b.append("<b>Steps for 1</b> (top to bottom)<br><br>");
-        // a level the plan is missing becomes its own step, once, at the highest level the plan needs
+        // A level the plan is missing becomes its own step, once, at the highest level the plan needs
         Map<String, Integer> train = new java.util.LinkedHashMap<>();
         for (ItemTree.Step st : steps)
             st.needs.forEach((k, ok) -> {
@@ -252,7 +252,7 @@ public class ItemRootsPlugin extends Plugin
 
     /** "x 5", "1 for every 6", "" for exactly one. */
     /**
-     * USER 2026-11-11 "each step / item / quest should also get its wiki link": the name as a link to its wiki page
+     * "each step / item / quest should also get its wiki link": the name as a link to its wiki page
      * (the wiki search jumps straight to an exact page). Clickable where the panel shows links; plain text elsewhere.
      */
     public static String wiki(String name)
@@ -275,7 +275,7 @@ public class ItemRootsPlugin extends Plugin
         String t = text.trim().toLowerCase(java.util.Locale.ROOT).replace("'", "");
         for (Quest q : Quest.values())
             if (q.getName().toLowerCase(java.util.Locale.ROOT).replace("'", "").equals(t) || q.name().equalsIgnoreCase(text.trim().replace(' ', '_'))) return q.name();
-        // a diary tier: "morytania medium" or "morytania medium diary"
+        // A diary tier: "morytania medium" or "morytania medium diary"
         String key = t.replace(' ', '_').toUpperCase(java.util.Locale.ROOT);
         if (!key.endsWith("_DIARY")) key += "_DIARY";
         if (com.goalguide.quests.QuestData.get().byQuest.containsKey(key)) return key;

@@ -43,7 +43,7 @@ import net.runelite.client.ui.PluginPanel;
 @Slf4j
 public final class GoalsView
 {
-    static final String GROUP = "ironloop", KEY = "goals", SITTING = "sitting", GUIDE_ON_SCREEN = "guideOnScreen",
+    static final String GROUP = "goalguide", OLD_GROUP = "ironloop", KEY = "goals", SITTING = "sitting", GUIDE_ON_SCREEN = "guideOnScreen",
         RUNS_OFF = "runsOff", STOPS_OFF = "stopsOff", TIMER_LENGTHS = "timerLengths", DAILIES = "dailiesDone";
     /** A run box closes this long after the run began, even with stops left. */
     static final long RUN_BOX_MAX_MS = 60 * 60_000L;
@@ -64,9 +64,9 @@ public final class GoalsView
     private String lastSaid;
     /** For the bank filter button (Bank Tags). */
     private volatile net.runelite.client.plugins.PluginManager plugins;
-    /** USER 2026-11-11 Runs tab: runs and stops switched off, per account. */
+    /** Runs tab: runs and stops switched off, per account. */
     private volatile com.goalguide.decide.RunPrefs prefs = com.goalguide.decide.RunPrefs.ALL_ON;
-    /** USER 2026-11-11 daily shop runs ticked today ("2026-11-11;zaff;bert"), per account. */
+    /** Daily shop runs ticked today ("2026-11-11;zaff;bert"), per account. */
     private volatile String dailies = "";
     /** Activity timer lengths per activity (ActivityTimer.key), per account. */
     private volatile Map<String, Integer> lengths = new LinkedHashMap<>();
@@ -85,7 +85,7 @@ public final class GoalsView
         this.config = config;
         this.toolbar = toolbar;
         this.executor = executor;
-        // USER 2026-11-11 "Get it myself" box: its route is worked out here, off the client thread
+        // "Get it myself" box: its route is worked out here, off the client thread
         com.goalguide.guide.GetBox.builder((item, done) -> executor.execute(() ->
         {
             AccountState st = Know.state();
@@ -116,6 +116,27 @@ public final class GoalsView
     void setGuideOnScreen(boolean on)
     {
         config.setConfiguration(GROUP, GUIDE_ON_SCREEN, String.valueOf(on));
+    }
+
+    /**
+     * Copies settings saved under the plugin's first config group name into {@link #GROUP}, once: account settings
+     * per RuneScape profile and the global ones. A key already set under the new name is left alone.
+     */
+    public static void migrateConfig(ConfigManager config)
+    {
+        for (String full : config.getConfigurationKeys(OLD_GROUP + "."))
+        {
+            String key = full.substring(OLD_GROUP.length() + 1);
+            if (key.startsWith("rsprofile.")) continue;
+            if (config.getConfiguration(GROUP, key) == null) config.setConfiguration(GROUP, key, config.getConfiguration(OLD_GROUP, key));
+        }
+        for (net.runelite.client.config.RuneScapeProfile p : config.getRSProfiles())
+        {
+            String profile = p.getKey();
+            for (String key : config.getRSProfileConfigurationKeys(OLD_GROUP, profile, ""))
+                if (config.getConfiguration(GROUP, profile, key) == null)
+                    config.setConfiguration(GROUP, profile, key, config.getConfiguration(OLD_GROUP, profile, key));
+        }
     }
 
     public void start()
@@ -177,7 +198,7 @@ public final class GoalsView
             Decide.Decision d = Decide.decide(a, timers(st), st.travel(), st.bankFree(), r == null ? new Planner.Route() : r, goals, now, sitting, prefs);
             log(p, d);
             com.goalguide.guide.Guide gd = r == null ? null : com.goalguide.guide.Guide.of(r, d, skipped);
-            // every step was moved past: start again from the top
+            // Every step was moved past: start again from the top
             if (gd != null && gd.skipped == 0) skipped.clear();
             if (gd != null && gd.now != null)
             {
@@ -201,7 +222,7 @@ public final class GoalsView
                 if (gd != null && gd.now != null) com.goalguide.guide.Guide.TIMER.start(gd.now.what, lengthFor(gd.now.what), System.currentTimeMillis());
             }
             runBox(st, a, d.now());
-            // USER 2026-11-11 arrow to the spot: with no run going, the training step's best method's spot
+            // Arrow to the spot: with no run going, the training step's best method's spot
             if (com.goalguide.guide.RunBox.current() == null) trainingSpot(gd, a);
             pn.showGuide(gd);
             pn.showRuns(a, prefs, st, com.goalguide.guide.Dailies.doneToday(dailies, System.currentTimeMillis()));
@@ -210,7 +231,7 @@ public final class GoalsView
         });
     }
 
-    /** Follows the run that is Now until each stop is done or still growing (USER 2026-11-11 run box). */
+    /** Follows the run that is Now until each stop is done or still growing run box). */
     private void runBox(AccountState st, ItemTree.Account a, Decide.Pick now)
     {
         long ms = System.currentTimeMillis();
@@ -235,7 +256,7 @@ public final class GoalsView
             return;
         }
         com.goalguide.guide.RunBox.set(new com.goalguide.guide.RunBox.Box(Decide.runName(run), rows));
-        // USER 2026-11-11 arrow to the spot: the first stop that still needs you
+        // Arrow to the spot: the first stop that still needs you
         net.runelite.api.coords.WorldPoint go = null;
         String goName = null;
         for (com.goalguide.guide.RunBox.Row row : rows)
@@ -287,8 +308,7 @@ public final class GoalsView
         return make;
     }
 
-    // ---- activity timer (USER 2026-11-11)
-
+    // ---- activity timer 
     int lengthFor(String what)
     {
         return lengths.getOrDefault(com.goalguide.guide.ActivityTimer.key(what), com.goalguide.guide.ActivityTimer.DEFAULT_MIN);
@@ -324,8 +344,7 @@ public final class GoalsView
         notifier.accept("Goal Guide: time is up for " + what + "." + (next == null ? "" : " Next: " + next + "."));
     }
 
-    // ---- runs tab (USER 2026-11-11)
-
+    // ---- runs tab 
     void setRun(String run, boolean on)
     {
         savePrefs(prefs.withRun(run, on));
@@ -543,7 +562,7 @@ public final class GoalsView
         return b.toString();
     }
 
-    /** USER 2026-11-11 step cards: an opened step's sections, worked out off the client thread. */
+    /** Step cards: an opened step's sections, worked out off the client thread. */
     void detail(Planner.Step s, Consumer<String> show)
     {
         executor.execute(() ->
@@ -629,7 +648,7 @@ public final class GoalsView
     {
         private final GoalsView view;
         private final JPanel list = new JPanel();
-        /** The route: a title, one card per step (USER 2026-11-11: click to open), then the filler. */
+        /** The route: a title, one card per step click to open), then the filler. */
         private final JPanel route = new JPanel();
         private String routeShown;
         private final java.util.Set<String> opened = new java.util.HashSet<>();
@@ -638,17 +657,17 @@ public final class GoalsView
         private final JPanel ideas = new JPanel();
         private final javax.swing.JComboBox<String> sit = new javax.swing.JComboBox<>(new String[]{"I have 30 min", "I have 1 hour", "I have 2 hours", "I have 3 hours"});
         private boolean quiet;
-        /** USER 2026-11-11 the guide: Now, Next, recommendations, and the Quest Helper button. */
+        /** The guide: Now, Next, recommendations, and the Quest Helper button. */
         private final JLabel guide = new JLabel();
         private final JButton questHelper = new JButton("Wiki quick guide");
         private final JLabel questHint = new JLabel();
         private final javax.swing.JCheckBox onScreen = new javax.swing.JCheckBox("Show the guide on the game screen");
         private volatile String questKey;
-        /** USER 2026-11-11: the Now step's items (carried / bank / missing) and the bank button. */
+        /** The Now step's items (carried / bank / missing) and the bank button. */
         private final JLabel items = new JLabel();
         private final JButton bank = new JButton("Show in bank (on / off)");
         private final JLabel bankHint = new JLabel();
-        /** USER 2026-11-11: the activity timer. */
+        /** The activity timer. */
         private final JPanel timerBox = new JPanel();
         private final JLabel clock = new JLabel();
         private ActivityState shownTimer;
@@ -904,11 +923,11 @@ public final class GoalsView
             if (st == com.goalguide.guide.ActivityTimer.State.RUNNING || st == com.goalguide.guide.ActivityTimer.State.PAUSED)
                 clock.setText(html("<b>" + com.goalguide.guide.ActivityTimer.clock(t.left(now)) + "</b> left"
                     + (st == com.goalguide.guide.ActivityTimer.State.PAUSED ? " (paused)" : "") + " <font color='#a0a0a0'>" + esc(what) + "</font>"));
-            // timers count down and the run box moves while nothing else changes
+            // Timers count down and the run box moves while nothing else changes
             if (++ticks % 30 == 0) view.replan();
         }
 
-        /** The timer's buttons for its state (USER 2026-11-11 mock: Start / Pause +5 Stop / Next activity, Same again, Stop here). */
+        /** The timer's buttons for its state mock: Start / Pause +5 Stop / Next activity, Same again, Stop here). */
         private void timerUi(ActivityState s)
         {
             com.goalguide.guide.ActivityTimer t = com.goalguide.guide.Guide.TIMER;
@@ -1149,7 +1168,7 @@ public final class GoalsView
                         runs.add(Box.createVerticalStrut(6));
                         runs.add(c);
                     }
-                    // USER 2026-11-11: a run switched off hides its stops
+                    // A run switched off hides its stops
                     if (!prefs.on(run)) continue;
                     JPanel row = new JPanel(new BorderLayout());
                     row.setBackground(ColorScheme.DARKER_GRAY_COLOR);
@@ -1169,7 +1188,7 @@ public final class GoalsView
                     row.add(s, BorderLayout.EAST);
                     runs.add(row);
                 }
-                // USER 2026-11-11: the once-a-day shop stock this account can claim, ticked when done
+                // The once-a-day shop stock this account can claim, ticked when done
                 if (!daily.isEmpty())
                 {
                     JLabel h = new JLabel(html("<font color='#ff981f'>DAILY SHOP RUNS</font> <font color='#a0a0a0'>reset 00:00 UTC</font>"));
@@ -1287,12 +1306,12 @@ public final class GoalsView
         private void fill(JPanel inside, Planner.Step s)
         {
             String key = s.toString();
-            // USER 2026-11-11: the step, its items and its quest link to the wiki (clickable)
+            // The step, its items and its quest link to the wiki (clickable)
             LinkText l = new LinkText(CARD_WIDTH);
             l.body(details.getOrDefault(key, "<i>Working it out...</i>"));
             inside.add(l);
             view.detail(s, h -> SwingUtilities.invokeLater(() -> { details.put(key, h); l.body(h); inside.revalidate(); }));
-            // USER 2026-11-11 "I rather get it myself": the item's route in a small box on the game screen
+            // "I rather get it myself": the item's route in a small box on the game screen
             if ((s.kind == Planner.Kind.GET || s.kind == Planner.Kind.STOCK) && s.item != null)
             {
                 JButton get = new JButton("Get it myself (on screen)");

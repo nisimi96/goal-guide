@@ -38,7 +38,7 @@ public final class Decide
 
     /** Rough minutes of a run whose travel is not checked, and of the bird houses at Fossil Island. Rough. */
     static final int HERB_RUN_MIN = 10, BIRD_RUN_MIN = 5, OTHER_RUN_MIN = 10;
-    /** USER 2026-10-25: a patch counts only when it is this quick to reach (seconds); PatchTravel.minStops says how many a run needs. */
+    /** A patch counts only when it is this quick to reach (seconds); PatchTravel.minStops says how many a run needs. */
     static final int QUICK_SECONDS = 120;
     /** Minutes at each patch: harvest, compost, plant (rough). */
     static final double PATCH_MIN = 1;
@@ -158,7 +158,7 @@ public final class Decide
     }
 
     /**
-     * @param prefs the Runs tab (USER 2026-11-11): switched-off runs are skipped, switched-off stops not counted. With
+     * @param prefs the Runs tab switched-off runs are skipped, switched-off stops not counted. With
      *              prefs and no travel times, a run counts the stops that are open and switched on (rough minutes).
      *              Null: the old rule, a run waits for the travel times.
      */
@@ -185,7 +185,7 @@ public final class Decide
                 boolean stop = name.equals(AccountState.BIRDS);
                 if (quick == null && prefs != null)
                 {
-                    // no travel times: the stops the player left switched on and can use
+                    // No travel times: the stops the player left switched on and can use
                     List<String> mine = prefs.stops(name, a);
                     if (mine.size() < need)
                     {
@@ -227,7 +227,7 @@ public final class Decide
         }
         later.sort((x, y) -> Long.compare(x.at, y.at));
 
-        // 2b: one-time unlocks the account just met (USER 2026-10-25: "a task go to when we meet the req")
+        // 2b: one-time unlocks the account just met "a task go to when we meet the req")
         List<Pick> work = new ArrayList<>();
         for (com.goalguide.facts.Unlock u : com.goalguide.facts.Unlock.all())
         {
@@ -257,11 +257,11 @@ public final class Decide
         }
         // 5: the rest of the route
         for (Planner.Step s : route.steps) work.add(pick(s, Rank.NEXT, "it is next on the route"));
-        // the same step once, at its best rank
+        // The same step once, at its best rank
         List<String> seen = new ArrayList<>();
         for (Pick p : d.picks) seen.add(p.what);
         for (Pick p : work) if (!seen.contains(p.what)) { seen.add(p.what); d.picks.add(p); }
-        // ready runs rank after waste; the sitting places them at their time
+        // Ready runs rank after waste; the sitting places them at their time
         List<Pick> ranked = new ArrayList<>(d.picks);
         d.picks.addAll(countRank(d.picks, Rank.WASTE), later);
 
@@ -285,7 +285,7 @@ public final class Decide
         if (g.type == Goal.Type.QUEST)
         {
             if (a.questsDone.contains(g.target)) return null;
-            // the quest chain is ordered with its needs first: its first step is where this quest starts
+            // The quest chain is ordered with its needs first: its first step is where this quest starts
             for (Planner.Step s : route.steps) if (s.goal == null) return pick(s, rank, why);
             return null;
         }
@@ -324,7 +324,7 @@ public final class Decide
         if (bankFree < 0) d.guards.add("Bank space not known yet: open the bank once.");
         else if (bankFree == 0) d.guards.add("The bank is full: anything new can't be banked. Clear a slot before making a new item.");
         else if (bankFree < BANK_LOW) d.guards.add("Only " + bankFree + " bank slots free.");
-        // a new kind of item needs a free slot: flag the picks that make one the bank doesn't hold
+        // A new kind of item needs a free slot: flag the picks that make one the bank doesn't hold
         if (bankFree == 0)
             for (Pick p : d.picks)
                 if (p.rank == Rank.STOCK && p.what.startsWith("Stock "))
@@ -369,7 +369,7 @@ public final class Decide
             Pick p = queue.remove(0);
             int left = total - t;
             int len = p.minutes < 0 ? left : Math.min(p.minutes, left);
-            // a run cuts in at its time (every minute late is lost), the cut block carries on after it
+            // A run cuts in at its time (every minute late is lost), the cut block carries on after it
             if (p.rank != Rank.WASTE && due < t + len) len = due - t;
             d.sitting.add(new Block(t, len, p));
             t += len;
@@ -379,7 +379,7 @@ public final class Decide
         }
     }
 
-    // seeds by patch, with the Farming level each needs (OSRS Wiki, Farming/Level up table, 2026-10-25)
+    // Seeds by patch, with the Farming level each needs (OSRS Wiki, Farming/Level up table, 2026-10-25)
     static final Map<String, Integer> HERB_SEEDS = new LinkedHashMap<>(), TREE_SEEDS = new LinkedHashMap<>(), FRUIT_SEEDS = new LinkedHashMap<>();
     /** Bird house bait (OSRS Wiki, Bird house trapping, 2026-10-25): hops, herb, flower, allotment and bush seeds. */
     static final List<String> BIRD_SEEDS = List.of("barley seed", "hammerstone seed", "asgarnian seed", "jute seed", "yanillian seed",

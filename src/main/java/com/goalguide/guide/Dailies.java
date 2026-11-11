@@ -7,7 +7,7 @@ import java.util.Set;
 import com.goalguide.items.ItemTree;
 
 /**
- * USER 2026-11-11 "daily shop runs": the once-a-day stock an account can claim, from the wiki's Repeatable events page
+ * "daily shop runs": the once-a-day stock an account can claim, from the wiki's Repeatable events page
  * (read 2026-11-11). Each shows only when the account qualifies, with the amount its diaries give, and a "done today"
  * tick that clears at the daily reset (00:00 UTC). Pure.
  */

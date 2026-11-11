@@ -9,7 +9,7 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 
-/** The run box on the game screen (USER 2026-11-11): the run's stops in order and how each one is. */
+/** The run box on the game screen the run's stops in order and how each one is. */
 public final class RunOverlay extends OverlayPanel
 {
     private final BooleanSupplier shown;
@@ -18,7 +18,7 @@ public final class RunOverlay extends OverlayPanel
     {
         this.shown = shown;
         setPosition(OverlayPosition.TOP_LEFT);
-        // USER 2026-11-11: a path to the next stop, drawn by the Shortest Path plugin (Plugin Hub) when it is on
+        // A path to the next stop, drawn by the Shortest Path plugin (Plugin Hub) when it is on
         addMenuEntry(net.runelite.api.MenuAction.RUNELITE_OVERLAY, "Path to next stop", "Shortest Path", e -> Waypoint.path());
     }
 

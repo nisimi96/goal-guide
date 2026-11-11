@@ -71,7 +71,7 @@ final class KnowRead
         return items(items::getItemComposition, items::canonicalize, slots);
     }
 
-    /** Item name (key) -> count. USER 2026-11-11: a bank placeholder (the greyed-out "0" slot) is not the item. */
+    /** Item name (key) -> count. a bank placeholder (the greyed-out "0" slot) is not the item. */
     static Map<String, Integer> items(java.util.function.IntFunction<net.runelite.api.ItemComposition> def, java.util.function.IntUnaryOperator canon, Item[] slots)
     {
         Map<String, Integer> m = new LinkedHashMap<>();
@@ -127,7 +127,7 @@ final class KnowRead
 
     /** The rune pouch: its varbits keep the runes even while the pouch is in the bank. */
     /**
-     * The follower (USER 2026-11-11: "is my cat following me"): the NPC walking after the player, as one item named
+     * The follower "is my cat following me"): the NPC walking after the player, as one item named
      * like it ("kitten", "hellcat"), the way Quest Helper counts a cat that follows you. Empty when none.
      */
     static boolean follower(Client client, AccountState s, long now)
@@ -236,7 +236,7 @@ final class KnowRead
         int city = client.getVarbitValue(VARBIT_HOUSE_CITY);
         String c = HOUSE_CITIES.get(city);
         String house = city == 0 ? "none" : c != null ? c : "city " + city;
-        // what the house holds is set by another plugin when one knows it; kept as last set
+        // What the house holds is set by another plugin when one knows it; kept as last set
         java.util.List<String> has;
         synchronized (s) { has = city == 0 ? java.util.List.of() : new java.util.ArrayList<>(s.houseHas); }
         int sb = client.getVarbitValue(net.runelite.api.gameval.VarbitID.SPELLBOOK);

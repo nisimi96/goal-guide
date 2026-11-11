@@ -141,7 +141,7 @@ public final class Planner
         /** Items the route's quests need (held or still missing) -> the quest: never drop, sell or use them up. */
         public final Map<String, String> keep = new LinkedHashMap<>();
         /**
-         * USER 2026-11-11: training past what the next quest needs is filler, done in mixed sessions between steps
+         * training past what the next quest needs is filler, done in mixed sessions between steps
          * (Thieving 53 to 75 when Desert Treasure I needs 53 and a later quest 72). One per skill, in route order.
          */
         public final List<Filler> filler = new ArrayList<>();
@@ -161,7 +161,7 @@ public final class Planner
     {
         Route r = new Route();
         Map<String, Integer> trainedTo = new LinkedHashMap<>();
-        // what each stock goal will use, picked first: its method may add a quest and a level to the route
+        // What each stock goal will use, picked first: its method may add a quest and a level to the route
         Map<Goal, Method> stockWay = new LinkedHashMap<>();
         List<String> questGoals = new ArrayList<>();
         for (Goal g : goals)
@@ -179,7 +179,7 @@ public final class Planner
             }
         }
 
-        // miniquest parts (Barbarian Training fishing...) are the player's turn, not in the quest data
+        // Miniquest parts (Barbarian Training fishing...) are the player's turn, not in the quest data
         for (java.util.Iterator<String> it = questGoals.iterator(); it.hasNext(); )
         {
             String q = it.next();
@@ -188,10 +188,10 @@ public final class Planner
             it.remove();
             if (!a.questsDone.contains(q)) r.add(new Step(Kind.QUEST, part, a.questsStarted.contains(q) ? "started, finish it" : "", -1, true));
         }
-        // 1. the quest chain (USER 2026-11-11): one list for every goal. A quest is placed once its earlier quests are
-        // done; among those, the one most goals share goes first, then the one whose goal is closest, then goal order,
-        // so a goal reached on the way to another is reached early. Each skill is trained only to what that quest needs;
-        // the rest up to the highest any goal needs is filler for mixed sessions.
+        // 1. the quest chain one list for every goal. A quest is placed once its earlier quests are
+        // Done; among those, the one most goals share goes first, then the one whose goal is closest, then goal order,
+        // So a goal reached on the way to another is reached early. Each skill is trained only to what that quest needs;
+        // The rest up to the highest any goal needs is filler for mixed sessions.
         List<QuestPlan.Step> chain = questGoals.isEmpty() ? List.of() : QuestPlan.plan(quests, items, a, qp, questGoals);
         Map<String, java.util.Set<String>> perGoal = new LinkedHashMap<>();
         for (String g : questGoals)
@@ -204,19 +204,19 @@ public final class Planner
         for (QuestPlan.Step qs : chain) qs.train.forEach((k, v) -> top.merge(skillOf(k), levelOf(k), Math::max));
         for (Goal g : goals) if (g.type == Goal.Type.LEVEL) top.merge(g.target, g.amount, Math::max);
         List<QuestPlan.Step> ordered = order(chain, perGoal, a);
-        // where the quests first need each skill; a skill that goes higher later is filler from there
+        // Where the quests first need each skill; a skill that goes higher later is filler from there
         Map<String, Integer> firstNeed = new LinkedHashMap<>();
         for (QuestPlan.Step qs : ordered) for (String k : qs.train.keySet()) firstNeed.putIfAbsent(skillOf(k), levelOf(k));
         java.util.Set<String> fill = new java.util.LinkedHashSet<>();
         firstNeed.forEach((sk, lvl) -> { if (top.getOrDefault(sk, 0) > lvl) fill.add(sk); });
-        // quest points by each step: the account's now, plus each quest the route finishes
+        // Quest points by each step: the account's now, plus each quest the route finishes
         int[] qpBy = {qp};
         java.util.Set<String> inRoute = new java.util.HashSet<>();
         for (QuestPlan.Step qs : ordered) inRoute.add(qs.quest);
         for (QuestPlan.Step qs : ordered)
         {
-            // USER 2026-11-11 "QP and combat as steps": a combat level the quest needs becomes melee training steps,
-            // quest points it is short of become the quickest quests the account can do now
+            // "QP and combat as steps": a combat level the quest needs becomes melee training steps,
+            // Quest points it is short of become the quickest quests the account can do now
             if (qs.combatNeed > 0) combat(r, a, trainedTo, qs.combatNeed);
             if (qs.qpNeed > qpBy[0])
                 for (String q : forPoints(quests, items, a, qs.qpNeed - qpBy[0], inRoute))
@@ -248,7 +248,7 @@ public final class Planner
             for (String it : quest)
             {
                 String k = clean(it);
-                // coins are spent everywhere and come back: never a kept item
+                // Coins are spent everywhere and come back: never a kept item
                 if (!k.equals("coins")) r.keep.putIfAbsent(k, QuestPlan.pretty(qs.quest));
             }
             List<String> notes = new ArrayList<>();
@@ -256,7 +256,7 @@ public final class Planner
             for (String o : qs.other) if (!o.startsWith("Combat ") && !o.contains(" quest points (you have ")) notes.add(o);
             if (!fromFiller.isEmpty()) notes.add("needs " + String.join(", ", fromFiller) + " from the filler by now");
             String how = String.join(", ", notes);
-            // USER 2026-11-11: the wiki's quest length, so the sitting plan and the route's hours count quests too
+            // The wiki's quest length, so the sitting plan and the route's hours count quests too
             Step st = new Step(Kind.QUEST, QuestPlan.pretty(qs.quest), how, QuestLength.hours(qs.quest), true);
             st.quest = qs.quest;
             st.started = a.questsStarted.contains(qs.quest);
@@ -266,7 +266,7 @@ public final class Planner
                     boolean note = QuestPlan.NO_ITEM.equals(n.note);
                     String name = note ? n.what : QuestPlan.itemName(n, items);
                     Use u = new Use(name, Math.max(1, n.amount), false, note);
-                    // the same item listed twice (two parts of the quest): the bigger amount
+                    // The same item listed twice (two parts of the quest): the bigger amount
                     st.uses.removeIf(o -> o.item.equalsIgnoreCase(name) && o.amount <= u.amount);
                     boolean bigger = false;
                     for (Use o : st.uses) bigger |= o.item.equalsIgnoreCase(name);
@@ -277,7 +277,7 @@ public final class Planner
             st.serves = serves;
             r.add(st);
         }
-        // the filler: each skill from where the quests leave it to the highest any goal needs
+        // The filler: each skill from where the quests leave it to the highest any goal needs
         for (String sk : fill)
         {
             int at = Math.max(a.skills.getOrDefault(sk, 1), firstNeed.get(sk)), to = top.get(sk);
@@ -285,7 +285,7 @@ public final class Planner
             r.filler.add(f);
             if (f.hours >= 0) r.hours += f.hours;
             else r.unknown++;
-            trainedTo.merge(sk, to, Math::max);   // a level goal on this skill is reached by the filler
+            trainedTo.merge(sk, to, Math::max);   // A level goal on this skill is reached by the filler
         }
         for (String q : questGoals) if (a.questsDone.contains(q) && goalNamed(goals, q)) r.done.add(QuestPlan.pretty(q));
 
@@ -361,7 +361,7 @@ public final class Planner
                 {
                     if (!goals.get(g).contains(s.quest)) continue;
                     served++;
-                    // USER 2026-11-11 "closest goal by hours": minutes left in the goal's quests and their training
+                    // "closest goal by hours": minutes left in the goal's quests and their training
                     int n = 0;
                     for (String q : goals.get(g)) if (!done.contains(q)) n += cost.getOrDefault(q, (int) (QuestLength.UNKNOWN_GUESS * 60));
                     closest = Math.min(closest, n);
@@ -370,7 +370,7 @@ public final class Planner
                 int[] key = {-served, closest, first};
                 if (bestKey == null || java.util.Arrays.compare(key, bestKey) < 0) { best = s; bestKey = key; }
             }
-            if (best == null) best = left.get(0);   // a loop in the data: keep the chain's own order
+            if (best == null) best = left.get(0);   // A loop in the data: keep the chain's own order
             left.remove(best);
             out.add(best);
             done.add(best.quest);
@@ -538,18 +538,18 @@ public final class Planner
             {
                 t.hours = -1;
                 t.how = "no method at " + QuestPlan.pretty(skill) + " " + lvl;
-                // timed runs (tree, herb runs) train it, but their hours are not counted yet
+                // Timed runs (tree, herb runs) train it, but their hours are not counted yet
                 List<String> runs = new ArrayList<>();
                 for (Method p : table) if (p.used && p.kind == Method.Kind.PASSIVE && p.level <= lvl && p.missing(a).isEmpty()) runs.add(p.name);
                 if (!runs.isEmpty()) t.how = String.join(", ", runs) + " (timed runs, hours not counted yet)";
-                // methods the account can do whose rate the wiki doesn't give (Slayer masters)
+                // Methods the account can do whose rate the wiki doesn't give (Slayer masters)
                 List<String> unrated = new ArrayList<>();
                 for (Method p : table)
                     if (p.used && p.level <= lvl && p.kind != Method.Kind.QUEST && p.kind != Method.Kind.PASSIVE && p.xpAt(lvl) < 0
                         && p.missing(a).isEmpty() && p.forMode(a.mode())) unrated.add(p.name);
                 if (runs.isEmpty() && !unrated.isEmpty())
                     t.how = String.join(", ", unrated.size() > 3 ? unrated.subList(unrated.size() - 3, unrated.size()) : unrated) + " (no rate on the wiki, hours not counted)";
-                // every way is behind something else first (Sailing before Pandemonium): say what
+                // Every way is behind something else first (Sailing before Pandemonium): say what
                 if (runs.isEmpty() && unrated.isEmpty())
                     for (Method p : table)
                         if (p.used && p.level <= lvl && p.kind != Method.Kind.QUEST && p.kind != Method.Kind.PASSIVE && !p.missing(a).isEmpty())
@@ -587,7 +587,7 @@ public final class Planner
     }
 
     /**
-     * USER 2026-11-11 step cards: the methods to train a skill from one level to another. First the best the account
+     * step cards: the methods to train a skill from one level to another. First the best the account
      * can use now (by xp an hour), then each better one that opens on the way and the level it opens at. Pure.
      */
     public static List<Method> recommend(ItemTree.Account a, String skill, int from, int to)
@@ -622,7 +622,7 @@ public final class Planner
         Method m = best(ways, a, key);
         if (!ways.isEmpty() || MethodTables.waysToMake(key, a).isEmpty())
         {
-            // USER 2026-11-11: a main buys it first (Grand Exchange), making it comes second
+            // A main buys it first (Grand Exchange), making it comes second
             int each = "main".equals(a.mode()) ? Prices.each(key) : 0;
             if (each > 0)
             {

@@ -24,7 +24,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
 
 /**
- * Goal Guide (USER 2026-11-11: a plugin anyone can use, no automation): the goals panel, the route, the on-screen
+ * Goal Guide a plugin anyone can use, no automation): the goals panel, the route, the on-screen
  * Now / Next box and the Quest Helper button, on top of Know, which keeps one saved state per account with levels, quests, diaries, quest points, every
  * storage as last seen (bank, bag, worn, seed vault, potion storage, rune pouch, looting bag, kits, quiver, POH
  * costume room) and the herb and bird house timers. Item Roots and other readers read it through {@link Know}.
@@ -80,10 +80,11 @@ public class GoalGuidePlugin extends Plugin
             log.warn("Goal Guide: no data folder, saving is off", e);
             Know.init(null, gson);
         }
+        com.goalguide.goals.GoalsView.migrateConfig(configManager);
         goals = new com.goalguide.goals.GoalsView(configManager, clientToolbar, executor);
         goals.plugins(pluginManager);
         goals.hooks(clientThread::invokeLater, notifier::notify);
-        // USER 2026-11-11: a main's Get steps show the Grand Exchange price first (RuneLite's own prices)
+        // A main's Get steps show the Grand Exchange price first (RuneLite's own prices)
         com.goalguide.goals.Prices.set(name ->
         {
             for (int id : com.goalguide.guide.BankFilter.ids(com.goalguide.items.ItemDb.get(), name))
@@ -95,7 +96,7 @@ public class GoalGuidePlugin extends Plugin
         });
         com.goalguide.guide.BankFilter.nameOf(id -> itemManager.getItemComposition(itemManager.canonicalize(id)).getName());
         goals.start();
-        // USER 2026-11-11: the guide box on the game screen (Now, Next, what else is good now)
+        // The guide box on the game screen (Now, Next, what else is good now)
         com.goalguide.guide.Guide.show(overlayManager, goals::guideOnScreen);
         com.goalguide.guide.Waypoint.bus(eventBus);
         clientThread.invokeLater(() ->
@@ -137,7 +138,7 @@ public class GoalGuidePlugin extends Plugin
         if (e.getGameState() == GameState.LOGGED_IN)
         {
             switchTo(configManager.getRSProfileKey());
-            // varbits and containers arrive over the first ticks
+            // Varbits and containers arrive over the first ticks
             fullReadAt = tick + 3;
         }
         else if (e.getGameState() == GameState.LOGIN_SCREEN && state != null)
@@ -168,7 +169,7 @@ public class GoalGuidePlugin extends Plugin
     {
         tick++;
         if (state == null || client.getGameState() != GameState.LOGGED_IN) return;
-        // USER 2026-11-11: an arrow and a map pin to where the guide sends you next (a run's next stop)
+        // An arrow and a map pin to where the guide sends you next (a run's next stop)
         com.goalguide.guide.Waypoint.tick(client, worldMapPointManager, goals != null && goals.guideOnScreen());
         long now = System.currentTimeMillis();
         boolean full = fullReadAt >= 0 && tick >= fullReadAt;
@@ -191,7 +192,7 @@ public class GoalGuidePlugin extends Plugin
             pouchAt = tick;
             change(KnowRead.runePouch(client, itemManager, state, now));
             change(KnowRead.follower(client, state, now));
-            // each patch for the run box: often, so a stop shows done soon after it is planted
+            // Each patch for the run box: often, so a stop shows done soon after it is planted
             for (Map.Entry<String, Map<String, AccountState.Timer>> r : Timers.stops(pluginManager, now).entrySet())
                 change(state.putStops(r.getKey(), r.getValue()));
         }
@@ -234,7 +235,7 @@ public class GoalGuidePlugin extends Plugin
         change(state.putLevel(e.getSkill().name(), client.getRealSkillLevel(e.getSkill()), e.getXp()));
     }
 
-    // ---- the bank button (USER 2026-11-11, like Quest Helper's): shows only what the step or a run uses
+    // ---- the bank button like Quest Helper's): shows only what the step or a run uses
 
     private Widget bankButton, bankText;
     /** The choices the button was made with: made again when they change while the bank is open. */
@@ -246,7 +247,7 @@ public class GoalGuidePlugin extends Plugin
         if (e.getGroupId() == InterfaceID.BANKMAIN) { bankShown = null; clientThread.invokeLater(this::addBankButton); }
     }
 
-    /** USER 2026-11-11: while the filter is on, the bank's items sit under a line and a title per section. */
+    /** While the filter is on, the bank's items sit under a line and a title per section. */
     @Subscribe
     public void onScriptPreFired(net.runelite.api.events.ScriptPreFired e)
     {
@@ -270,7 +271,7 @@ public class GoalGuidePlugin extends Plugin
     }
 
     /**
-     * USER 2026-11-11: a toggle on the title bar, right of Quest Helper's button (x 408, 25 wide). On shows the step's
+     * a toggle on the title bar, right of Quest Helper's button (x 408, 25 wide). On shows the step's
      * items and every run switched on in the panel; off shows the whole bank. Right-click shows one of them alone.
      */
     private void addBankButton()
@@ -281,14 +282,14 @@ public class GoalGuidePlugin extends Plugin
         bankShown = String.join("|", choices);
         if (parent == null || parent.isHidden() || choices.isEmpty()) return;
         int[] at = bankButtonSpot(parent);
-        if (at == null) { bankShown = null; return; }   // the bank is not laid out yet: next tick
+        if (at == null) { bankShown = null; return; }   // The bank is not laid out yet: next tick
         Widget w = parent.createChild(-1, net.runelite.api.widgets.WidgetType.GRAPHIC);
         place(w, at);
         w.setSpriteId(net.runelite.api.gameval.SpriteID.Miscgraphics3.UNKNOWN_BUTTON_SQUARE_SMALL);
         w.setHasListener(true);
         w.setName("<col=ff9040>Goal Guide</col>");
         w.setAction(0, "Toggle items for");
-        // one at a time: the first choice is the toggle's (step and runs together)
+        // One at a time: the first choice is the toggle's (step and runs together)
         List<String> alone = choices.subList(1, Math.min(choices.size(), 8));
         for (int i = 0; i < alone.size(); i++) w.setAction(i + 1, "Show only " + alone.get(i) + " for");
         int all = alone.size() + 1;
@@ -336,7 +337,7 @@ public class GoalGuidePlugin extends Plugin
             net.runelite.api.Point q = b == null || b.isHidden() ? null : b.getCanvasLocation();
             if (q != null && b.getWidth() > 0 && q.getY() - p.getY() < BUTTON_Y + BUTTON) taken.add(new int[]{q.getX() - p.getX(), q.getX() - p.getX() + b.getWidth()});
         }
-        // the close cross takes the last ~28 px of the title bar
+        // The close cross takes the last ~28 px of the title bar
         taken.add(new int[]{parent.getWidth() - 28, parent.getWidth()});
         for (int x : new int[]{QH_X + BUTTON + 3, QH_X - BUTTON - 3, QH_X - 2 * (BUTTON + 3)})
         {

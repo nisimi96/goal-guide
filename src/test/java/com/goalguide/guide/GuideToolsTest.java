@@ -13,7 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-/** USER 2026-11-11 mockups built: Next activity, the activity timer, the item list and the run box. */
+/** Mockups built: Next activity, the activity timer, the item list and the run box. */
 public class GuideToolsTest
 {
     @Test
@@ -24,7 +24,7 @@ public class GuideToolsTest
         assertEquals("Train Thieving 40 to 50", g.now.what);
         assertEquals("Goal B", g.next.what);
         assertEquals(1, g.skipped);
-        // a level-up changes the text, not the key: still moved past
+        // A level-up changes the text, not the key: still moved past
         assertEquals(ActivityTimer.key("Train Thieving 40 to 50"), ActivityTimer.key("Train Thieving 44 to 50 (Men)"));
         java.util.Set<String> all = new java.util.HashSet<>();
         for (Planner.Step s : r.steps) all.add(ActivityTimer.key(Guide.line(s).what));
@@ -68,7 +68,7 @@ public class GuideToolsTest
         List<StepItems.Item> items = StepItems.of(quest, st, x -> "a shop");
         assertEquals(StepItems.Has.STORED, items.get(0).has);
         assertEquals("Coins: in the bank (100)", items.get(0).say());
-        // a tool named by kind: any pickaxe counts, and "axe" is not a pickaxe
+        // A tool named by kind: any pickaxe counts, and "axe" is not a pickaxe
         assertTrue(StepItems.matches("rune pickaxe", "pickaxe"));
         assertFalse(StepItems.matches("rune pickaxe", "axe"));
         assertTrue(StepItems.matches("dragon axe", "axe"));
@@ -95,7 +95,7 @@ public class GuideToolsTest
         assertNull(RunBox.current());
     }
 
-    /** USER 2026-11-11 "the bot didn't bring the full list": every item Quest Helper lists, or-groups and keys too. */
+    /** "the bot didn't bring the full list": every item Quest Helper lists, or-groups and keys too. */
     @Test
     public void questItemsAreTheFullQuestHelperList()
     {
@@ -103,7 +103,7 @@ public class GuideToolsTest
         List<String> ds = new java.util.ArrayList<>();
         for (com.goalguide.quests.QuestData.Need n : q.needs("DRAGON_SLAYER_I")) if (n.kind.equals("item")) ds.add(n.what + " " + n.amount);
         for (String want : List.of("Unfired bowl 1", "Planks 3", "Steel nails 90", "Coins 2000", "Combat equipment 1")) assertTrue(ds.toString(), ds.contains(want));
-        // an "or" group is one row, a key from the keyring is an item
+        // An "or" group is one row, a key from the keyring is an item
         boolean boots = false, key = false;
         for (com.goalguide.quests.QuestData.Need n : q.needs("TROLL_STRONGHOLD")) boots |= n.what.equals("Climbing boots or 12 coins");
         for (com.goalguide.quests.QuestData.Need n : q.needs("SCORPION_CATCHER")) key |= n.what.toLowerCase().contains("dusty key");
@@ -125,7 +125,7 @@ public class GuideToolsTest
         assertTrue(bring);
     }
 
-    /** USER 2026-11-11: a cat following you counts for the cat quests, as Quest Helper counts it. */
+    /** A cat following you counts for the cat quests, as Quest Helper counts it. */
     @Test
     public void aCatFollowingYouCounts()
     {
@@ -163,7 +163,7 @@ public class GuideToolsTest
         BankFilter.showing("Herb run");
         assertTrue(BankFilter.shows(2));
         assertFalse(BankFilter.shows(1));
-        // USER 2026-11-11 a line and a title per section: the step first, then each run that is on
+        // A line and a title per section: the step first, then each run that is on
         BankFilter.showing(BankFilter.BOTH);
         assertEquals(List.of("Get 2 x Ruby", "Herb run", "Fruit tree run", "Bird house run"), BankFilter.sections());
         assertEquals("Get 2 x Ruby", BankFilter.section(1));
@@ -177,7 +177,7 @@ public class GuideToolsTest
         BankFilter.runs(Map.of());
     }
 
-    /** USER 2026-11-11: a quest already started gets no Get step for an item it may have used; the next quest does. */
+    /** A quest already started gets no Get step for an item it may have used; the next quest does. */
     @Test
     public void startedQuestDoesNotFetchUsedItemsAgain()
     {

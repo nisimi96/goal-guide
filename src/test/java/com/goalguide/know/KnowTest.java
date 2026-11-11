@@ -88,7 +88,7 @@ public class KnowTest
         assertEquals(5000, back.timer(AccountState.HERBS).readyAt);
         assertEquals(s.questsDone, back.questsDone);
         assertNotNull(Know.lastSaved());
-        // an account never saved is a fresh one, not null
+        // An account never saved is a fresh one, not null
         AccountState none = Know.load("other");
         assertEquals("other", none.profile);
         assertTrue(none.storages.isEmpty());
@@ -129,7 +129,7 @@ public class KnowTest
         AccountState s = new AccountState();
         List<String> lines = s.storageLines(0);
         assertEquals(List.of("bank: not seen yet, open it once", "seed vault: not seen yet, open it once"), lines);
-        // below 45 Farming the Farming Guild is shut, so the seed vault is not asked for
+        // Below 45 Farming the Farming Guild is shut, so the seed vault is not asked for
         s.putAccount(m("FARMING", 30), m(), Set.of(), Set.of(), 0, true, true, 0);
         assertEquals(List.of("bank: not seen yet, open it once"), s.storageLines(0));
         s.putStorage(AccountState.BANK, m("coins", 5), 0);
@@ -144,7 +144,7 @@ public class KnowTest
         assertEquals(AccountState.Timer.UNKNOWN, Timers.birdHouses(Arrays.asList(null, null, null, null), now).state);
         assertEquals(AccountState.Timer.EMPTY, Timers.birdHouses(Arrays.asList("0:1", "0:1", null, null), now).state);
         assertEquals(AccountState.Timer.BUILT, Timers.birdHouses(Arrays.asList("1:1", "0:1", null, null), now).state);
-        // seeded (a multiple of 3) 10 minutes ago: ready in 40
+        // Seeded (a multiple of 3) 10 minutes ago: ready in 40
         AccountState.Timer t = Timers.birdHouses(Arrays.asList("3:" + (sec - 600), "6:" + (sec - 1200), "bad", null), now);
         assertEquals(AccountState.Timer.GROWING, t.state);
         assertEquals(sec - 600 + Timers.BIRD_HOUSE_SECONDS, t.readyAt);

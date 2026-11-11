@@ -15,7 +15,7 @@ import com.goalguide.items.ItemTree;
 import com.goalguide.quests.QuestPlan;
 
 /**
- * USER 2026-11-11: what a route step shows when its card is opened, in titled sections like the guide box.
+ * what a route step shows when its card is opened, in titled sections like the guide box.
  * Every step: What to do and its items. An item: its Item Roots guide. Training: the recommended methods.
  * A quest: the guide links (the panel adds the buttons). Pure.
  */
@@ -23,7 +23,7 @@ public final class StepDetail
 {
     private StepDetail() { }
 
-    /** The step's sections as html (no html/body tags): a thin line and a small label above each (USER 2026-11-11). */
+    /** The step's sections as html (no html/body tags): a thin line and a small label above each */
     public static String html(Planner.Step s, ItemTree.Account a, Map<String, Map<String, Integer>> storages,
                               Function<String, String> source, ItemData d, String who)
     {
@@ -31,7 +31,7 @@ public final class StepDetail
         if (s.serves.size() > 1) b.append(small("Moves " + s.serves.size() + " goals: " + String.join(", ", s.serves), "#8fc8f0"));
         else if (s.goal != null) b.append(small("For your goal: " + s.goal, DIM));
 
-        // a training step's methods are its own section; others say how in short lines
+        // A training step's methods are its own section; others say how in short lines
         if (s.kind != Planner.Kind.TRAIN && s.how != null && !s.how.isEmpty())
         {
             b.append(section(s.kind == Planner.Kind.QUEST ? "Notes" : "How"));
@@ -45,7 +45,7 @@ public final class StepDetail
         if (s.kind == Planner.Kind.TRAIN && s.skill != null) b.append(recommendHtml(a, s.skill, s.from, s.to));
         String roots = (s.kind == Planner.Kind.GET || s.kind == Planner.Kind.STOCK) && s.item != null ? rootsHtml(s, a, d, who) : null;
         if (roots != null) b.append(section("How to get it")).append(roots);
-        // USER 2026-11-11 "Plugin Hub suggestions per activity"
+        // "Plugin Hub suggestions per activity"
         List<String> tips = s.kind == Planner.Kind.QUEST ? com.goalguide.guide.HubTips.forQuest()
             : s.kind == Planner.Kind.TRAIN && s.skill != null ? com.goalguide.guide.HubTips.forTraining(s.skill, bestNow(a, s.skill, s.from, s.to)) : List.of();
         if (!tips.isEmpty())
@@ -53,7 +53,7 @@ public final class StepDetail
             b.append(section("Helpful plugins"));
             for (String t : tips) b.append("<font color='#d0d0d0'>&bull; ").append(esc(t)).append("</font><br>");
         }
-        // USER 2026-11-11 "each step / item / quest should also get its wiki link"
+        // "each step / item / quest should also get its wiki link"
         b.append(section("Wiki"));
         String page = wikiPage(s);
         if (page != null) b.append(link(wikiLabel(s), page, "#8fc8f0")).append("<br>");
@@ -82,7 +82,7 @@ public final class StepDetail
                 default: c = "#f08a78"; mark = "&#10007;"; state = "missing"; break;
             }
             String q = i.need > 1 && !i.perHour ? i.need + " x " : "";
-            // USER 2026-11-11: each item links to its wiki page (a reminder like "Combat equipment" is no item)
+            // Each item links to its wiki page (a reminder like "Combat equipment" is no item)
             String name = i.has == StepItems.Has.REMINDER || i.name.isEmpty() ? esc(cap(q + i.name)) : esc(q) + link(cap(i.name), itemUrl(i.name), c);
             b.append(row("<font color='" + c + "'>" + mark + " " + name + "</font>", "<font color='" + c + "'>" + esc(state) + "</font>"));
             if (i.from != null) b.append("<tr><td colspan='2'><font color='" + DIM + "'>&nbsp;&nbsp;&nbsp;" + esc(i.from) + "</font></td></tr>");

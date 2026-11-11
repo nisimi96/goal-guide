@@ -6,7 +6,7 @@ import java.util.Map;
 import com.goalguide.know.AccountState;
 
 /**
- * The run box (USER 2026-11-11): while a run is on, its stops in run order, each ready, growing (time left),
+ * The run box while a run is on, its stops in run order, each ready, growing (time left),
  * diseased, dead, empty or done (planted during this run). It goes away when every stop is done or growing. Pure.
  */
 public final class RunBox
@@ -67,7 +67,7 @@ public final class RunBox
             AccountState.Timer t = birds && stops.size() == 1 ? stops.values().iterator().next() : stops.get(stop);
             if (t == null) { out.add(new Row(stop, Mark.UNSEEN, "not seen yet")); continue; }
             String s = t.stateAt(nowSec);
-            // planted during the run: growing, and that began after the run did
+            // Planted during the run: growing, and that began after the run did
             boolean fresh = birds ? t.readyAt > 0 && (t.readyAt - BIRD_SECONDS) * 1000 >= startMs - 60_000 : t.since >= startMs;
             if (AccountState.Timer.GROWING.equals(s) && fresh) out.add(new Row(stop, Mark.DONE, "done"));
             else if (AccountState.Timer.READY.equals(s)) out.add(new Row(stop, Mark.READY, birds ? "full" : "ready"));
