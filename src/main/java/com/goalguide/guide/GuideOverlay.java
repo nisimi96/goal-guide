@@ -71,6 +71,17 @@ public final class GuideOverlay extends OverlayPanel
             section("Then", null);
             line(gd.next.what, Color.WHITE);
         }
+        // Runs that are on, with their ready time (Time Tracking)
+        java.util.Map<String, String> times = com.goalguide.facts.Runs.times();
+        com.goalguide.facts.Runs.Switches sw = com.goalguide.facts.Runs.switches();
+        List<String> runs = new ArrayList<>();
+        for (java.util.Map.Entry<String, String> t : times.entrySet())
+            if (sw.on(t.getKey())) runs.add(t.getKey() + ": " + t.getValue());
+        if (!runs.isEmpty())
+        {
+            section("Runs", null);
+            for (String r : runs) line(r, r.endsWith(": ready") ? GREEN : GREY);
+        }
         if (!gd.filler.isEmpty())
         {
             section("Train between steps", null);

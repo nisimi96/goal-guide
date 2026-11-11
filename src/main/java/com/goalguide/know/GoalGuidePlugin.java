@@ -22,7 +22,9 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.timetracking.TimeTrackingPlugin;
 
 /**
  * Goal Guide: your goals as one route, with the next step in a box on the game screen.
@@ -30,6 +32,7 @@ import net.runelite.client.plugins.PluginDescriptor;
  * The account is saved as know-&lt;profile&gt;.json in the plugin's data folder.
  */
 @lombok.extern.slf4j.Slf4j
+@PluginDependency(TimeTrackingPlugin.class)
 @PluginDescriptor(
     name = "Goal Guide",
     description = "Turns your goals (quests, diaries, levels, items) into one route and shows the next step on screen",
@@ -54,6 +57,10 @@ public class GoalGuidePlugin extends Plugin
     private com.goalguide.guide.GuideOverlay overlay;
     @Inject private com.goalguide.guide.BankButton bankButton;
     @Inject private com.goalguide.guide.PlaceMarker placeMarker;
+    @Inject private RunTimers runTimers;
+    /** Ready times are read about once a minute. */
+    static final int TIMES_EVERY = 100;
+    private int timesAt = -TIMES_EVERY;
 
     private AccountState state;
     private String profile;
@@ -198,6 +205,12 @@ public class GoalGuidePlugin extends Plugin
         {
             potionsAt = -1;
             if (bankOpen()) change(KnowRead.potionStorage(client, itemManager, state, now));
+        }
+        if (tick - timesAt >= TIMES_EVERY)
+        {
+            timesAt = tick;
+            com.goalguide.facts.Runs.setTimes(runTimers.read());
+            if (goals != null) goals.showRunTimes();
         }
         if (notify)
         {

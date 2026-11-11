@@ -62,6 +62,13 @@ public final class Runs
         }
     }
 
+    /** Each run's ready time in words ("ready", "in 1h 12m"), from Time Tracking; empty until read. */
+    private static volatile Map<String, String> times = Map.of();
+
+    public static Map<String, String> times() { return times; }
+
+    public static void setTimes(Map<String, String> t) { times = Map.copyOf(t); }
+
     /** "Herb run", "Tree run", ... in order. */
     public static List<String> names() { return new ArrayList<>(STOPS.keySet()); }
 

@@ -15,7 +15,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * The plugin has no automation and stands on its own: code only in com.goalguide, no plugin used but RuneLite's own bank search,
+ * The plugin has no automation and stands on its own: code only in com.goalguide, no plugin used but RuneLite's own bank search and Time Tracking,
  * and no bot or automation words anywhere in its code or data.
  */
 public class GuideIsBotFreeTest
@@ -24,7 +24,7 @@ public class GuideIsBotFreeTest
 
     /** The plugin framework and RuneLite's own BankSearch are all it may name under net.runelite.client.plugins. */
     static final Set<String> ALLOWED = Set.of("Plugin", "PluginDescriptor", "PluginDependency", "PluginManager",
-        "PluginInstantiationException", "PluginType", "PluginPanel", "bank");
+        "PluginInstantiationException", "PluginType", "PluginPanel", "bank", "timetracking");
 
     private static final Pattern REF = Pattern.compile("net\\.runelite\\.client\\.plugins\\.([A-Za-z0-9_]+)");
 

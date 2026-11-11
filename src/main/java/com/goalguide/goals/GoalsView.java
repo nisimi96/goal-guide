@@ -119,6 +119,7 @@ public final class GoalsView
             return;
         }
         ItemTree.Account a = st.toAccount();
+        runsAccount = a;
         pn.showRuns(a, Runs.switches());
         if (goals.isEmpty())
         {
@@ -178,6 +179,17 @@ public final class GoalsView
     }
 
     /** Where to get an item the step is missing: a main's GE price first, then the best way to make or get it. */
+    /** The account the Runs tab last showed, so new ready times can show without a replan. */
+    private volatile ItemTree.Account runsAccount;
+
+    /** New ready times: the Runs tab shows them. */
+    public void showRunTimes()
+    {
+        GoalsPanel pn = panel;
+        ItemTree.Account a = runsAccount;
+        if (pn != null && a != null) pn.showRuns(a, Runs.switches());
+    }
+
     static String source(ItemTree.Account a, String item)
     {
         String key = ItemData.questText(item);

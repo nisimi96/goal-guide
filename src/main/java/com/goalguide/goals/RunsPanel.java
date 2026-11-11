@@ -33,11 +33,11 @@ final class RunsPanel extends JPanel
     {
         SwingUtilities.invokeLater(() ->
         {
-            String sig = a.questsDone + "" + a.skills + sw.runsText() + "|" + sw.stopsText();
+            String sig = a.questsDone + "" + a.skills + sw.runsText() + "|" + sw.stopsText() + Runs.times();
             if (sig.equals(shown)) return;
             shown = sig;
             removeAll();
-            add(Ui.text(Text.color(Text.GREY, "Switches are saved for this account. The bank button shows the items of every run that is on, with the step's."), Ui.WIDTH));
+            add(Ui.text(Text.color(Text.GREY, "Switches are saved for this account. The bank button shows the items of every run that is on, with the step's. Ready times come from RuneLite's Time Tracking."), Ui.WIDTH));
             for (String run : Runs.names())
             {
                 add(Box.createVerticalStrut(6));
@@ -53,7 +53,9 @@ final class RunsPanel extends JPanel
     {
         JPanel c = Ui.box();
         boolean on = sw.on(run);
-        JCheckBox head = check(Text.color(on ? Text.ORANGE : Text.GREY, run), on, true, b -> view.setRun(run, b));
+        String time = Runs.times().get(run);
+        String when = time == null ? "" : " " + Text.color(time.equals("ready") ? Text.GREEN : on ? Text.YELLOW : Text.GREY, "· " + time);
+        JCheckBox head = check(Text.color(on ? Text.ORANGE : Text.GREY, run) + when, on, true, b -> view.setRun(run, b));
         head.setFont(FontManager.getRunescapeBoldFont());
         c.add(head);
         if (!on) return c;
