@@ -1,8 +1,8 @@
 package com.goalguide.goals;
 
-import java.awt.Color;
 import java.util.function.Consumer;
 import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -15,6 +15,9 @@ import net.runelite.client.ui.FontManager;
 /** The Runs tab: switch each run, and each stop of it, on or off for this account. */
 final class RunsPanel extends JPanel
 {
+    static final int INDENT = 14;
+    static final String DIM = "#6a6a6a";
+
     private final GoalsView view;
     private String shown;
 
@@ -45,26 +48,31 @@ final class RunsPanel extends JPanel
         });
     }
 
+    /** A run: its title as a header, its stops indented under it. Locked stops are dim and say what opens them. */
     private JPanel card(String run, ItemTree.Account a, Runs.Switches sw)
     {
         JPanel c = Ui.box();
         boolean on = sw.on(run);
-        c.add(check("<b>" + Text.esc(run) + "</b>", on, Color.WHITE, true, b -> view.setRun(run, b)));
+        JCheckBox head = check(Text.color(on ? Text.ORANGE : Text.GREY, run), on, true, b -> view.setRun(run, b));
+        head.setFont(FontManager.getRunescapeBoldFont());
+        c.add(head);
         if (!on) return c;
         for (Runs.Stop s : Runs.stops(run))
         {
             String closed = s.closed(a);
-            String label = Text.esc(s.name) + (closed == null ? "" : " " + Text.color(Text.GREY, closed));
-            c.add(check(label, closed == null && sw.on(run, s.name), ColorScheme.LIGHT_GRAY_COLOR, closed == null, b -> view.setStop(run, s.name, b)));
+            String label = closed == null ? Text.esc(s.name) : Text.color(DIM, s.name) + "<br>" + Text.color(Text.RED, closed);
+            JCheckBox stop = check(label, closed == null && sw.on(run, s.name), closed == null, b -> view.setStop(run, s.name, b));
+            stop.setBorder(BorderFactory.createEmptyBorder(0, INDENT, 0, 0));
+            c.add(stop);
         }
         return c;
     }
 
-    private static JCheckBox check(String html, boolean on, Color color, boolean enabled, Consumer<Boolean> set)
+    private static JCheckBox check(String html, boolean on, boolean enabled, Consumer<Boolean> set)
     {
-        JCheckBox b = new JCheckBox(Ui.html(html, Ui.CARD_WIDTH), on);
+        JCheckBox b = new JCheckBox(Ui.html(html, Ui.CARD_WIDTH - INDENT), on);
         b.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-        b.setForeground(color);
+        b.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
         b.setFont(FontManager.getRunescapeSmallFont());
         b.setEnabled(enabled);
         b.setAlignmentX(LEFT_ALIGNMENT);
