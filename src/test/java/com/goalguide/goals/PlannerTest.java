@@ -2,7 +2,6 @@ package com.goalguide.goals;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.goalguide.items.ItemRootsPlugin;
 import com.goalguide.items.ItemTree;
 import com.goalguide.quests.QuestData;
 import org.junit.Test;
@@ -14,7 +13,7 @@ public class PlannerTest
 {
     private static Goal parse(String s)
     {
-        return Goal.parse(s, ItemRootsPlugin::questNamed);
+        return Goal.parse(s, QuestData::named);
     }
 
     @Test
@@ -103,9 +102,9 @@ public class PlannerTest
         assertEquals(1, r.steps.size());
         assertEquals(1, r.unknown);
         assertTrue(r.steps.get(0).how, r.steps.get(0).how.contains("Pandemonium"));
-        String html = GoalsView.routeHtml(r);
+        String html = GoalsPanel.routeHead(r) + StepDetail.title(r.steps.get(0)) + GoalsPanel.routeTail(r);
         assertTrue(html, html.contains("Train Sailing 1 to 30"));
-        assertTrue(html, html.contains("<b>Done</b>") && html.contains("Fishing 75, 1,000 raw shark"));
+        assertTrue(html, html.contains(">Done<") && html.contains("Fishing 75, 1,000 raw shark"));
     }
 
     @Test
@@ -122,9 +121,9 @@ public class PlannerTest
     @Test
     public void hourText()
     {
-        assertEquals("30 min", GoalsView.hours(0.5));
-        assertEquals("5.2 h", GoalsView.hours(5.2));
-        assertEquals("3.0 days", GoalsView.hours(72));
+        assertEquals("30 min", Text.hours(0.5));
+        assertEquals("5.2 h", Text.hours(5.2));
+        assertEquals("3.0 days", Text.hours(72));
     }
 
     @Test

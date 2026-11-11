@@ -1,17 +1,11 @@
 package com.goalguide.facts;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Stream;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import com.goalguide.items.ItemTree;
@@ -123,13 +117,13 @@ public class MethodTablesTest
     {
         ItemTree.Account a = ItemTree.Account.fresh();
         a.skills.put("FISHING", 70);
-        String html = com.goalguide.items.ItemRootsPlugin.tableWays(a, "Raw shark");
+        String html = com.goalguide.goals.ItemRoute.skillWays(a, "Raw shark");
         assertTrue(html, html.contains("Sharks"));
         assertTrue(html, html.contains("90 an hour at 76"));
         assertTrue(html, html.contains("needs Fishing 76"));
-        assertEquals("", com.goalguide.items.ItemRootsPlugin.tableWays(a, "Abyssal whip"));
+        assertEquals("", com.goalguide.goals.ItemRoute.skillWays(a, "Abyssal whip"));
         // Dragon bones come from the Prayer table now
-        assertTrue(com.goalguide.items.ItemRootsPlugin.tableWays(a, "Dragon bones").contains("blue dragons"));
+        assertTrue(com.goalguide.goals.ItemRoute.skillWays(a, "Dragon bones").contains("blue dragons"));
     }
 
     @Test

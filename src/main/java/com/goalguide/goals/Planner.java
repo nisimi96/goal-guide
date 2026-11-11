@@ -11,7 +11,6 @@ import com.goalguide.facts.Method;
 import com.goalguide.facts.MethodTables;
 import com.goalguide.items.ItemData;
 import com.goalguide.items.ItemTree;
-import com.goalguide.facts.MeasuredRates;
 import com.goalguide.quests.QuestData;
 import com.goalguide.quests.QuestLength;
 import com.goalguide.quests.QuestPlan;
@@ -47,11 +46,11 @@ public final class Planner
         public String quest;
         /** QUEST: the goals this quest moves forward (labels); more than one = shared, done first. */
         public List<String> serves = List.of();
-        /** What the step uses, for the item list and the bank button: tools and items, quest items. */
+        /** What the step uses, for the item list: tools and items, quest items. */
         public final List<Use> uses = new ArrayList<>();
         /** A GET step on a main: the Grand Exchange price of all of it, 0 = not priced. */
         public long ge;
-        /** GET / STOCK: the item to get (for its Item Roots guide). Null otherwise. */
+        /** GET / STOCK: the item to get (for its how-to-get-it steps). Null otherwise. */
         public String item;
         /** QUEST: already started (its items not held may be used up: shown, never fetched again). */
         public boolean started;
@@ -66,6 +65,18 @@ public final class Planner
             this.how = how;
             this.hours = hours;
             this.you = you;
+        }
+
+        /** "Train ", "Get ", "Stock ", or nothing for a quest. */
+        public String verb()
+        {
+            switch (kind)
+            {
+                case TRAIN: return "Train ";
+                case GET: return "Get ";
+                case STOCK: return "Stock ";
+                default: return "";
+            }
         }
 
         @Override public String toString() { return kind + " " + what + (how == null ? "" : " (" + how + ")") + (hours >= 0 ? String.format(" %.1fh", hours) : ""); }
@@ -318,9 +329,8 @@ public final class Planner
                     train(r, a, trainedTo, m.skill, m.level);
                     m.skills.forEach((s, l) -> train(r, a, trainedTo, s, l));
                     int lvl = Math.max(m.level, a.skills.getOrDefault(m.skill, 1));
-                    int mine = MeasuredRates.perHour(m.skill, m.name, g.target);
-                    int per = mine > 0 ? mine : m.givesAt(g.target, lvl);
-                    Step st = new Step(Kind.STOCK, what, m.name + (per > 0 ? ", " + String.format("%,d", per) + " an hour" + (mine > 0 ? " (your pace)" : "") : ""),
+                    int per = m.givesAt(g.target, lvl);
+                    Step st = new Step(Kind.STOCK, what, m.name + (per > 0 ? ", " + String.format("%,d", per) + " an hour" : ""),
                         per > 0 ? need / (double) per : -1, false);
                     st.item = g.target;
                     uses(st, m, lvl);
@@ -560,10 +570,8 @@ public final class Planner
                 return t;
             }
             if (t.first == null) t.first = m;
-            int mine = MeasuredRates.perHour(skill, m.name, "xp");
-            String name = m.name + (mine > 0 ? " (your pace)" : "");
-            if (!used.contains(name)) used.add(name);
-            h += (Experience.getXpForLevel(lvl + 1) - Experience.getXpForLevel(lvl)) / (double) (mine > 0 ? mine : m.xpAt(lvl));
+            if (!used.contains(m.name)) used.add(m.name);
+            h += (Experience.getXpForLevel(lvl + 1) - Experience.getXpForLevel(lvl)) / (double) m.xpAt(lvl);
         }
         t.hours = h;
         t.how = String.join(", then ", used.size() > 3 ? used.subList(0, 3) : used) + (used.size() > 3 ? ", ..." : "");

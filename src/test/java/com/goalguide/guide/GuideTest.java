@@ -52,14 +52,14 @@ public class GuideTest
     @Test
     public void theGuideShowsNowNextAndFiller()
     {
-        Guide g = Guide.of(route(), null);
+        Guide g = Guide.of(route());
         assertEquals("Shared", g.now.what);
         assertEquals("SHARED", g.now.quest);
         assertTrue(g.now.how, g.now.how.contains("moves Goal A and Goal B"));
         assertEquals("Train Thieving 40 to 50", g.next.what);
         assertNull(g.next.quest);
-        assertEquals(List.of("Between steps: Thieving 50 to 70 (Goal A needs 70)"), g.recommend);
-        assertNull(Guide.of(new Planner.Route(), null));
+        assertEquals(List.of("Thieving 50 to 70 (Goal A needs 70)"), g.filler);
+        assertNull(Guide.of(new Planner.Route()));
     }
 
     @Test

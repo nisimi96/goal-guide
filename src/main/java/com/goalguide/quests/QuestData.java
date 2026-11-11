@@ -16,8 +16,7 @@ import java.util.Map;
  * nobody types 200 quests by hand. Re-run the tool when Quest Helper adds a quest.
  *
  * <p>The 48 achievement diary tiers come the same way into diary_reqs.tsv, keyed like MORYTANIA_MEDIUM_DIARY, so a
- * diary is a goal the planner walks like a quest. Quest Helper's diary levels match the wiki (Codex Navigator's
- * table had Morytania Medium at Agility 42, the wiki and Quest Helper say 40). Each tier has a "varbit" row: the
+ * diary is a goal the planner walks like a quest. Each tier has a "varbit" row: the
  * VarbitID name that reads 1 once the tier is done.
  */
 public final class QuestData
@@ -48,6 +47,17 @@ public final class QuestData
     public List<Need> needs(String quest)
     {
         return byQuest.getOrDefault(quest, List.of());
+    }
+
+    /** The quest key for typed text ("priest in peril", "morytania medium"), null when it's no quest or diary. */
+    public static String named(String text)
+    {
+        String t = text.trim().toLowerCase(java.util.Locale.ROOT).replace("'", "");
+        for (net.runelite.api.Quest q : net.runelite.api.Quest.values())
+            if (q.getName().toLowerCase(java.util.Locale.ROOT).replace("'", "").equals(t) || q.name().equalsIgnoreCase(t.replace(' ', '_'))) return q.name();
+        String key = t.replace(' ', '_').toUpperCase(java.util.Locale.ROOT);
+        if (!key.endsWith("_DIARY")) key += "_DIARY";
+        return get().byQuest.containsKey(key) ? key : null;
     }
 
     public static boolean isDiary(String key)

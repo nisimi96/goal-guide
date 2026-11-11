@@ -70,7 +70,7 @@ public class QuestPlanTest
 
     @Test public void diaryLevelsMatchTheWiki()
     {
-        // OSRS Wiki, Morytania Diary and Kandarin Diary, read 2026-10-25 (Codex Navigator had Agility 42 here)
+        // OSRS Wiki, Morytania Diary and Kandarin Diary, read 2026-10-25
         QuestData d = QuestData.get();
         assertEquals(40, d.skillNeed("MORYTANIA_MEDIUM_DIARY", "AGILITY"));
         assertEquals(71, d.skillNeed("MORYTANIA_HARD_DIARY", "AGILITY"));
@@ -139,20 +139,8 @@ public class QuestPlanTest
         assertFalse(st.waitingOn.contains("IN_AID_OF_THE_MYREQUE"));
     }
 
-    @Test public void agilityDiariesComeLowestFirst()
+    @Test public void diaryNamesArePretty()
     {
-        ItemTree.Account a = ItemTree.Account.fresh();
-        List<String> d = GoalRoute.diariesNeeding(QuestData.get(), a, "AGILITY");
-        assertFalse(d.isEmpty());
-        for (int i = 1; i < d.size(); i++)
-            assertTrue(QuestData.get().skillNeed(d.get(i - 1), "AGILITY") <= QuestData.get().skillNeed(d.get(i), "AGILITY"));
-        a.questsDone.add(d.get(0));
-        assertNotEquals(d.get(0), GoalRoute.diariesNeeding(QuestData.get(), a, "AGILITY").get(0));
-        a.skills.put("AGILITY", 40); // Only tiers Agility still holds back
-        for (String k : GoalRoute.diariesNeeding(QuestData.get(), a, "AGILITY")) assertTrue(k, QuestData.get().skillNeed(k, "AGILITY") > 40);
-        assertFalse(GoalRoute.diariesNeeding(QuestData.get(), a, "AGILITY").contains("MORYTANIA_MEDIUM_DIARY"));
-        String html = GoalRoute.html(QuestData.get(), null, ItemTree.Account.fresh(), 0, List.of("PRIEST_IN_PERIL", "MORYTANIA_MEDIUM_DIARY"), 10);
-        assertTrue(html, html.contains("One route for 2 goals"));
         assertEquals("Morytania Medium Diary", QuestPlan.pretty("MORYTANIA_MEDIUM_DIARY"));
     }
 

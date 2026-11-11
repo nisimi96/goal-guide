@@ -1,8 +1,5 @@
 package com.goalguide.items;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.List;
 import java.util.Map;
 import net.runelite.api.Quest;
@@ -13,7 +10,6 @@ import com.goalguide.items.ItemData.Spawn;
 import com.goalguide.items.ItemTree.Account;
 import com.goalguide.items.ItemTree.Kind;
 import com.goalguide.items.ItemTree.Node;
-import org.junit.Assume;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

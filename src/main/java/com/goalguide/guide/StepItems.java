@@ -1,7 +1,6 @@
 package com.goalguide.guide;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -117,17 +116,5 @@ public final class StepItems
     static boolean matches(String held, String want)
     {
         return ItemData.sameKind(held, want);
-    }
-
-    /** Lower-case names to show in the bank: what the list found held, else the name itself. */
-    public static Map<String, Boolean> bankNames(List<Item> items)
-    {
-        Map<String, Boolean> out = new LinkedHashMap<>();
-        for (Item i : items)
-        {
-            if (i.matched.isEmpty()) out.put(ItemData.key(i.name), false);
-            for (String m : i.matched) out.put(m, true);
-        }
-        return out;
     }
 }

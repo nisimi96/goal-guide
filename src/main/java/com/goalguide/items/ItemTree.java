@@ -64,15 +64,6 @@ public final class ItemTree
             return a;
         }
 
-        /** Every skill 99 and every quest done. */
-        public static Account maxed()
-        {
-            Account a = new Account();
-            for (net.runelite.api.Skill s : net.runelite.api.Skill.values()) a.skills.put(s.name(), 99);
-            for (net.runelite.api.Quest q : net.runelite.api.Quest.values()) a.questsDone.add(q.name());
-            return a;
-        }
-
         /** The game's combat level formula. */
         int combat()
         {

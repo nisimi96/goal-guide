@@ -44,12 +44,6 @@ public final class Know
         return s == null ? null : s.toAccount();
     }
 
-    /** True while the Goal Guide plugin runs on a logged-in account, so {@link #state()} is kept up to date. */
-    public static boolean live()
-    {
-        return live && current != null;
-    }
-
     /** Called with the state after each change (on the client thread). Keep it short. */
     public static void listen(Consumer<AccountState> l)
     {
@@ -59,27 +53,6 @@ public final class Know
     public static void unlisten(Consumer<AccountState> l)
     {
         LISTENERS.remove(l);
-    }
-
-    private static volatile boolean touched;
-
-    /**
-     * Another plugin changed the state (travel times, house scans): tell the listeners and have the guide
-     * save it. Client thread. Ignored when {@code s} is no longer the current account.
-     */
-    public static void touched(AccountState s)
-    {
-        if (s == null || s != current) return;
-        touched = true;
-        changed();
-    }
-
-    /** True once after {@link #touched}: the guide saves then. */
-    static boolean takeTouched()
-    {
-        boolean t = touched;
-        touched = false;
-        return t;
     }
 
     // ---- the plugin side
@@ -132,10 +105,7 @@ public final class Know
         if (s.questsDone == null) s.questsDone = blank.questsDone;
         if (s.questsStarted == null) s.questsStarted = blank.questsStarted;
         if (s.storages == null) s.storages = blank.storages;
-        if (s.timers == null) s.timers = blank.timers;
-        if (s.stops == null) s.stops = blank.stops;
         s.storages.values().removeIf(st -> st == null || st.items == null);
-        s.timers.values().removeIf(t -> t == null || t.state == null);
         return s;
     }
 

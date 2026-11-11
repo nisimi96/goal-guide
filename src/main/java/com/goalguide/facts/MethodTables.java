@@ -81,30 +81,6 @@ public final class MethodTables
         return tables().getOrDefault(skill.toUpperCase(Locale.ROOT), List.of());
     }
 
-    private static volatile Map<String, int[]> spots;
-
-    /**
-     * "arrow to the spot": where a method is done, {x, y, plane} from the wiki's maps (spots.tsv,
-     * skill + method id), null when not known.
-     */
-    public static int[] spot(String skill, String id)
-    {
-        Map<String, int[]> m = spots;
-        if (m == null)
-        {
-            Map<String, int[]> t = new java.util.HashMap<>();
-            for (String line : read("spots.tsv"))
-            {
-                String[] c = line.split("\t");
-                if (c.length < 5) continue;
-                try { t.put(c[0].toUpperCase(Locale.ROOT) + "/" + c[1], new int[]{Integer.parseInt(c[2].trim()), Integer.parseInt(c[3].trim()), Integer.parseInt(c[4].trim())}); }
-                catch (NumberFormatException ignored) { }
-            }
-            spots = m = t;
-        }
-        return m.get(skill.toUpperCase(Locale.ROOT) + "/" + id);
-    }
-
     public static Map<String, List<Method>> tables()
     {
         Map<String, List<Method>> t = bySkill;
@@ -264,12 +240,5 @@ public final class MethodTables
             throw new IllegalStateException(name, e);
         }
         return out;
-    }
-
-    /** Test hook: forget the parsed tables. */
-    static void reset()
-    {
-        bySkill = null;
-        roots = null;
     }
 }

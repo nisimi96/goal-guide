@@ -1,5 +1,8 @@
 package com.goalguide.goals;
 
+import static com.goalguide.goals.Text.cap;
+import static com.goalguide.goals.Text.esc;
+
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -10,13 +13,12 @@ import com.goalguide.facts.Method;
 import com.goalguide.facts.MethodTables;
 import com.goalguide.guide.StepItems;
 import com.goalguide.items.ItemData;
-import com.goalguide.items.ItemRootsPlugin;
 import com.goalguide.items.ItemTree;
 import com.goalguide.quests.QuestPlan;
 
 /**
  * what a route step shows when its card is opened, in titled sections like the guide box.
- * Every step: What to do and its items. An item: its Item Roots guide. Training: the recommended methods.
+ * Every step: What to do and its items. An item: its how-to-get-it steps. Training: the recommended methods.
  * A quest: the guide links (the panel adds the buttons). Pure.
  */
 public final class StepDetail
@@ -45,15 +47,6 @@ public final class StepDetail
         if (s.kind == Planner.Kind.TRAIN && s.skill != null) b.append(recommendHtml(a, s.skill, s.from, s.to));
         String roots = (s.kind == Planner.Kind.GET || s.kind == Planner.Kind.STOCK) && s.item != null ? rootsHtml(s, a, d, who) : null;
         if (roots != null) b.append(section("How to get it")).append(roots);
-        // "Plugin Hub suggestions per activity"
-        List<String> tips = s.kind == Planner.Kind.QUEST ? com.goalguide.guide.HubTips.forQuest()
-            : s.kind == Planner.Kind.TRAIN && s.skill != null ? com.goalguide.guide.HubTips.forTraining(s.skill, bestNow(a, s.skill, s.from, s.to)) : List.of();
-        if (!tips.isEmpty())
-        {
-            b.append(section("Helpful plugins"));
-            for (String t : tips) b.append("<font color='#d0d0d0'>&bull; ").append(esc(t)).append("</font><br>");
-        }
-        // "each step / item / quest should also get its wiki link"
         b.append(section("Wiki"));
         String page = wikiPage(s);
         if (page != null) b.append(link(wikiLabel(s), page, "#8fc8f0")).append("<br>");
@@ -93,13 +86,7 @@ public final class StepDetail
     /** "Get 2 x Ruby", "Train Ranged 16 to 40", "Family Crest". */
     public static String title(Planner.Step s)
     {
-        switch (s.kind)
-        {
-            case TRAIN: return "Train " + s.what;
-            case GET: return "Get " + s.what;
-            case STOCK: return "Stock " + s.what;
-            default: return s.what;
-        }
+        return s.verb() + s.what;
     }
 
     /** Methods shown under Recommended: the best now, then this many that open on the way. */
@@ -139,13 +126,6 @@ public final class StepDetail
         return b.toString();
     }
 
-    /** The name of the best method the account can use at {@code from}, null when none. */
-    static String bestNow(ItemTree.Account a, String skill, int from, int to)
-    {
-        for (Method m : Planner.recommend(a, skill, from, to)) if (m.level <= from) return m.name;
-        return null;
-    }
-
     /** 13000 -> "13k", 18500 -> "18.5k", 950 -> "950". */
     static String k(int xp)
     {
@@ -180,12 +160,7 @@ public final class StepDetail
         return "<font color='" + color + "'>" + esc(text) + "</font><br>";
     }
 
-    static String cap(String s)
-    {
-        return s.isEmpty() ? s : Character.toUpperCase(s.charAt(0)) + s.substring(1);
-    }
-
-    /** The Item Roots guide for the item, without its big title (the card says it). Null when the item data has no such item. */
+    /** The how-to-get-it steps for the item, without its big title (the card says it). Null when the item data has no such item. */
     static String rootsHtml(Planner.Step s, ItemTree.Account a, ItemData d, String who)
     {
         if (d == null) return null;
@@ -196,9 +171,7 @@ public final class StepDetail
             if (!names.isEmpty()) name = names.get(0);
         }
         if (name == null) return null;
-        String h = ItemRootsPlugin.html(d, a, ItemTree.trace(d, a, name), who);
-        if (h.startsWith("<font size='+1'")) h = h.substring(h.indexOf("<br>") + 4);
-        return h + "<br>";
+        return ItemRoute.html(d, a, ItemTree.trace(d, a, name), who) + "<br>";
     }
 
     /**
@@ -267,16 +240,5 @@ public final class StepDetail
             case STOCK: return cap(s.item == null ? s.what : s.item);
             default: return s.quest != null ? QuestPlan.pretty(s.quest) : s.what;
         }
-    }
-
-    /** A section title, the same as the guide box's. */
-    static String head(String t)
-    {
-        return "<br><font color='#ff981f'><b>" + esc(t) + "</b></font><br>";
-    }
-
-    static String esc(String s)
-    {
-        return GoalsView.esc(s);
     }
 }

@@ -1,11 +1,9 @@
 package com.goalguide.goals;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import com.goalguide.guide.Dailies;
 import com.goalguide.items.ItemTree;
 import com.goalguide.quests.QuestData;
 import com.goalguide.quests.QuestLength;
@@ -15,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/** Quest lengths, closest goal by hours, QP and combat as steps, daily shop runs. */
+/** Quest lengths, closest goal by hours, QP and combat as steps. */
 public class QuestStepsTest
 {
     @Test
@@ -87,25 +85,5 @@ public class QuestStepsTest
         assertTrue(qs + "", got >= 6);
         // A fresh account: quick ones with no needs, like Romeo & Juliet (5 QP, 30 min) or Goblin Diplomacy
         assertTrue(qs + "", qs.size() <= 3);
-    }
-
-    @Test
-    public void dailiesShowWhatTheAccountQualifiesFor()
-    {
-        ItemTree.Account a = ItemTree.Account.fresh();
-        List<String> keys = new ArrayList<>();
-        for (Dailies.Daily d : Dailies.open(a)) keys.add(d.key);
-        assertEquals(List.of("zaff"), keys);
-        a.questsDone.add("VARROCK_EASY_DIARY");
-        a.questsDone.add("ARDOUGNE_MEDIUM_DIARY");
-        Map<String, String> say = new HashMap<>();
-        for (Dailies.Daily d : Dailies.open(a)) say.put(d.key, d.say(a));
-        assertEquals("Zaff: 15 battlestaves at 7,000 gp (Varrock)", say.get("zaff"));
-        assertTrue(say.get("cromperty").startsWith("Wizard Cromperty: 100 "));
-        // Ticked today, cleared the next day (00:00 UTC)
-        long day = 1_700_000_000_000L;
-        String saved = Dailies.tick("", day, "zaff", true);
-        assertEquals(Set.of("zaff"), Dailies.doneToday(saved, day));
-        assertTrue(Dailies.doneToday(saved, day + 86_400_000L).isEmpty());
     }
 }

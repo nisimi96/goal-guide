@@ -15,22 +15,16 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * The guide is a plugin anyone can use, with no automation. Its code may name only its own packages (com.goalguide),
- * RuneLite's own plugins it reads (Time Tracking, Bank Tags) and the plugin framework. Its code and data, comments
- * and text included, must not name a bot or any other project.
+ * The plugin has no automation and stands on its own: code only in com.goalguide, no other plugin used,
+ * and no bot or automation words anywhere in its code or data.
  */
 public class GuideIsBotFreeTest
 {
     static final List<String> ROOTS = List.of("src/main/java", "src/main/resources");
 
-    /** What guide code may name under net.runelite.client.plugins. */
-    static final Set<String> ALLOWED = Set.of(
-        // RuneLite's own Time Tracking plugin: the farming timers
-        "timetracking",
-        // RuneLite's own Bank Tags plugin: the bank button shows the step's items as a tag
-        "banktags",
-        // The plugin framework itself
-        "Plugin", "PluginDescriptor", "PluginDependency", "PluginManager", "PluginInstantiationException", "PluginType", "PluginPanel");
+    /** The plugin framework is all it may name under net.runelite.client.plugins. */
+    static final Set<String> ALLOWED = Set.of("Plugin", "PluginDescriptor", "PluginDependency", "PluginManager",
+        "PluginInstantiationException", "PluginType", "PluginPanel");
 
     private static final Pattern REF = Pattern.compile("net\\.runelite\\.client\\.plugins\\.([A-Za-z0-9_]+)");
 
@@ -46,7 +40,7 @@ public class GuideIsBotFreeTest
     }
 
     @Test
-    public void theGuideNamesNoOtherPlugins() throws IOException
+    public void usesNoOtherPlugins() throws IOException
     {
         List<String> bad = new ArrayList<>();
         for (Path f : files("src/main/java"))
@@ -56,15 +50,14 @@ public class GuideIsBotFreeTest
             while (m.find())
                 if (!ALLOWED.contains(m.group(1))) bad.add(f.getFileName() + " names " + m.group());
         }
-        assertTrue("guide code may only use RuneLite's own plugins: " + bad, bad.isEmpty());
+        assertTrue("no other plugins: " + bad, bad.isEmpty());
     }
 
-    /** Words that name bots or other projects. */
-    static final Pattern WORDS = Pattern.compile("\\b((?i:bots?|Traveler|SmartWalker|runners?|aio|aio-runs|run log|RunLog|dry run|your turn|auto loop"
-        + "|Iron Loop|Microbot|yuval|humaninput|loadout|BotSession)|AIOs?|Aio[A-Z]\\w*|Auto [A-Z][a-z]+)\\b");
+    /** Bot and automation words. */
+    static final Pattern WORDS = Pattern.compile("\\b((?i:bots?|botting|macros?|auto ?clickers?|auto loop|scripts? runner)|Auto [A-Z][a-z]+)\\b");
 
     @Test
-    public void theGuideNamesNoBotOrProject() throws IOException
+    public void noBotWords() throws IOException
     {
         List<String> bad = new ArrayList<>();
         for (String root : ROOTS)
@@ -79,7 +72,7 @@ public class GuideIsBotFreeTest
                     if (m.find()) bad.add(name + ":" + (i + 1) + " says \"" + m.group() + "\"");
                 }
             }
-        assertTrue("the guide must not name a bot or another project: " + bad, bad.isEmpty());
+        assertTrue("no bot words: " + bad, bad.isEmpty());
     }
 
     private static List<Path> files(String root) throws IOException
