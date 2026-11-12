@@ -25,9 +25,11 @@ import com.goalguide.quests.QuestPlan;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
+import net.runelite.client.ui.components.materialtabs.MaterialTab;
+import net.runelite.client.ui.components.materialtabs.MaterialTabGroup;
 import net.runelite.client.util.LinkBrowser;
 
-/** The sidebar: add goals, the guide box, then the route as cards you can open. */
+/** The sidebar. Goals tab: add goals, the guide box, then the route as cards you can open. Runs tab: the run switches. */
 final class GoalsPanel extends PluginPanel
 {
     private static final Color BG = ColorScheme.DARK_GRAY_COLOR;
@@ -35,6 +37,7 @@ final class GoalsPanel extends PluginPanel
     private final GoalsView view;
     private final JPanel list = Ui.column(BG);
     private final JPanel route = Ui.column(BG);
+    private final RunsPanel runs;
     private final JLabel hint = Ui.text("", Ui.WIDTH);
     private final JLabel guide = Ui.text("", Ui.WIDTH);
     private final JButton wiki = Ui.button("Wiki guide", null, this::openWiki);
@@ -48,6 +51,7 @@ final class GoalsPanel extends PluginPanel
     {
         super(true);
         this.view = view;
+        this.runs = new RunsPanel(view);
         setBackground(BG);
         setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         setLayout(new BorderLayout());
@@ -67,7 +71,7 @@ final class GoalsPanel extends PluginPanel
         };
         field.addActionListener(e -> add.run());
         field.setAlignmentX(LEFT_ALIGNMENT);
-        stack(top, title, field, Ui.button("Add goal", null, add), hint);
+        stack(top, field, Ui.button("Add goal", null, add), hint);
         top.add(Box.createVerticalStrut(6));
         top.add(list);
         top.add(Box.createVerticalStrut(8));
@@ -80,12 +84,27 @@ final class GoalsPanel extends PluginPanel
         wiki.setVisible(false);
         stack(box, guide, wiki, onScreen);
 
+        JPanel goalsTab = Ui.column(BG);
+        goalsTab.add(top);
+        goalsTab.add(box);
+        goalsTab.add(Box.createVerticalStrut(8));
+        goalsTab.add(route);
+
+        JPanel display = new JPanel(new BorderLayout());
+        display.setBackground(BG);
+        MaterialTabGroup tabs = new MaterialTabGroup(display);
+        MaterialTab goals = new MaterialTab("Goals", tabs, goalsTab);
+        tabs.addTab(goals);
+        tabs.addTab(new MaterialTab("Runs", tabs, runs));
+        tabs.select(goals);
         JPanel all = Ui.column(BG);
-        all.add(top);
-        all.add(box);
-        all.add(Box.createVerticalStrut(8));
-        all.add(route);
+        stack(all, title, tabs, display);
         add(all, BorderLayout.NORTH);
+    }
+
+    void showRuns(com.goalguide.items.ItemTree.Account a, com.goalguide.facts.Runs.Switches sw)
+    {
+        runs.show(a, sw);
     }
 
     private static void stack(JPanel p, JComponent... cs)
@@ -207,20 +226,28 @@ final class GoalsPanel extends PluginPanel
     /** One step: a title line you click to open its text. */
     private JPanel card(int n, Planner.Step s)
     {
+        return card(n, s, Ui.CARD_WIDTH);
+    }
+
+    /** n 0 = an item inside a group (no number). A group opens to its items, each a card of its own. */
+    private JPanel card(int n, Planner.Step s, int width)
+    {
         JPanel c = Ui.box();
+        if (n == 0) c.setBackground(ColorScheme.DARK_GRAY_COLOR);
         String key = s.toString();
-        JLabel title = Ui.text("", Ui.CARD_WIDTH);
+        JLabel title = Ui.text("", width);
         title.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
-        LinkText body = new LinkText(Ui.CARD_WIDTH + 55);
+        LinkText text = s.parts.isEmpty() ? new LinkText(width + 55) : null;
+        JComponent body = text != null ? text : parts(s, width);
         Runnable paint = () ->
         {
             boolean open = opened.contains(key);
-            title.setText(Ui.html(cardTitle(n, s, open), Ui.CARD_WIDTH));
+            title.setText(Ui.html(cardTitle(n, s, open), width));
             body.setVisible(open);
-            if (open)
+            if (open && text != null)
             {
-                body.body(details.getOrDefault(key, "<i>Working it out...</i>"));
-                view.detail(s, h -> SwingUtilities.invokeLater(() -> { details.put(key, h); body.body(h); c.revalidate(); }));
+                text.body(details.getOrDefault(key, "<i>Working it out...</i>"));
+                view.detail(s, h -> SwingUtilities.invokeLater(() -> { details.put(key, h); text.body(h); c.revalidate(); }));
             }
             c.revalidate();
             c.repaint();
@@ -239,12 +266,27 @@ final class GoalsPanel extends PluginPanel
         return c;
     }
 
+    /** A group's items, a little indented. */
+    private JPanel parts(Planner.Step s, int width)
+    {
+        JPanel p = Ui.column(ColorScheme.DARKER_GRAY_COLOR);
+        p.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 0));
+        for (Planner.Step part : s.parts)
+        {
+            p.add(Box.createVerticalStrut(3));
+            p.add(card(0, part, width - 20));
+        }
+        return p;
+    }
+
     /** "+ 3. Get Ruby 1 min": + closed, - open; training yellow, quests blue, items white. */
     static String cardTitle(int n, Planner.Step s, boolean open)
     {
         String color = s.kind == Planner.Kind.TRAIN ? Text.YELLOW : s.kind == Planner.Kind.QUEST ? Text.BLUE : "#ffffff";
         StringBuilder b = new StringBuilder(Text.color(Text.GREY, open ? "–" : "+")).append(' ');
-        b.append("<b>").append(n).append(". ").append(Text.color(color, StepDetail.title(s))).append("</b>");
+        b.append("<b>").append(n > 0 ? n + ". " : "").append(Text.color(color, StepDetail.title(s)));
+        if (!s.parts.isEmpty()) b.append(' ').append(Text.color(Text.GREY, "(" + s.parts.size() + ")"));
+        b.append("</b>");
         if (s.hours > 0) b.append(' ').append(Text.color(Text.GREY, Text.hours(s.hours)));
         else if (s.hours < 0 && s.kind != Planner.Kind.QUEST) b.append(' ').append(Text.color(Text.GREY, "(no rate)"));
         return b.toString();

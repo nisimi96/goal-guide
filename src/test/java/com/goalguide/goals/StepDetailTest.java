@@ -23,7 +23,7 @@ public class StepDetailTest
         {
             if (s.kind == Planner.Kind.TRAIN && train == null && s.hours > 0) train = s;
             if ("FAMILY_CREST".equals(s.quest)) quest = s;
-            if (s.kind == Planner.Kind.GET && get == null) get = s;
+            if (s.kind == Planner.Kind.GET && get == null) get = s.parts.isEmpty() ? s : s.parts.get(0);
         }
         assertNotNull(train);
         assertNotNull(quest);

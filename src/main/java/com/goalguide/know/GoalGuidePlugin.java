@@ -4,11 +4,21 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.ChatMessageType;
+import net.runelite.api.ScriptID;
+import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameObjectDespawned;
+import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.events.ScriptPostFired;
+import net.runelite.api.events.ScriptPreFired;
 import net.runelite.api.events.StatChanged;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -16,7 +26,9 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.timetracking.TimeTrackingPlugin;
 
 /**
  * Goal Guide: your goals as one route, with the next step in a box on the game screen.
@@ -24,10 +36,11 @@ import net.runelite.client.plugins.PluginDescriptor;
  * The account is saved as know-&lt;profile&gt;.json in the plugin's data folder.
  */
 @lombok.extern.slf4j.Slf4j
+@PluginDependency(TimeTrackingPlugin.class)
 @PluginDescriptor(
     name = "Goal Guide",
     description = "Turns your goals (quests, diaries, levels, items) into one route and shows the next step on screen",
-    tags = {"guide", "planner", "quest", "goals", "diary", "ironman"},
+    tags = {"guide", "planner", "quest", "goals", "diary", "ironman", "bank"},
     internalName = "goalguide",
     legacyDataDirectory = "goal-guide"
 )
@@ -46,6 +59,12 @@ public class GoalGuidePlugin extends Plugin
     @Inject private net.runelite.client.ui.overlay.OverlayManager overlayManager;
     private com.goalguide.goals.GoalsView goals;
     private com.goalguide.guide.GuideOverlay overlay;
+    @Inject private com.goalguide.guide.BankButton bankButton;
+    @Inject private com.goalguide.guide.PlaceMarker placeMarker;
+    @Inject private RunTimers runTimers;
+    /** Ready times are read about once a minute. */
+    static final int TIMES_EVERY = 100;
+    private int timesAt = -TIMES_EVERY;
 
     private AccountState state;
     private String profile;
@@ -78,6 +97,7 @@ public class GoalGuidePlugin extends Plugin
         goals.start();
         overlay = new com.goalguide.guide.GuideOverlay(goals::guideOnScreen);
         overlayManager.add(overlay);
+        overlayManager.add(placeMarker);
         clientThread.invokeLater(() ->
         {
             if (client.getGameState() == GameState.LOGGED_IN)
@@ -96,11 +116,14 @@ public class GoalGuidePlugin extends Plugin
     protected void shutDown()
     {
         overlayManager.remove(overlay);
+        overlayManager.remove(placeMarker);
         overlay = null;
         com.goalguide.goals.Prices.set(null);
         if (goals != null) { goals.stop(); goals = null; }
         clientThread.invoke(() ->
         {
+            bankButton.stop();
+            placeMarker.stop();
             save(true);
             if (state != null) Know.set(state, false);
             state = null;
@@ -109,8 +132,21 @@ public class GoalGuidePlugin extends Plugin
     }
 
     @Subscribe
+    public void onGameObjectSpawned(GameObjectSpawned e)
+    {
+        placeMarker.spawned(e.getGameObject());
+    }
+
+    @Subscribe
+    public void onGameObjectDespawned(GameObjectDespawned e)
+    {
+        placeMarker.despawned(e.getGameObject());
+    }
+
+    @Subscribe
     public void onGameStateChanged(GameStateChanged e)
     {
+        if (e.getGameState() == GameState.LOADING) placeMarker.sceneLoading();
         if (e.getGameState() == GameState.LOGGED_IN)
         {
             switchTo(configManager.getRSProfileKey());
@@ -144,6 +180,9 @@ public class GoalGuidePlugin extends Plugin
     public void onGameTick(GameTick e)
     {
         tick++;
+        bankButton.tick();
+        com.goalguide.guide.Guide gd = com.goalguide.guide.Guide.current();
+        placeMarker.tick(gd == null ? null : gd.trip, gd == null ? java.util.List.of() : gd.tripPlaces);
         if (state == null || client.getGameState() != GameState.LOGGED_IN) return;
         long now = System.currentTimeMillis();
         boolean full = fullReadAt >= 0 && tick >= fullReadAt;
@@ -171,6 +210,12 @@ public class GoalGuidePlugin extends Plugin
             potionsAt = -1;
             if (bankOpen()) change(KnowRead.potionStorage(client, itemManager, state, now));
         }
+        if (tick - timesAt >= TIMES_EVERY)
+        {
+            timesAt = tick;
+            com.goalguide.facts.Runs.setTimes(runTimers.read());
+            if (goals != null) goals.showRunTimes();
+        }
         if (notify)
         {
             notify = false;
@@ -188,10 +233,48 @@ public class GoalGuidePlugin extends Plugin
     }
 
     @Subscribe
+    public void onScriptPreFired(ScriptPreFired e)
+    {
+        if (e.getScriptId() == ScriptID.BANKMAIN_FINISHBUILDING) bankButton.beforeLayout();
+    }
+
+    @Subscribe
+    public void onScriptPostFired(ScriptPostFired e)
+    {
+        if (e.getScriptId() == ScriptID.BANKMAIN_FINISHBUILDING) bankButton.afterLayout();
+        else if (e.getScriptId() == ScriptID.BANKMAIN_SEARCHING) bankButton.afterSearching();
+    }
+
+    @Subscribe
+    public void onMenuOptionClicked(MenuOptionClicked e)
+    {
+        bankButton.clicked(e);
+    }
+
+    @Subscribe
     public void onStatChanged(StatChanged e)
     {
         if (state == null || e.getSkill() == null) return;
         change(state.putLevel(e.getSkill().name(), client.getRealSkillLevel(e.getSkill()), e.getXp()));
+    }
+
+    /** Quest points change the moment a quest is done: read the account next tick, not up to a minute later. */
+    @Subscribe
+    public void onVarbitChanged(VarbitChanged e)
+    {
+        if (e.getVarpId() == VarPlayerID.QP) readAccountSoon();
+    }
+
+    /** Quest, miniquest and diary messages ("you've completed a quest", "completed all of the easy tasks") also read the account next tick. */
+    @Subscribe
+    public void onChatMessage(ChatMessage e)
+    {
+        if (e.getType() == ChatMessageType.GAMEMESSAGE && e.getMessage().contains("completed")) readAccountSoon();
+    }
+
+    private void readAccountSoon()
+    {
+        accountAt = tick - ACCOUNT_EVERY;
     }
 
     private boolean bankOpen()

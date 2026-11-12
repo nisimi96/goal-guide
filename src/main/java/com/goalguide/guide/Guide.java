@@ -31,6 +31,26 @@ public final class Guide
     public final List<String> filler = new ArrayList<>();
     /** The Now step's items (carried / in the bank / missing), filled in after the plan. */
     public volatile List<StepItems.Item> items = List.of();
+    /** When the Now step gets a quest's items: one part per item to get, with what that part uses. */
+    public volatile List<Part> parts = List.of();
+    /** Where to go next to make the first item still to get (bank, furnace, anvil); null when nowhere. */
+    public volatile Trip.Stop trip;
+    /** The map places for the trip's stop that suit this account (wiki), any order; empty when unknown. */
+    public volatile List<com.goalguide.facts.Places.Place> tripPlaces = List.of();
+
+    /** "Get 6 x Plank": the item to get and the items getting it uses. */
+    public static final class Part
+    {
+        public final String title, item;
+        public final List<StepItems.Item> items;
+
+        public Part(String title, String item, List<StepItems.Item> items)
+        {
+            this.title = title;
+            this.item = item;
+            this.items = items;
+        }
+    }
 
     Guide(Line now, Line next)
     {

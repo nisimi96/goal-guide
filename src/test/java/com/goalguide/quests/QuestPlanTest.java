@@ -147,4 +147,27 @@ public class QuestPlanTest
     {
         return chain.get(chain.size() - 1);
     }
+
+    @Test public void questItemBringsItsQuestFirst()
+    {
+        QuestData d = QuestData.parse(List.of("GOAL\titem\tMagic ring\t1\t123", "Magic ring\tGIVER\tIN_PROGRESS"));
+        ItemTree.Account a = ItemTree.Account.fresh();
+        List<QuestPlan.Step> chain = QuestPlan.plan(d, null, a, 0, "GOAL");
+        assertEquals("GIVER", chain.get(0).quest);
+        QuestPlan.Step goal = chain.get(1);
+        assertEquals(List.of("GIVER"), goal.startOnly);
+        assertTrue(goal.missingItems.isEmpty());
+
+        // Started the quest but lost the ring: now it is an item to get back
+        a.questsStarted.add("GIVER");
+        assertTrue(QuestPlan.plan(d, null, a, 0, "GOAL").get(0).missingItems.containsKey("Magic ring"));
+    }
+
+    @Test public void ringOfCharosComesFromItsQuests()
+    {
+        assertNotNull(QuestPlan.questWay("Ring of Charos(a)"));
+        for (QuestData.Need g : QuestData.get().givenBy.values()) Quest.valueOf(g.what);
+        for (QuestPlan.Step s : QuestPlan.plan(QuestData.get(), null, ItemTree.Account.fresh(), 0, "IN_SEARCH_OF_THE_MYREQUE"))
+            for (String item : s.missingItems.keySet()) assertFalse(item, item.toLowerCase().contains("charos"));
+    }
 }

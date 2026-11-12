@@ -1,0 +1,15 @@
+# Items only a quest hands out, from each item's OSRS Wiki page (oldschool.runescape.wiki), checked 2026-11-11. CC BY-NC-SA 3.0.
+# item	quest (net.runelite.api.Quest)	FINISHED, or IN_PROGRESS when you get it during the quest
+Ring of Charos	CREATURE_OF_FENKENSTRAIN	FINISHED
+Ring of Charos(a)	GARDEN_OF_TRANQUILLITY	IN_PROGRESS
+Ghostspeak amulet	THE_RESTLESS_GHOST	IN_PROGRESS
+Catspeak amulet	ICTHLARINS_LITTLE_HELPER	FINISHED
+Catspeak amulet(e)	A_TAIL_OF_TWO_CATS	IN_PROGRESS
+Excalibur	MERLINS_CRYSTAL	IN_PROGRESS
+Silverlight	DEMON_SLAYER	IN_PROGRESS
+Glarial's pebble	WATERFALL_QUEST	IN_PROGRESS
+Seal of Passage	LUNAR_DIPLOMACY	IN_PROGRESS
+Pet rock	THE_FREMENNIK_TRIALS	IN_PROGRESS
+Commorb	WANTED	IN_PROGRESS
+Ogre bow	BIG_CHOMPY_BIRD_HUNTING	IN_PROGRESS
+Animate rock scroll	ONE_SMALL_FAVOUR	IN_PROGRESS

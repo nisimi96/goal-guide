@@ -1,6 +1,7 @@
 package com.goalguide.guide;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Set;
 import java.util.function.Function;
 import com.goalguide.goals.Planner;
 import com.goalguide.items.ItemData;
+import com.goalguide.items.ItemTree;
 import com.goalguide.know.AccountState;
 
 /**
@@ -88,28 +90,87 @@ public final class StepItems
                 out.add(new Item(u.item, u.amount, false, Has.REMINDER, 0, 0, List.of(), List.of(), null));
                 continue;
             }
-            int carried = 0, total = 0;
-            Set<String> where = new LinkedHashSet<>(), matched = new LinkedHashSet<>();
-            for (Map.Entry<String, Map<String, Integer>> st : storages.entrySet())
-                for (Map.Entry<String, Integer> it : st.getValue().entrySet())
-                {
-                    if (it.getValue() == null || it.getValue() <= 0 || !matches(it.getKey(), k)) continue;
-                    total += it.getValue();
-                    matched.add(it.getKey());
-                    boolean on = st.getKey().equals(AccountState.INVENTORY) || st.getKey().equals(AccountState.WORN)
-                        || st.getKey().equals(AccountState.FOLLOWER);
-                    if (on) carried += it.getValue();
-                    else where.add(st.getKey());
-                }
-            // An item used up is "carried" with some on you; a tool or quest item needs the full count
-            int need = u.perHour ? 1 : u.amount;
-            Has has = carried >= need ? Has.CARRIED : total >= need ? Has.STORED : Has.MISSING;
-            // A quest already started may have used it up; not a missing item to fetch again
-            if (has == Has.MISSING && s.started && !u.perHour) has = Has.USED;
-            out.add(new Item(u.item, u.amount, u.perHour, has, carried, total, new ArrayList<>(where), new ArrayList<>(matched),
-                has == Has.MISSING && from != null ? from.apply(u.item) : null));
+            out.add(item(u.item, u.amount, u.perHour, s.started, storages, from));
         }
         return out;
+    }
+
+    /**
+     * An item to get, for the bank's sections: {@code missing} more than you have now, so it reads "0/1", "1/3".
+     */
+    public static Item toGet(String name, int missing, Map<String, Map<String, Integer>> storages, Function<String, String> from)
+    {
+        Item have = item(name, 1, false, false, storages, null);
+        return new Item(name, have.total + missing, false, Has.MISSING, have.carried, have.total, have.where, have.matched,
+            from == null ? null : from.apply(name));
+    }
+
+    /** How deep "made from" goes: the bar, then the ore and coal for the bar. */
+    static final int MADE_FROM_DEPTH = 2;
+
+    /**
+     * What an item is made from: the recipe's tools and materials for {@code qty} of it, and, for a material you
+     * are short of, what that is made from in turn ("Steel dagger": Hammer, Steel bar; no bar: Iron ore, Coal).
+     */
+    public static List<Item> madeFrom(ItemData d, ItemTree.Account a, String item, int qty, Map<String, Map<String, Integer>> storages,
+        Function<String, String> from)
+    {
+        Map<String, Item> out = new LinkedHashMap<>();
+        madeFrom(d, a, item, qty, storages, from, out, 0);
+        return new ArrayList<>(out.values());
+    }
+
+    private static void madeFrom(ItemData d, ItemTree.Account a, String item, int qty, Map<String, Map<String, Integer>> storages,
+        Function<String, String> from, Map<String, Item> out, int depth)
+    {
+        ItemTree.Way w = recipe(ItemTree.trace(d, a, item));
+        if (w == null || qty <= 0 || depth >= MADE_FROM_DEPTH) return;
+        if (w.tools != null)
+            for (String t : w.tools.split(",\\s*")) out.putIfAbsent(ItemData.key(t), item(t, 1, false, false, storages, from));
+        for (Object[] m : w.materials)
+        {
+            String name = (String) m[0];
+            int need = (int) Math.ceil(qty * (Double) m[1]);
+            Item it = item(name, need, false, false, storages, from);
+            out.putIfAbsent(ItemData.key(name), it);
+            if (it.has == Has.MISSING) madeFrom(d, a, name, need - it.total, storages, from, out, depth + 1);
+        }
+    }
+
+    /** The item's cheapest recipe, even one that needs a level first (that is what you'll make it with); null when it isn't made. */
+    static ItemTree.Way recipe(ItemTree.Node n)
+    {
+        ItemTree.Way pick = null;
+        for (ItemTree.Way w : n.ways)
+            if (w.kind == ItemTree.Kind.RECIPE && (pick == null || w.cost < pick.cost)) pick = w;
+        return pick;
+    }
+
+    /** One item: how many are on you and in each storage, and whether that is enough. */
+    private static Item item(String name, int amount, boolean perHour, boolean started, Map<String, Map<String, Integer>> storages,
+        Function<String, String> from)
+    {
+        String k = ItemData.key(name);
+        int carried = 0, total = 0;
+        Set<String> where = new LinkedHashSet<>(), matched = new LinkedHashSet<>();
+        for (Map.Entry<String, Map<String, Integer>> st : storages.entrySet())
+            for (Map.Entry<String, Integer> it : st.getValue().entrySet())
+            {
+                if (it.getValue() == null || it.getValue() <= 0 || !matches(it.getKey(), k)) continue;
+                total += it.getValue();
+                matched.add(it.getKey());
+                boolean on = st.getKey().equals(AccountState.INVENTORY) || st.getKey().equals(AccountState.WORN)
+                    || st.getKey().equals(AccountState.FOLLOWER);
+                if (on) carried += it.getValue();
+                else where.add(st.getKey());
+            }
+        // An item used up is "carried" with some on you; a tool or quest item needs the full count
+        int need = perHour ? 1 : amount;
+        Has has = carried >= need ? Has.CARRIED : total >= need ? Has.STORED : Has.MISSING;
+        // A quest already started may have used it up; not a missing item to fetch again
+        if (has == Has.MISSING && started && !perHour) has = Has.USED;
+        return new Item(name, amount, perHour, has, carried, total, new ArrayList<>(where), new ArrayList<>(matched),
+            has == Has.MISSING && from != null ? from.apply(name) : null);
     }
 
     /** The item itself, or one of its kind: "rune pickaxe" for "pickaxe", "dragon axe" for "axe" (not "pickaxe"). */

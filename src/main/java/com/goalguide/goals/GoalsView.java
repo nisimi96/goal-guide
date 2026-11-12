@@ -8,9 +8,11 @@ import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import com.goalguide.facts.Method;
 import com.goalguide.facts.MethodTables;
+import com.goalguide.facts.Runs;
 import com.goalguide.guide.Guide;
 import com.goalguide.guide.Icons;
 import com.goalguide.guide.StepItems;
+import com.goalguide.guide.Trip;
 import com.goalguide.items.ItemData;
 import com.goalguide.items.ItemDb;
 import com.goalguide.items.ItemTree;
@@ -28,7 +30,7 @@ import net.runelite.client.ui.NavigationButton;
 @Slf4j
 public final class GoalsView
 {
-    static final String GROUP = "goalguide", KEY = "goals", GUIDE_ON_SCREEN = "guideOnScreen";
+    static final String GROUP = "goalguide", KEY = "goals", GUIDE_ON_SCREEN = "guideOnScreen", RUNS_OFF = "runsOff", STOPS_OFF = "stopsOff";
 
     private final ConfigManager config;
     private final ClientToolbar toolbar;
@@ -75,6 +77,7 @@ public final class GoalsView
         nav = null;
         panel = null;
         Guide.set(null);
+        Runs.switches(null);
     }
 
     /** Plans again off the client thread. At most one plan waits at a time. */
@@ -103,6 +106,7 @@ public final class GoalsView
         {
             profile = p;
             goals = Goal.decodeAll(config.getConfiguration(GROUP, p, KEY));
+            Runs.switches(Runs.Switches.decode(config.getConfiguration(GROUP, p, RUNS_OFF), config.getConfiguration(GROUP, p, STOPS_OFF)));
         }
         GoalsPanel pn = panel;
         if (pn == null) return;
@@ -114,6 +118,9 @@ public final class GoalsView
             pn.showRoute(null, Text.color(Text.YELLOW, "Log in once with the plugin on so it can see your account."));
             return;
         }
+        ItemTree.Account a = st.toAccount();
+        runsAccount = a;
+        pn.showRuns(a, Runs.switches());
         if (goals.isEmpty())
         {
             Guide.set(null);
@@ -121,16 +128,68 @@ public final class GoalsView
             pn.showRoute(null, Text.color(Text.GREY, "No goals yet. Try Fishing 70, Priest in Peril, Ardougne medium or 1000 raw karambwan."));
             return;
         }
-        ItemTree.Account a = st.toAccount();
         Planner.Route r = Planner.plan(QuestData.get(), ItemDb.get(), a, st.questPoints, goals);
         Guide gd = Guide.of(r);
-        if (gd != null && gd.now != null) gd.items = StepItems.of(gd.now.step, st.items(), item -> source(a, item));
+        if (gd != null && gd.now != null)
+        {
+            gd.items = StepItems.of(gd.now.step, st.items(), item -> source(a, item));
+            if (gd.now.step != null)
+            {
+                List<Guide.Part> parts = new ArrayList<>();
+                // A Get step is its own one part, so the item to get shows in the bank too
+                List<Planner.Step> gets = !gd.now.step.parts.isEmpty() ? gd.now.step.parts
+                    : gd.now.step.item != null ? List.of(gd.now.step) : List.of();
+                for (Planner.Step part : gets)
+                {
+                    // The item itself first, so one you have none of still shows (faded, 0/1)
+                    List<StepItems.Item> its = new ArrayList<>();
+                    if (part.item != null) its.add(StepItems.toGet(part.item, amount(part), st.items(), item -> source(a, item)));
+                    its.addAll(StepItems.of(part, st.items(), item -> source(a, item)));
+                    // Then what it's made from, and what a missing material is made from
+                    ItemData d = ItemDb.get();
+                    if (part.item != null && d != null)
+                        for (StepItems.Item m : StepItems.madeFrom(d, a, part.item, amount(part), st.items(), item -> source(a, item)))
+                            if (its.stream().noneMatch(i -> ItemData.key(i.name).equals(ItemData.key(m.name)))) its.add(m);
+                    parts.add(new Guide.Part(part.verb() + part.what, part.item, its));
+                }
+                gd.parts = parts;
+                // The trip to make the first item still to get: bank, furnace, anvil
+                ItemData d = ItemDb.get();
+                for (Planner.Step part : gets)
+                {
+                    if (d == null || part.item == null) break;
+                    Trip.Stop stop = Trip.next(d, a, part.item, amount(part), st.items());
+                    if (stop == null) continue;
+                    gd.trip = stop;
+                    gd.tripPlaces = com.goalguide.facts.Places.best(stop.place, a, 0, 0);
+                    break;
+                }
+            }
+        }
         Guide.set(gd);
         pn.showGuide(gd);
         pn.showRoute(r, null);
     }
 
+    /** How many a Get step still needs: "6 x Plank" is 6, "Bucket" is 1. */
+    static int amount(Planner.Step s)
+    {
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("^(\\d+) x ").matcher(s.what);
+        return m.find() ? Integer.parseInt(m.group(1)) : 1;
+    }
+
     /** Where to get an item the step is missing: a main's GE price first, then the best way to make or get it. */
+    /** The account the Runs tab last showed, so new ready times can show without a replan. */
+    private volatile ItemTree.Account runsAccount;
+
+    /** New ready times: the Runs tab shows them. */
+    public void showRunTimes()
+    {
+        GoalsPanel pn = panel;
+        ItemTree.Account a = runsAccount;
+        if (pn != null && a != null) pn.showRuns(a, Runs.switches());
+    }
+
     static String source(ItemTree.Account a, String item)
     {
         String key = ItemData.questText(item);
@@ -200,6 +259,26 @@ public final class GoalsView
         if (i <= 0 || i >= next.size()) return;
         next.add(0, next.remove(i));
         save(next);
+    }
+
+    void setRun(String run, boolean on)
+    {
+        saveSwitches(Runs.switches().withRun(run, on));
+    }
+
+    void setStop(String run, String stop, boolean on)
+    {
+        saveSwitches(Runs.switches().withStop(run, stop, on));
+    }
+
+    private void saveSwitches(Runs.Switches next)
+    {
+        Runs.switches(next);
+        String p = profile;
+        if (p == null) return;
+        config.setConfiguration(GROUP, p, RUNS_OFF, next.runsText());
+        config.setConfiguration(GROUP, p, STOPS_OFF, next.stopsText());
+        replan();
     }
 
     private void save(List<Goal> next)

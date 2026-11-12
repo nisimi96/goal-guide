@@ -1,0 +1,190 @@
+# kind	run	name	needs
+# Farming and bird house runs. Stops and what opens them: OSRS Wiki Herb patch, Tree patch, Fruit tree patch, Bird house trapping (read 2026-11-11).
+# Items: OSRS Wiki Seeds and each patch page's Protection and Transportation sections (read 2026-11-11). Spells need only runes, so they are left out.
+# kind: stop, item (what the run uses), travel (a way to get to a stop; the bank shows them together).
+# needs: '-' = open to all, a quest or diary key, or a skill and level.
+stop	Herb run	Falador	-
+stop	Herb run	Port Phasmatys	-
+stop	Herb run	Catherby	-
+stop	Herb run	Ardougne	-
+stop	Herb run	Hosidius	-
+stop	Herb run	Civitas illa Fortis	-
+stop	Herb run	Troll Stronghold	MY_ARMS_BIG_ADVENTURE
+stop	Herb run	Weiss	MAKING_FRIENDS_WITH_MY_ARM
+stop	Herb run	Harmony Island	MORYTANIA_ELITE_DIARY
+stop	Herb run	Farming Guild	FARMING 65
+item	Herb run	Seed dibber	-
+item	Herb run	Spade	-
+item	Herb run	Rake	-
+item	Herb run	Magic secateurs	-
+item	Herb run	Guam seed	-
+item	Herb run	Marrentill seed	-
+item	Herb run	Tarromin seed	-
+item	Herb run	Harralander seed	-
+item	Herb run	Ranarr seed	-
+item	Herb run	Toadflax seed	-
+item	Herb run	Irit seed	-
+item	Herb run	Avantoe seed	-
+item	Herb run	Kwuarm seed	-
+item	Herb run	Huasca seed	-
+item	Herb run	Snapdragon seed	-
+item	Herb run	Cadantine seed	-
+item	Herb run	Lantadyme seed	-
+item	Herb run	Dwarf weed seed	-
+item	Herb run	Torstol seed	-
+item	Herb run	Compost	-
+item	Herb run	Supercompost	-
+item	Herb run	Ultracompost	-
+item	Herb run	Bottomless compost bucket	-
+travel	Herb run	Explorer's ring 2	-
+travel	Herb run	Explorer's ring 3	-
+travel	Herb run	Explorer's ring 4	-
+travel	Herb run	Ring of the elements	-
+travel	Herb run	Draynor manor teleport	-
+travel	Herb run	Amulet of glory	-
+travel	Herb run	Skills necklace	-
+travel	Herb run	Ring of wealth	-
+travel	Herb run	Falador teleport	-
+travel	Herb run	Ectophial	-
+travel	Herb run	Fenkenstrain's castle teleport	-
+travel	Herb run	Kharyrll teleport	-
+travel	Herb run	Camelot teleport	-
+travel	Herb run	Ardougne cloak 2	-
+travel	Herb run	Ardougne cloak 3	-
+travel	Herb run	Ardougne cloak 4	-
+travel	Herb run	Combat bracelet	-
+travel	Herb run	Quest point cape	-
+travel	Herb run	Quest point cape (t)	-
+travel	Herb run	Ardougne teleport	-
+travel	Herb run	Xeric's talisman	-
+travel	Herb run	Teleport to house	-
+travel	Herb run	Hosidius teleport	-
+travel	Herb run	Kharedst's memoirs	-
+travel	Herb run	Book of the dead	-
+travel	Herb run	Basic quetzal whistle	-
+travel	Herb run	Enhanced quetzal whistle	-
+travel	Herb run	Perfected quetzal whistle	-
+travel	Herb run	Hunter cape	-
+travel	Herb run	Hunter cape(t)	-
+travel	Herb run	Civitas illa fortis teleport	-
+travel	Herb run	Trollheim teleport	-
+travel	Herb run	Ring of shadows	-
+travel	Herb run	Harmony island teleport	-
+travel	Herb run	Mos le'harmless teleport	-
+travel	Herb run	Farming cape	-
+travel	Herb run	Farming cape(t)	-
+stop	Tree run	Lumbridge	-
+stop	Tree run	Varrock	-
+stop	Tree run	Falador	-
+stop	Tree run	Taverley	-
+stop	Tree run	Gnome Stronghold	-
+stop	Tree run	Farming Guild	FARMING 65
+item	Tree run	Spade	-
+item	Tree run	Rake	-
+item	Tree run	Coins	-
+item	Tree run	Oak sapling	-
+item	Tree run	Willow sapling	-
+item	Tree run	Maple sapling	-
+item	Tree run	Yew sapling	-
+item	Tree run	Magic sapling	-
+item	Tree run	Tomatoes(5)	-
+item	Tree run	Apples(5)	-
+item	Tree run	Oranges(5)	-
+item	Tree run	Cactus spine	-
+item	Tree run	Coconut	-
+item	Tree run	Compost	-
+item	Tree run	Supercompost	-
+item	Tree run	Ultracompost	-
+item	Tree run	Bottomless compost bucket	-
+travel	Tree run	Lumbridge teleport	-
+travel	Tree run	Varrock teleport	-
+travel	Tree run	Falador teleport	-
+travel	Tree run	Achievement diary cape	-
+travel	Tree run	Achievement diary cape (t)	-
+travel	Tree run	Ring of wealth	-
+travel	Tree run	Skills necklace	-
+travel	Tree run	Games necklace	-
+travel	Tree run	Combat bracelet	-
+travel	Tree run	Goblin village sphere	-
+travel	Tree run	Taverley teleport	-
+travel	Tree run	Camelot teleport	-
+travel	Tree run	Slayer ring	-
+travel	Tree run	Grand seed pod	-
+travel	Tree run	Royal seed pod	-
+travel	Tree run	Necklace of passage	-
+travel	Tree run	Farming cape	-
+travel	Tree run	Farming cape(t)	-
+stop	Fruit tree run	Catherby	-
+stop	Fruit tree run	Gnome Stronghold	-
+stop	Fruit tree run	Tree Gnome Village	-
+stop	Fruit tree run	Brimhaven	-
+stop	Fruit tree run	Lletya	-
+stop	Fruit tree run	Farming Guild	FARMING 85
+item	Fruit tree run	Spade	-
+item	Fruit tree run	Rake	-
+item	Fruit tree run	Coins	-
+item	Fruit tree run	Apple sapling	-
+item	Fruit tree run	Banana sapling	-
+item	Fruit tree run	Orange sapling	-
+item	Fruit tree run	Curry sapling	-
+item	Fruit tree run	Pineapple sapling	-
+item	Fruit tree run	Papaya sapling	-
+item	Fruit tree run	Palm sapling	-
+item	Fruit tree run	Dragonfruit sapling	-
+item	Fruit tree run	Sweetcorn	-
+item	Fruit tree run	Apples(5)	-
+item	Fruit tree run	Strawberries(5)	-
+item	Fruit tree run	Bananas(5)	-
+item	Fruit tree run	Watermelon	-
+item	Fruit tree run	Compost	-
+item	Fruit tree run	Supercompost	-
+item	Fruit tree run	Ultracompost	-
+item	Fruit tree run	Bottomless compost bucket	-
+travel	Fruit tree run	Achievement diary cape	-
+travel	Fruit tree run	Achievement diary cape (t)	-
+travel	Fruit tree run	Grand seed pod	-
+travel	Fruit tree run	Royal seed pod	-
+travel	Fruit tree run	Slayer ring	-
+travel	Fruit tree run	Necklace of passage	-
+travel	Fruit tree run	Camelot teleport	-
+travel	Fruit tree run	Teleport to house	-
+travel	Fruit tree run	Brimhaven teleport	-
+travel	Fruit tree run	Karamja gloves 3	-
+travel	Fruit tree run	Karamja gloves 4	-
+travel	Fruit tree run	Ardougne teleport	-
+travel	Fruit tree run	Amulet of glory	-
+travel	Fruit tree run	Teleport crystal	-
+travel	Fruit tree run	Eternal teleport crystal	-
+travel	Fruit tree run	Skills necklace	-
+travel	Fruit tree run	Farming cape	-
+travel	Fruit tree run	Farming cape(t)	-
+stop	Bird houses	Fossil Island	BONE_VOYAGE
+travel	Bird houses	Digsite pendant	-
+item	Bird houses	Bird house	-
+item	Bird houses	Oak bird house	-
+item	Bird houses	Willow bird house	-
+item	Bird houses	Teak bird house	-
+item	Bird houses	Maple bird house	-
+item	Bird houses	Mahogany bird house	-
+item	Bird houses	Yew bird house	-
+item	Bird houses	Magic bird house	-
+item	Bird houses	Redwood bird house	-
+item	Bird houses	Clockwork	-
+item	Bird houses	Hammer	-
+item	Bird houses	Chisel	-
+item	Bird houses	Logs	-
+item	Bird houses	Oak logs	-
+item	Bird houses	Willow logs	-
+item	Bird houses	Teak logs	-
+item	Bird houses	Maple logs	-
+item	Bird houses	Mahogany logs	-
+item	Bird houses	Yew logs	-
+item	Bird houses	Magic logs	-
+item	Bird houses	Redwood logs	-
+item	Bird houses	Barley seed	-
+item	Bird houses	Hammerstone seed	-
+item	Bird houses	Asgarnian seed	-
+item	Bird houses	Jute seed	-
+item	Bird houses	Yanillian seed	-
+item	Bird houses	Krandorian seed	-
+item	Bird houses	Wildblood seed	-

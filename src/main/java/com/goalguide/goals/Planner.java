@@ -14,6 +14,7 @@ import com.goalguide.items.ItemTree;
 import com.goalguide.quests.QuestData;
 import com.goalguide.quests.QuestLength;
 import com.goalguide.quests.QuestPlan;
+import com.goalguide.quests.QuestXp;
 
 /**
  * Every goal as one route. Quests (and the quests a stock method needs) come from
@@ -52,6 +53,8 @@ public final class Planner
         public long ge;
         /** GET / STOCK: the item to get (for its how-to-get-it steps). Null otherwise. */
         public String item;
+        /** A group: the items one quest still needs, each its own step. Empty otherwise. */
+        public final List<Step> parts = new ArrayList<>();
         /** QUEST: already started (its items not held may be used up: shown, never fetched again). */
         public boolean started;
         /** TRAIN: the skill ("THIEVING") and the levels, for the recommended methods. Null / 0 otherwise. */
@@ -160,6 +163,12 @@ public final class Planner
         void add(Step s)
         {
             steps.add(s);
+            count(s);
+        }
+
+        private void count(Step s)
+        {
+            if (!s.parts.isEmpty()) { s.parts.forEach(this::count); return; }
             ge += s.ge;
             if (s.kind == Kind.DONE) return;
             if (s.hours >= 0) hours += s.hours;
@@ -238,6 +247,7 @@ public final class Planner
                     fq.serves = List.of(QuestPlan.pretty(qs.quest));
                     r.add(fq);
                     inRoute.add(q);
+                    gain(a, trainedTo, q);
                     qpBy[0] += QuestLength.qp(q);
                 }
             qpBy[0] += QuestLength.qp(qs.quest);
@@ -246,14 +256,21 @@ public final class Planner
             {
                 String sk = skillOf(k);
                 if (fill.contains(sk) && levelOf(k) > firstNeed.get(sk)) fromFiller.add(QuestPlan.pretty(sk) + " " + levelOf(k));
-                else train(r, a, trainedTo, sk, levelOf(k));
+                else
+                {
+                    sideQuests(r, quests, items, a, trainedTo, inRoute, sk, levelOf(k));
+                    train(r, a, trainedTo, sk, levelOf(k));
+                }
             });
+            List<Step> gets = new ArrayList<>();
             qs.missingItems.forEach((name, nh) ->
             {
                 Step g = get(items, a, name, nh[0] - nh[1], qs.quest);
                 g.item = name;
-                r.add(g);
+                gets.add(g);
             });
+            if (gets.size() == 1) r.add(gets.get(0));
+            else if (gets.size() > 1) r.add(group(qs.quest, gets));
             List<String> quest = new ArrayList<>(qs.haveItems);
             quest.addAll(qs.missingItems.keySet());
             for (String it : quest)
@@ -287,11 +304,13 @@ public final class Planner
             perGoal.forEach((g, c) -> { if (c.contains(qs.quest)) serves.add(QuestPlan.pretty(g)); });
             st.serves = serves;
             r.add(st);
+            gain(a, trainedTo, qs.quest);
         }
         // The filler: each skill from where the quests leave it to the highest any goal needs
         for (String sk : fill)
         {
-            int at = Math.max(a.skills.getOrDefault(sk, 1), firstNeed.get(sk)), to = top.get(sk);
+            int at = Math.max(level(a, trainedTo, sk), firstNeed.get(sk)), to = top.get(sk);
+            if (at >= to) continue;
             Filler f = new Filler(sk, at, to, hours(a, sk, at, to), byWhen(ordered, goals, sk, at));
             r.filler.add(f);
             if (f.hours >= 0) r.hours += f.hours;
@@ -306,7 +325,11 @@ public final class Planner
             if (g.type == Goal.Type.LEVEL)
             {
                 if (a.skills.getOrDefault(g.target, 1) >= g.amount) r.done.add(g.label());
-                else tag(r, g, () -> train(r, a, trainedTo, g.target, g.amount));
+                else tag(r, g, () ->
+                {
+                    sideQuests(r, quests, items, a, trainedTo, inRoute, g.target, g.amount);
+                    train(r, a, trainedTo, g.target, g.amount);
+                });
             }
             else if (g.type == Goal.Type.STOCK)
             {
@@ -451,7 +474,7 @@ public final class Planner
     /** A train step from where the route has the skill now to {@code to}, once. */
     private static void train(Route r, ItemTree.Account a, Map<String, Integer> trainedTo, String skill, int to)
     {
-        int from = Math.max(a.skills.getOrDefault(skill, skill.equals("HITPOINTS") ? 10 : 1), trainedTo.getOrDefault(skill, 0));
+        int from = level(a, trainedTo, skill);
         if (from >= to) return;
         trainedTo.put(skill, to);
         Training t = hours(a, skill, from, to);
@@ -461,6 +484,56 @@ public final class Planner
         st.to = to;
         uses(st, t.first, from);
         r.add(st);
+    }
+
+    /** The level a skill is at by this point of the route: the account's, or what training and quest XP reach. */
+    static int level(ItemTree.Account a, Map<String, Integer> trainedTo, String skill)
+    {
+        return Math.max(a.skills.getOrDefault(skill, skill.equals("HITPOINTS") ? 10 : 1), trainedTo.getOrDefault(skill, 0));
+    }
+
+    /** A finished quest's XP raises the levels it reaches (counted from the start of each level, so a little low). */
+    static void gain(ItemTree.Account a, Map<String, Integer> trainedTo, String quest)
+    {
+        QuestXp.of(quest).forEach((sk, xp) ->
+            trainedTo.put(sk, Experience.getLevelForXp(Math.min(Experience.MAX_SKILL_XP, Experience.getXpForLevel(level(a, trainedTo, sk)) + xp))));
+    }
+
+    /**
+     * Before training a skill: side quests the account can do now that give XP in it, when a quest's XP per hour beats
+     * training (or training has no rate), biggest XP first, until the level is reached.
+     */
+    static void sideQuests(Route r, QuestData quests, ItemData items, ItemTree.Account a, Map<String, Integer> trainedTo,
+        java.util.Set<String> inRoute, String skill, int to)
+    {
+        int from = level(a, trainedTo, skill);
+        if (from >= to) return;
+        Training t = hours(a, skill, from, to);
+        double rate = t.hours > 0 ? (Experience.getXpForLevel(to) - Experience.getXpForLevel(from)) / t.hours : 0;
+        for (String q : QuestXp.giving(skill))
+        {
+            if (level(a, trainedTo, skill) >= to) return;
+            double h = QuestLength.hours(q);
+            // A quest we know nothing about (no requirements, no length) is no safe pick
+            if (h < 0 && !quests.byQuest.containsKey(q)) continue;
+            if (inRoute.contains(q) || a.questsDone.contains(q) || !doableNow(quests, items, a, q)) continue;
+            int xp = QuestXp.of(q).get(skill);
+            if (rate > 0 && xp / (h > 0 ? h : QuestLength.UNKNOWN_GUESS) < rate) continue;
+            Step st = new Step(Kind.QUEST, QuestPlan.pretty(q), "for " + QuestPlan.pretty(skill) + " XP: " + String.format("%,d", xp) + " xp", h, true);
+            st.quest = q;
+            r.add(st);
+            inRoute.add(q);
+            gain(a, trainedTo, q);
+        }
+    }
+
+    /** A quest the account can start and finish now: no earlier quest, level, item or quest points missing. */
+    static boolean doableNow(QuestData quests, ItemData items, ItemTree.Account a, String quest)
+    {
+        List<QuestPlan.Step> p = QuestPlan.plan(quests, items, a, 10_000, quest);
+        if (p.size() != 1) return false;
+        QuestPlan.Step s = p.get(0);
+        return s.waitingOn.isEmpty() && s.train.isEmpty() && s.missingItems.isEmpty() && s.other.isEmpty() && s.qpNeed == 0;
     }
 
     /**
@@ -475,10 +548,7 @@ public final class Planner
             String k = q.name();
             int pts = QuestLength.qp(k);
             if (pts <= 0 || skip.contains(k) || a.questsDone.contains(k)) continue;
-            List<QuestPlan.Step> p = QuestPlan.plan(quests, items, a, 10_000, k);
-            if (p.size() != 1) continue;
-            QuestPlan.Step s = p.get(0);
-            if (!s.waitingOn.isEmpty() || !s.train.isEmpty() || !s.missingItems.isEmpty() || !s.other.isEmpty() || s.qpNeed > 0) continue;
+            if (!doableNow(quests, items, a, k)) continue;
             double h = QuestLength.hours(k);
             can.add(new String[]{k, String.valueOf((h > 0 ? h : QuestLength.UNKNOWN_GUESS) / pts)});
         }
@@ -616,6 +686,23 @@ public final class Planner
         return out;
     }
 
+    /** One step for every item a quest still needs: "Get items for X", the items listed in how. */
+    static Step group(String quest, List<Step> parts)
+    {
+        double hours = 0;
+        boolean known = false;
+        List<String> names = new ArrayList<>();
+        for (Step p : parts)
+        {
+            names.add(p.what);
+            if (p.hours >= 0) { hours += p.hours; known = true; }
+        }
+        Step g = new Step(Kind.GET, "items for " + QuestPlan.pretty(quest), String.join(", ", names), known ? hours : -1, false);
+        g.parts.addAll(parts);
+        for (Step p : parts) g.uses.addAll(p.uses);
+        return g;
+    }
+
     /**
      * A GET step for a quest item: the table's best way per hour, else the item tree's way. A table method that
      * needs this same quest is no way to get it (the quest hands it over: the karambwan in Tai Bwo Wannai Trio).
@@ -666,6 +753,8 @@ public final class Planner
     /** The item tree's way, not counting what is held (a GET step is for what is still missing). */
     private static String itemWay(ItemData items, ItemTree.Account a, String item)
     {
+        String quest = QuestPlan.questWay(item);
+        if (quest != null) return quest;
         List<String> names = items == null ? List.of() : items.matches(item);
         if (names.isEmpty()) return "no guide data for this item yet";
         // "a or b": the cheapest way over every item the text can mean

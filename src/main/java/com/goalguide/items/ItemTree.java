@@ -115,6 +115,8 @@ public final class ItemTree
         public final List<String> missing = new ArrayList<>();
         /** The way in plain words for the panel's step list: "Pickpocket the Master Farmer". */
         public String say;
+        /** Where a recipe is made ("Anvil", "Furnace"); null for other ways or one made anywhere. */
+        public String facility;
 
         Way(Kind kind, String label, String tools)
         {
@@ -285,6 +287,7 @@ public final class ItemTree
             String how = r.subtext != null ? r.subtext : r.facility != null ? "make at " + r.facility : "make";
             Way w = new Way(Kind.RECIPE, how, r.tools);
             w.say = makeSay(r);
+            w.facility = r.facility;
             for (Map.Entry<String, Integer> e : r.skills.entrySet()) need(w, e.getKey(), e.getValue());
             for (Map.Entry<String, String> g : QUEST_GATES.entrySet())
                 if (contains(r.facility, g.getKey()) || contains(r.subtext, g.getKey())) gate(w, g.getValue());
