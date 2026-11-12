@@ -175,14 +175,8 @@ public final class QuestPlan
             switch (n.kind)
             {
                 case "quest":
-                {
-                    boolean startIsEnough = "IN_PROGRESS".equals(n.note);
-                    if (a.questsDone.contains(n.what) || startIsEnough && a.questsStarted.contains(n.what)) break;
-                    walk(data, items, a, qp, n.what, out, seen);
-                    st.waitingOn.add(n.what);
-                    if (startIsEnough) st.startOnly.add(n.what);
+                    needQuest(data, items, a, qp, st, n, out, seen);
                     break;
-                }
                 case "skill":
                 {
                     int have = a.skills.getOrDefault(n.what, 1);
@@ -209,7 +203,12 @@ public final class QuestPlan
                     String name = itemName(n, items);
                     int need = Math.max(1, n.amount);
                     int have = owned(a, items, name);
+                    QuestData.Need giver = data.giver(name);
                     if (have >= need) st.haveItems.add(name);
+                    // The quest itself hands it over
+                    else if (giver != null && giver.what.equals(quest)) break;
+                    // Only a quest hands it out: that quest comes first, not a Get step
+                    else if (giver != null && needQuest(data, items, a, qp, st, giver, out, seen)) break;
                     else if (a.questsStarted.contains(st.quest)) st.usedItems.add(name);
                     else st.missingItems.merge(name, new int[]{need, have}, (x, y) -> new int[]{Math.max(x[0], y[0]), x[1]});
                     break;
@@ -219,6 +218,25 @@ public final class QuestPlan
             }
         }
         out.add(st);
+    }
+
+    /** An earlier quest the step waits on, walked first. False when it is done already (or started, if that is enough). */
+    private static boolean needQuest(QuestData data, ItemData items, ItemTree.Account a, int qp, Step st, QuestData.Need n, List<Step> out, Set<String> seen)
+    {
+        boolean startIsEnough = "IN_PROGRESS".equals(n.note);
+        if (a.questsDone.contains(n.what) || startIsEnough && a.questsStarted.contains(n.what)) return false;
+        walk(data, items, a, qp, n.what, out, seen);
+        if (!st.waitingOn.contains(n.what)) st.waitingOn.add(n.what);
+        if (startIsEnough && !st.startOnly.contains(n.what)) st.startOnly.add(n.what);
+        return true;
+    }
+
+    /** "Comes from the quest Restless Ghost" for an item only a quest hands out, null otherwise. */
+    public static String questWay(String item)
+    {
+        QuestData.Need q = QuestData.get().giver(item);
+        if (q == null) return null;
+        return "Comes from the quest " + pretty(q.what) + ("IN_PROGRESS".equals(q.note) ? " (early on)" : "");
     }
 
     /** One line for a panel: "ready" or what it still waits on. */

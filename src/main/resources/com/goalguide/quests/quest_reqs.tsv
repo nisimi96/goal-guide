@@ -1,4 +1,5 @@
 # quest	kind	what	amount	note: item id or varbit id (RuneLite gameval)  (from Quest Helper, BSD 2-Clause)
+# Fixed from the OSRS Wiki (2026-11-11): Ghosts Ahoy and In Search of the Myreque only use the Ring of Charos(a) to save ecto-tokens or 10 coins.
 ALFRED_GRIMHANDS_BARCRAWL	item	Coins	208	ItemCollections.COINS
 ANIMAL_MAGNETISM	quest	ERNEST_THE_CHICKEN		FINISHED
 ANIMAL_MAGNETISM	quest	PRIEST_IN_PERIL		FINISHED
@@ -603,7 +604,6 @@ GHOSTS_AHOY	item	Needle/Thread or Costume needle	1	1733
 GHOSTS_AHOY	item	Nettle tea	1	4239
 GHOSTS_AHOY	item	Oak longbow	1	845
 GHOSTS_AHOY	item	Red dye	3	1763
-GHOSTS_AHOY	item	Ring of Charos (a)	1	6465
 GHOSTS_AHOY	item	Silk	1	950
 GHOSTS_AHOY	item	Spade	1	952
 GHOSTS_AHOY	item	Yellow dye	3	1765
@@ -719,7 +719,7 @@ IN_SEARCH_OF_KNOWLEDGE	item	Food	5	ItemCollections.FISH_FOOD
 IN_SEARCH_OF_KNOWLEDGE	item	Knife or slash weapon to cut through a web	1	946
 IN_SEARCH_OF_THE_MYREQUE	quest	NATURE_SPIRIT		FINISHED
 IN_SEARCH_OF_THE_MYREQUE	skill	AGILITY	25	boostable
-IN_SEARCH_OF_THE_MYREQUE	item	10 coins or a Ring of Charos (a)	1	6465
+IN_SEARCH_OF_THE_MYREQUE	item	10 coins or a Ring of Charos (a)	10	ItemCollections.COINS
 IN_SEARCH_OF_THE_MYREQUE	item	Charges in a druid pouch	5	2958
 IN_SEARCH_OF_THE_MYREQUE	item	Hammer	1	ItemCollections.HAMMER
 IN_SEARCH_OF_THE_MYREQUE	item	Plank	6	960

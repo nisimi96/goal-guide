@@ -47,7 +47,7 @@ public class PricesTest
     public void trainStepsListWhatTheyUse()
     {
         ItemTree.Account a = ItemTree.Account.fresh();
-        Planner.Route r = Planner.plan(DATA, null, a, 300, List.of(Goal.level("FISHING", 15)));
+        Planner.Route r = Planner.plan(QuestData.get(), null, a, 300, List.of(Goal.level("FISHING", 15)));
         Planner.Step t = r.steps.get(0);
         assertEquals(Planner.Kind.TRAIN, t.kind);
         assertFalse(t.uses.toString(), t.uses.isEmpty());

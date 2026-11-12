@@ -2,6 +2,7 @@ package com.goalguide.goals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import com.goalguide.items.ItemTree;
 import com.goalguide.quests.QuestData;
 import org.junit.Test;
@@ -69,7 +70,8 @@ public class PlannerTest
         List<Planner.Step> train = of(r, Planner.Kind.TRAIN);
         assertEquals(r.steps.toString(), 1, train.stream().filter(s -> s.what.startsWith("Fishing")).count());
         Planner.Step fish = train.stream().filter(s -> s.what.startsWith("Fishing")).findFirst().get();
-        assertEquals("Fishing 40 to 65", fish.what);
+        // Tai Bwo Wannai Trio's 5,000 Fishing xp comes first
+        assertEquals("Fishing 41 to 65", fish.what);
         assertTrue(fish.toString(), fish.hours > 3 && fish.hours < 80);
         Planner.Step stock = of(r, Planner.Kind.STOCK).get(0);
         // What the bank holds counts first: 580 more, at 580 an hour at 65
@@ -186,4 +188,39 @@ public class PlannerTest
         assertTrue(tithe.how, tithe.hours > 0 && tithe.how.startsWith("Tithe Farm"));
     }
 
+
+    @Test
+    public void aQuestsItemsComeAsOneGroupRightBeforeIt()
+    {
+        Planner.Route r = Planner.plan(QuestData.get(), null, account(60), 0, List.of(Goal.quest("IN_SEARCH_OF_THE_MYREQUE")));
+        int i = 0;
+        while (!"IN_SEARCH_OF_THE_MYREQUE".equals(r.steps.get(i + 1).quest)) i++;
+        Planner.Step group = r.steps.get(i);
+        assertEquals("items for In Search of the Myreque", group.what);
+        assertTrue(group.parts.size() > 1);
+        assertEquals("IN_SEARCH_OF_THE_MYREQUE", r.steps.get(i + 1).quest);
+        // Each item still counts for the hours
+        assertTrue(r.unknown >= group.parts.size() - 1);
+    }
+
+    @Test
+    public void questXpLowersLaterTraining()
+    {
+        Map<String, Integer> to = new java.util.HashMap<>();
+        ItemTree.Account a = ItemTree.Account.fresh();
+        // While Guthix Sleeps gives 75,000 Farming xp: level 1 to 46
+        Planner.gain(a, to, "WHILE_GUTHIX_SLEEPS");
+        assertEquals(46, Planner.level(a, to, "FARMING"));
+    }
+
+    @Test
+    public void aSideQuestComesBeforeTrainingWhenItIsQuicker()
+    {
+        ItemTree.Account a = ItemTree.Account.fresh();
+        for (String item : new String[]{"bucket of milk", "egg", "pot of flour"}) a.owned.put(item, 1);
+        Planner.Route r = Planner.plan(QuestData.get(), null, a, 0, List.of(Goal.level("COOKING", 10)));
+        boolean side = false;
+        for (Planner.Step s : r.steps) side |= s.kind == Planner.Kind.QUEST && s.how.startsWith("for Cooking XP");
+        assertTrue(r.steps.toString(), side);
+    }
 }

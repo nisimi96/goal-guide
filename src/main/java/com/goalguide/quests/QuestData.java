@@ -17,6 +17,8 @@ import java.util.Map;
  * <p>The 48 achievement diary tiers come the same way into diary_reqs.tsv, keyed like MORYTANIA_MEDIUM_DIARY, so a
  * diary is a goal the planner walks like a quest. Each tier has a "varbit" row: its
  * varbit id (the note column) that reads 1 once the tier is done.
+ *
+ * <p>quest_items.tsv (from the OSRS Wiki) names the quest that hands out an item no shop, skill or monster gives.
  */
 public final class QuestData
 {
@@ -43,9 +45,18 @@ public final class QuestData
 
     public final Map<String, List<Need>> byQuest = new LinkedHashMap<>();
 
+    /** Lower-case item name -> the quest that hands it out (FINISHED, or IN_PROGRESS when starting it is enough). */
+    public final Map<String, Need> givenBy = new LinkedHashMap<>();
+
     public List<Need> needs(String quest)
     {
         return byQuest.getOrDefault(quest, List.of());
+    }
+
+    /** The quest that hands this item out, null when it is no quest item. */
+    public Need giver(String item)
+    {
+        return givenBy.get(com.goalguide.items.ItemData.key(item));
     }
 
     /** The quest key for typed text ("priest in peril", "morytania medium"), null when it's no quest or diary. */
@@ -94,6 +105,7 @@ public final class QuestData
         {
             if (line.isEmpty() || line.startsWith("#")) continue;
             String[] c = line.split("\t", -1);
+            if (c.length == 3) d.givenBy.put(com.goalguide.items.ItemData.key(c[0]), new Need("quest", c[1], 0, c[2]));
             if (c.length < 5) continue;
             int amount = 0;
             try { if (!c[3].isEmpty()) amount = Integer.parseInt(c[3]); }
@@ -110,7 +122,7 @@ public final class QuestData
     {
         if (loaded != null) return loaded;
         List<String> lines = new ArrayList<>();
-        for (String file : new String[]{"quest_reqs.tsv", "diary_reqs.tsv"})
+        for (String file : new String[]{"quest_reqs.tsv", "diary_reqs.tsv", "quest_items.tsv"})
         {
             try (InputStream in = QuestData.class.getResourceAsStream(file))
             {
